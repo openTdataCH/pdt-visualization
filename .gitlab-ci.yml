@@ -1,8 +1,30 @@
 stages:
   - test
 
-test:
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=/.m2"
+
+test-backend:
   image: openjdk:17-alpine
   stage: test
   script:
-    - ./mvnw test
+    - ./mvnw test -pl trafficcounter-backend
+  cache:
+    paths:
+      - /.m2/repository
+    key: "$CI_BUILD_REF_NAME"
+
+test-frontend:
+  image: node:16-alpine
+  stage: test
+  script:
+    - apk add --no-cache chromium
+    - export CHROME_BIN=$(which chromium-browser)
+    - cd trafficcounter-frontend/
+    - npm install
+    - npm run test-ci
+  cache:
+    paths:
+      - /usr/bin/chromium-browser
+      - trafficcounter-frontend/node_modules
+    key: "$CI_BUILD_REF_NAME"
