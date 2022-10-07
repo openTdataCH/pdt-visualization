@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/trafficcounter.iml" filepath="$PROJECT_DIR$/.idea/trafficcounter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trafficcounter-backend/trafficcounter-backend.iml" filepath="$PROJECT_DIR$/trafficcounter-backend/trafficcounter-backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trafficcounter-frontend/trafficcounter-frontend.iml" filepath="$PROJECT_DIR$/trafficcounter-frontend/trafficcounter-frontend.iml" />
     </modules>
   </component>
 </project>

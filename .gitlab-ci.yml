@@ -1,0 +1,8 @@
+stages:
+  - test
+
+test:
+  image: openjdk:17-alpine
+  stage: test
+  script:
+    - ./mvnw test
