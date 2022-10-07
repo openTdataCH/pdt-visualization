@@ -20,6 +20,6 @@
 
     <modules>
         <module>trafficcounter-backend</module>
-        <module>trafficcounter-frontend</module>
+        <!--<module>trafficcounter-frontend</module>-->
     </modules>
 </project>

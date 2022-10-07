@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: trafficcounter
+  profiles:
+    default: dev
