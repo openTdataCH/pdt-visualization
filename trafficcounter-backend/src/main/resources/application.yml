@@ -3,3 +3,5 @@ spring:
     name: trafficcounter
   profiles:
     default: dev
+trafficcounter:
+  api-key: ${TRAFFICCOUNTER_API_KEY:""}
