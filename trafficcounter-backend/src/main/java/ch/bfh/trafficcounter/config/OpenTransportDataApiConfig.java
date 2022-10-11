@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class OpenTransportDataApiConfig {
-
     @Bean
     public PullService pullService() {
         return new PullService();

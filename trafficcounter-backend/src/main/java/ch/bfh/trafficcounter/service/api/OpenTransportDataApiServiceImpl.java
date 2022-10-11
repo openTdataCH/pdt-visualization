@@ -1,7 +1,6 @@
 package ch.bfh.trafficcounter.service.api;
 
-import ch.opentdata.wsdl.PullInterface;
-import ch.opentdata.wsdl.PullService;
+import ch.opentdata.wsdl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,5 +38,22 @@ public class OpenTransportDataApiServiceImpl implements OpenTransportDataApiServ
         bindingProvider.getRequestContext().put(MessageContext.HTTP_REQUEST_HEADERS, requestHeaders);
         this.pullInterface = pullInterface;
     }
+
+    private D2LogicalModel createConsumerBody() {
+        final D2LogicalModel consumerBody = new D2LogicalModel();
+        final Exchange exchange = new Exchange();
+        final InternationalIdentifier identifier = new InternationalIdentifier();
+        identifier.setCountry(CountryEnum.CH);
+        exchange.setSupplierIdentification(identifier);
+        consumerBody.setExchange(exchange);
+        return consumerBody;
+    }
+
+    @Override
+    public D2LogicalModel pullMeasuredData() {
+        final D2LogicalModel consumerBody = createConsumerBody();
+        return pullInterface.pullMeasuredData(consumerBody);
+    }
+
 
 }
