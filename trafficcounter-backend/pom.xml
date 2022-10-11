@@ -26,6 +26,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>jaxws-ri</artifactId>
+			<version>2.3.3</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
@@ -61,6 +68,42 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+					<wsdlDirectory>${project.basedir}/src/main/resources/wsdl/</wsdlDirectory>
+					<wsdlFiles>
+						<wsdlFile>Pull.wsdl</wsdlFile>
+					</wsdlFiles>
+					<vmArgs>
+						<vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+					</vmArgs>
+					<extension>true</extension>
+					<bindingFiles>
+						<bindingFile>${basedir}/src/main/resources/wsdl/MeasurementPublications_FEDRO_02-01-00.xsd
+						</bindingFile>
+					</bindingFiles>
+					<packageName>ch.opentdata.wsdl</packageName>
+					<sourceDestDir>
+						${project.build.directory}/generated-sources/
+					</sourceDestDir>
+					<wsdlOptions>
+						<wsdlOption>
+							<wsdl>${basedir}/src/main/resources/wsdl/Pull.wsdl</wsdl>
+							<validate>none</validate>
+						</wsdlOption>
+					</wsdlOptions>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 
