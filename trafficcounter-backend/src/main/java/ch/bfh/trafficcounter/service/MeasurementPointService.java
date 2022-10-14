@@ -1,5 +1,6 @@
-package ch.bfh.trafficcounter.service.api;
+package ch.bfh.trafficcounter.service;
 
+import ch.bfh.trafficcounter.service.api.OpenTransportDataApiService;
 import ch.opentdata.wsdl.D2LogicalModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class MeasurementPointService {
 
 	@PostConstruct
 	public void init() {
-		D2LogicalModel response = api.pullMeasuredData();
+		D2LogicalModel response = api.pullMeasurementSiteTable();
 		System.out.println();
 	}
 

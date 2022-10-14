@@ -55,5 +55,12 @@ public class OpenTransportDataApiServiceImpl implements OpenTransportDataApiServ
         return pullInterface.pullMeasuredData(consumerBody);
     }
 
+    @Override
+    public D2LogicalModel pullMeasurementSiteTable() {
+        final D2LogicalModel consumerBody = createConsumerBody();
+        return pullInterface.pullMeasurementSiteTable(consumerBody);
+    }
+
+
 
 }
