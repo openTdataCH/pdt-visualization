@@ -5,10 +5,13 @@ import javax.persistence.Id;
 
 @Entity
 public class MeasurementPoint {
+
 	@Id
-	private String id; //TODO, think again
+	private String id;
 
 	private double latitude;
 
 	private double longtitude;
+
+	private int numberOfLanes;
 }
