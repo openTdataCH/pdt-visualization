@@ -1,5 +1,8 @@
-import { Component, NgModule, OnInit } from '@angular/core';
-import { LngLat, Map } from 'maplibre-gl';
+import {Component, Input, OnInit} from '@angular/core';
+import {Map} from 'maplibre-gl';
+import {Observable} from "rxjs";
+import {GeoJsonFeatureCollection} from "../../../models/geo-json/geo-json-feature-collection.model";
+import {MeasurementPointDto} from "../../../models/api/measurement-point-dto.model";
 
 @Component({
   selector: 'app-map-display',
@@ -10,16 +13,37 @@ export class MapDisplayComponent implements OnInit {
 
   mapLibre!: Map;
 
-  constructor() { }
+  @Input('measurement-points')
+  measurementPoints!: Observable<GeoJsonFeatureCollection<MeasurementPointDto>>
+
+  constructor() {
+  }
 
   ngOnInit(): void {
     this.mapLibre = new Map({
       container: 'map',
-      style: 'https://vectortiles.geo.admin.ch/styles/ch.swisstopo.leichte-basiskarte_world.vt/style.json', // stylesheet location
+      style: 'https://demotiles.maplibre.org/style.json',
       center: [8.1336, 46.784], // starting position [lng, lat]
       zoom: 7.5 // starting zoom
     });
-  }
 
+    this.mapLibre.on('load', () => {
+      this.measurementPoints.subscribe(measurementPoints => {
+        this.mapLibre.addSource('measurementPoints', {
+          type: 'geojson',
+          data: measurementPoints
+        });
+      });
+
+      this.mapLibre.addLayer(
+        {
+          'id': 'measurementPoints',
+          'type': 'circle',
+          'source': 'measurementPoints',
+        }
+      );
+    });
+
+  }
 
 }
