@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 
 import { MapRoutingModule } from './map-routing.module';
 import { MapComponent } from './map.component';
+import { MapDisplayComponent } from './components/map-display/map-display.component';
 
 
 @NgModule({
   declarations: [
-    MapComponent
+    MapComponent,
+    MapDisplayComponent
   ],
   imports: [
     CommonModule,
