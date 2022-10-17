@@ -17,12 +17,13 @@ public class MeasurementPointService {
 	@Autowired
 	private OpenTransportDataApiService api;
 
-	private final MeasurementPointRepository measurementPointRepository;
+	//private final MeasurementPointRepository measurementPointRepository;
 	private final DtoMapper dtoMapper;
 
 	@Autowired
-	public MeasurementPointService(MeasurementPointRepository measurementPointRepository, DtoMapper dtoMapper){
-		this.measurementPointRepository = measurementPointRepository;
+	public MeasurementPointService(DtoMapper dtoMapper){
+		//public MeasurementPointService(MeasurementPointRepository measurementPointRepository, DtoMapper dtoMapper){
+		//this.measurementPointRepository = measurementPointRepository;
 		this.dtoMapper = dtoMapper;
 	}
 
