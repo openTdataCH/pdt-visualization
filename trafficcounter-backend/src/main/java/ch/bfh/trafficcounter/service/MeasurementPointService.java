@@ -14,39 +14,18 @@ import java.util.ArrayList;
 @Service
 public class MeasurementPointService {
 
-	@Autowired
-	private OpenTransportDataApiService api;
-
 	private final MeasurementPointRepository measurementPointRepository;
 	private final DtoMapper dtoMapper;
 
 	@Autowired
-	public MeasurementPointService(MeasurementPointRepository measurementPointRepository, DtoMapper dtoMapper){
+	public MeasurementPointService(MeasurementPointRepository measurementPointRepository, DtoMapper dtoMapper) {
 		this.measurementPointRepository = measurementPointRepository;
 		this.dtoMapper = dtoMapper;
 	}
 
-
 	public GeoJsonFeatureCollectionDto getAllMeasurementPointsGeoJson() {
-
 		ArrayList<MeasurementPoint> measurementPoints = measurementPointRepository.findAllByActive(true); //TODO, get data from repository
 		return dtoMapper.mapMeasurementPointsToGeoJsonFeatureCollectionDto(measurementPoints);
-	}
-
-	@PostConstruct
-	public void init() {
-		//ArrayList<MeasurementPoint> measurementPoints;
-		//D2LogicalModel staticData = api.pullMeasurementSiteTable();
-
-		//staticData.getPayloadPublication();
-
-		//measurementPointRepository.saveAll(measurementPoints);
-
-
-		//TODO, request data and save into database
-		//D2LogicalModel response = api.pullMeasurementSiteTable();
-		System.out.println();
-		//Meas
 	}
 
 }
