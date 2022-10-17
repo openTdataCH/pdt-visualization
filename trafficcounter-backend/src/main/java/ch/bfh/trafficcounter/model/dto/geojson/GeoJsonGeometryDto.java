@@ -6,6 +6,10 @@ public class GeoJsonGeometryDto {
 
 	private Double[] coordinates;
 
+	public GeoJsonGeometryDto(Double[] coordinates) {
+		this.coordinates = coordinates;
+	}
+
 	public Double[] getCoordinates() {
 		return coordinates;
 	}

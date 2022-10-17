@@ -8,6 +8,11 @@ public class GeoJsonFeatureDto {
 
 	private GeoJsonPropertiesDto properties;
 
+	public GeoJsonFeatureDto(GeoJsonGeometryDto geometry, GeoJsonPropertiesDto properties) {
+		this.geometry = geometry;
+		this.properties = properties;
+	}
+
 	public GeoJsonGeometryDto getGeometry() {
 		return geometry;
 	}
