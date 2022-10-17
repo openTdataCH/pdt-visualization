@@ -8,4 +8,11 @@ public class GeoJsonFeatureCollectionDto {
 
 	private ArrayList<GeoJsonFeatureDto> features;
 
+	public ArrayList<GeoJsonFeatureDto> getFeatures() {
+		return features;
+	}
+
+	public void setFeatures(ArrayList<GeoJsonFeatureDto> features) {
+		this.features = features;
+	}
 }
