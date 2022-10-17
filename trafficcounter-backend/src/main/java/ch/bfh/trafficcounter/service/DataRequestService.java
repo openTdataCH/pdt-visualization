@@ -1,5 +1,6 @@
 package ch.bfh.trafficcounter.service;
 
+import ch.bfh.trafficcounter.repository.MeasurementPointRepository;
 import ch.bfh.trafficcounter.service.api.OpenTransportDataApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -10,8 +11,12 @@ import javax.annotation.PostConstruct;
  */
 public class DataRequestService {
 
-	@Autowired
 	private OpenTransportDataApiService api;
+	private final MeasurementPointRepository mpRepo;
+	@Autowired
+	public DataRequestService(MeasurementPointRepository mpRepo) {
+		this.mpRepo = mpRepo;
+	}
 
 	@PostConstruct
 	public void init() {
