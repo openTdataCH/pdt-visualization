@@ -18,4 +18,8 @@ public class GeoJsonFeatureCollectionDto {
 	public void setFeatures(ArrayList<GeoJsonFeatureDto> features) {
 		this.features = features;
 	}
+
+	public String getType() {
+		return type;
+	}
 }
