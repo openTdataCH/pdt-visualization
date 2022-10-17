@@ -28,17 +28,17 @@ public class DtoMapperImpl implements DtoMapper {
 	}
 
 	@Override
-	public GeoJsonFeatureDto mapMeasurementPointToGeoJsonFeatureDto(MeasurementPoint mp) {
+	private GeoJsonFeatureDto mapMeasurementPointToGeoJsonFeatureDto(MeasurementPoint mp) {
 		return new GeoJsonFeatureDto(mapMeasurementPointToGeoJsonGeometryDto(mp), mapMeasurementPointToGeoJsonPropertiesDto(mp));
 	}
 
 	@Override
-	public GeoJsonGeometryDto mapMeasurementPointToGeoJsonGeometryDto(MeasurementPoint mp) {
+	private GeoJsonGeometryDto mapMeasurementPointToGeoJsonGeometryDto(MeasurementPoint mp) {
 		return new GeoJsonGeometryDto(new Double[]{mp.getLongtitude(), mp.getLatitude()});
 	}
 
 	@Override
-	public GeoJsonPropertiesDto mapMeasurementPointToGeoJsonPropertiesDto(MeasurementPoint mp) {
+	private GeoJsonPropertiesDto mapMeasurementPointToGeoJsonPropertiesDto(MeasurementPoint mp) {
 		return new GeoJsonPropertiesDto(2022); //TODO, where to get year from?
 	}
 }
