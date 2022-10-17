@@ -11,15 +11,15 @@ public class GeoJsonFeatureCollectionDto {
 		this.features = featureDtos;
 	}
 
+	public String getType() {
+		return type;
+	}
+
 	public ArrayList<GeoJsonFeatureDto> getFeatures() {
 		return features;
 	}
 
 	public void setFeatures(ArrayList<GeoJsonFeatureDto> features) {
 		this.features = features;
-	}
-
-	public String getType() {
-		return type;
 	}
 }

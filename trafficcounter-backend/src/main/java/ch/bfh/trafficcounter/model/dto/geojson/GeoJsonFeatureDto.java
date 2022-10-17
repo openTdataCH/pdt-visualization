@@ -13,6 +13,10 @@ public class GeoJsonFeatureDto {
 		this.properties = properties;
 	}
 
+	public String getType() {
+		return type;
+	}
+
 	public GeoJsonGeometryDto getGeometry() {
 		return geometry;
 	}
@@ -27,9 +31,5 @@ public class GeoJsonFeatureDto {
 
 	public void setProperties(GeoJsonPropertiesDto properties) {
 		this.properties = properties;
-	}
-
-	public String getType() {
-		return type;
 	}
 }
