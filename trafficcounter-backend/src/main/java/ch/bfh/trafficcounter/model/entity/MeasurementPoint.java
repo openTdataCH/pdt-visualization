@@ -15,6 +15,8 @@ public class MeasurementPoint {
 
 	private int numberOfLanes;
 
+	private boolean active;
+
 	public String getId() {
 		return id;
 	}
@@ -45,5 +47,13 @@ public class MeasurementPoint {
 
 	public void setNumberOfLanes(int numberOfLanes) {
 		this.numberOfLanes = numberOfLanes;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 }

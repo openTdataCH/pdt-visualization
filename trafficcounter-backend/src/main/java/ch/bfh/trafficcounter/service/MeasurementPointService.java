@@ -17,20 +17,19 @@ public class MeasurementPointService {
 	@Autowired
 	private OpenTransportDataApiService api;
 
-	//private final MeasurementPointRepository measurementPointRepository;
+	private final MeasurementPointRepository measurementPointRepository;
 	private final DtoMapper dtoMapper;
 
 	@Autowired
-	public MeasurementPointService(DtoMapper dtoMapper){
-		//public MeasurementPointService(MeasurementPointRepository measurementPointRepository, DtoMapper dtoMapper){
-		//this.measurementPointRepository = measurementPointRepository;
+	public MeasurementPointService(MeasurementPointRepository measurementPointRepository, DtoMapper dtoMapper){
+		this.measurementPointRepository = measurementPointRepository;
 		this.dtoMapper = dtoMapper;
 	}
 
 
 	public GeoJsonFeatureCollectionDto getAllMeasurementPointsGeoJson() {
 
-		ArrayList<MeasurementPoint> measurementPoints = new ArrayList<>(); //TODO, get data from repository
+		ArrayList<MeasurementPoint> measurementPoints = measurementPointRepository.findAllByActive(true); //TODO, get data from repository
 		return dtoMapper.mapMeasurementPointsToGeoJsonFeatureCollectionDto(measurementPoints);
 	}
 
