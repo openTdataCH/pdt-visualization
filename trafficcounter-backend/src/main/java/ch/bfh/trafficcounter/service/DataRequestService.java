@@ -53,31 +53,32 @@ public class DataRequestService {
 		}
 
 		for (MeasurementSiteRecord mSRecord : mSTP.getMeasurementSiteTable().get(0).getMeasurementSiteRecord()) {
-
+			boolean isActive = false;
 			if (!(mSRecord.getMeasurementSiteLocation() instanceof final Point pt)) {
 				throw new ClassCastException("Expected Point, but was not");
 			}
 
+
+			double[] coordinates = {0, 0};
 			// extract coordinates
 			PointByCoordinates ptByCoords = pt.getPointByCoordinates();
-			if (ptByCoords == null) {
-				System.out.println(String.format("Skipping site %s, no coordinates", mSRecord.getId()));
-				continue;
+			if (ptByCoords != null) {
+				isActive = true;
+				coordinates[0] = ptByCoords.getPointCoordinates().getLatitude();
+				coordinates[1] = ptByCoords.getPointCoordinates().getLongitude();
 			}
-
-			double[] coordinates = {ptByCoords.getPointCoordinates().getLatitude(), ptByCoords.getPointCoordinates().getLongitude()};
-
 			measurementPoints.add(
-				MeasurementPoint.builder()
-					.id(mSRecord.getId())
-					.latitude(coordinates[0])
-					.longtitude(coordinates[1])
-					.numberOfLanes(mSRecord.getMeasurementSiteNumberOfLanes().intValue())
-					.active(true)
-					.build()
+					MeasurementPoint.builder()
+							.id(mSRecord.getId())
+							.latitude(coordinates[0])
+							.longtitude(coordinates[1])
+							.numberOfLanes(mSRecord.getMeasurementSiteNumberOfLanes().intValue())
+							.active(isActive)
+							.build()
 			);
 		}
 		mPRepo.saveAll(measurementPoints);
+		System.out.println("-- Successfully requested and persisted static data --");
 	}
 
 	private void requestAndPersistDynamicData() {
