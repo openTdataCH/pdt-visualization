@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class GeoJsonFeatureCollectionDto {
 
-	private final String type = "FeatureCollection";
+	private static final String type = "FeatureCollection";
 
 	private ArrayList<GeoJsonFeatureDto> features;
 
