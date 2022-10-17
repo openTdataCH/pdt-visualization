@@ -14,7 +14,11 @@ public class DataRequestService {
 	private OpenTransportDataApiService api;
 	private final MeasurementPointRepository mpRepo;
 	@Autowired
-	public DataRequestService(MeasurementPointRepository mpRepo) {
+	public DataRequestService(
+			OpenTransportDataApiService api,
+			MeasurementPointRepository mpRepo
+	) {
+		this.api = api;
 		this.mpRepo = mpRepo;
 	}
 
