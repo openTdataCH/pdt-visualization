@@ -27,17 +27,15 @@ public class DtoMapperImpl implements DtoMapper {
 		return new GeoJsonFeatureCollectionDto(featureDtos);
 	}
 
-	@Override
+	// following methos are not used from outside and are therefore not part of interface. private for cleanliness
 	private GeoJsonFeatureDto mapMeasurementPointToGeoJsonFeatureDto(MeasurementPoint mp) {
 		return new GeoJsonFeatureDto(mapMeasurementPointToGeoJsonGeometryDto(mp), mapMeasurementPointToGeoJsonPropertiesDto(mp));
 	}
 
-	@Override
 	private GeoJsonGeometryDto mapMeasurementPointToGeoJsonGeometryDto(MeasurementPoint mp) {
 		return new GeoJsonGeometryDto(new Double[]{mp.getLongtitude(), mp.getLatitude()});
 	}
 
-	@Override
 	private GeoJsonPropertiesDto mapMeasurementPointToGeoJsonPropertiesDto(MeasurementPoint mp) {
 		return new GeoJsonPropertiesDto(2022); //TODO, where to get year from?
 	}

@@ -11,9 +11,4 @@ import java.util.ArrayList;
 public interface DtoMapper {
 	GeoJsonFeatureCollectionDto mapMeasurementPointsToGeoJsonFeatureCollectionDto(ArrayList<MeasurementPoint> measurementPoint);
 
-	GeoJsonFeatureDto mapMeasurementPointToGeoJsonFeatureDto(MeasurementPoint measurementPoint);
-
-	GeoJsonGeometryDto mapMeasurementPointToGeoJsonGeometryDto(MeasurementPoint measurementPoint);
-
-	GeoJsonPropertiesDto mapMeasurementPointToGeoJsonPropertiesDto(MeasurementPoint measurementPoint);
 }
