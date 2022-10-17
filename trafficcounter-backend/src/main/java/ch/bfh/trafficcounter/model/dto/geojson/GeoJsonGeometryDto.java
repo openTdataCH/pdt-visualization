@@ -17,4 +17,8 @@ public class GeoJsonGeometryDto {
 	public void setCoordinates(Double[] coordinates) {
 		this.coordinates = coordinates;
 	}
+
+	public String getType() {
+		return type;
+	}
 }

@@ -20,4 +20,16 @@ public class GeoJsonFeatureDto {
 	public void setGeometry(GeoJsonGeometryDto geometry) {
 		this.geometry = geometry;
 	}
+
+	public GeoJsonPropertiesDto getProperties() {
+		return properties;
+	}
+
+	public void setProperties(GeoJsonPropertiesDto properties) {
+		this.properties = properties;
+	}
+
+	public String getType() {
+		return type;
+	}
 }
