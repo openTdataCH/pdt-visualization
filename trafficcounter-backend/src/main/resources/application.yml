@@ -1,6 +1,21 @@
 spring:
   application:
     name: trafficcounter
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:db
+    username: sa
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        hbm2ddl:
+  sql:
+    init:
+      mode: always
   profiles:
     default: dev
 trafficcounter:
