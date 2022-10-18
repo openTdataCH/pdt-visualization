@@ -1,8 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {LayerSpecification, Map,} from 'maplibre-gl';
 import {Observable} from "rxjs";
-import {GeoJsonFeatureCollection} from "../../../models/geo-json/geo-json-feature-collection.model";
-import {MeasurementPointDto} from "../../../models/api/measurement-point-dto.model";
+import {GeoJsonFeatureCollectionDto} from "../../../../api/models/geo-json-feature-collection-dto";
 
 @Component({
   selector: 'app-map-display',
@@ -14,7 +13,7 @@ export class MapDisplayComponent implements OnInit {
   private map!: Map;
 
   @Input('measurement-points')
-  measurementPoints!: Observable<GeoJsonFeatureCollection<MeasurementPointDto>>
+  measurementPoints!: Observable<GeoJsonFeatureCollectionDto>;
 
   private readonly measurementPointLayer: LayerSpecification = {
     'id': 'measurementPoints',
@@ -69,9 +68,9 @@ export class MapDisplayComponent implements OnInit {
           type: 'geojson',
           data: measurementPoints
         });
+        this.map.addLayer(this.measurementPointLayer);
       });
 
-      this.map.addLayer(this.measurementPointLayer);
     });
 
   }
