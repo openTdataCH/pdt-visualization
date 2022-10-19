@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller for Endpoint /api/measurementpoints
+ *
+ * @Author Sven Trachsel
+ */
 @RestController
 @RequestMapping("/api/measurementpoints")
 public class MeasurementPointController {
@@ -18,6 +23,12 @@ public class MeasurementPointController {
 		this.measurementPointService = measurementPointService;
 	}
 
+	/**
+	 * Checks if data is present, if data is present, sends data
+	 * if not, send 503, service unavailable
+	 *
+	 * @return ResponseEntity with either data (and 200 ok) or 503 Service unavailable Status code
+	 */
 	@GetMapping
 	public ResponseEntity<GeoJsonFeatureCollectionDto> getMeasurementPointsGeoJson() {
 		if (measurementPointService.getNumberOfMeasurementPoints() == 0) {
