@@ -6,9 +6,13 @@ import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.repository.MeasurementPointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 
+/**
+ * Service for Measurement points
+ *
+ * @Author Sven Trachsel
+ */
 @Service
 public class MeasurementPointService {
 
@@ -21,8 +25,13 @@ public class MeasurementPointService {
 		this.dtoMapper = dtoMapper;
 	}
 
+	/**
+	 * Gets a GeoJSON-List of all registered Measurement Points
+	 * Only finds active measurement points
+	 * @return a DTO in GeoJSON format
+	 */
 	public GeoJsonFeatureCollectionDto getAllMeasurementPointsGeoJson() {
-		ArrayList<MeasurementPoint> measurementPoints = measurementPointRepository.findAllByActive(true); //TODO, get data from repository
+		ArrayList<MeasurementPoint> measurementPoints = measurementPointRepository.findAllByActive(true);
 		return dtoMapper.mapMeasurementPointsToGeoJsonFeatureCollectionDto(measurementPoints);
 	}
 
