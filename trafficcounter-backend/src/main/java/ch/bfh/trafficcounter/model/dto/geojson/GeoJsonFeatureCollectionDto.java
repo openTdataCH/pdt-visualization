@@ -3,7 +3,11 @@ package ch.bfh.trafficcounter.model.dto.geojson;
 import java.util.ArrayList;
 import lombok.*;
 
-
+/**
+ * Featurecollection, wrapper around GeoJSON-Features
+ *
+ * @Author Sven Trachsel
+ */
 @Getter
 @Setter
 @AllArgsConstructor

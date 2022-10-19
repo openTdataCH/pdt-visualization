@@ -1,6 +1,11 @@
 package ch.bfh.trafficcounter.model.dto.geojson;
 import lombok.*;
 
+/**
+ * Features class for static GeoJSON, containing geometry and properties
+ *
+ * @Author Sven Trachsel
+ */
 @Getter
 @Setter
 @AllArgsConstructor
