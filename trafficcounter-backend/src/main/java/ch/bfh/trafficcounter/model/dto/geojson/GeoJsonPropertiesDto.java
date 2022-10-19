@@ -1,19 +1,12 @@
 package ch.bfh.trafficcounter.model.dto.geojson;
 
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
 public class GeoJsonPropertiesDto {
 
-	private int year;
-
-	public GeoJsonPropertiesDto(int year) {
-		this.year = year;
-	}
-
-	public int getYear() {
-		return year;
-	}
-
-	public void setYear(int year) {
-		this.year = year;
-	}
+	private String id;
 
 }

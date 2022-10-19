@@ -1,5 +1,9 @@
 package ch.bfh.trafficcounter.model.dto.geojson;
+import lombok.*;
 
+@Getter
+@Setter
+@AllArgsConstructor
 public class GeoJsonFeatureDto {
 
 	private static final String type = "Feature";
@@ -8,28 +12,9 @@ public class GeoJsonFeatureDto {
 
 	private GeoJsonPropertiesDto properties;
 
-	public GeoJsonFeatureDto(GeoJsonGeometryDto geometry, GeoJsonPropertiesDto properties) {
-		this.geometry = geometry;
-		this.properties = properties;
-	}
 
 	public String getType() {
 		return type;
 	}
 
-	public GeoJsonGeometryDto getGeometry() {
-		return geometry;
-	}
-
-	public void setGeometry(GeoJsonGeometryDto geometry) {
-		this.geometry = geometry;
-	}
-
-	public GeoJsonPropertiesDto getProperties() {
-		return properties;
-	}
-
-	public void setProperties(GeoJsonPropertiesDto properties) {
-		this.properties = properties;
-	}
 }

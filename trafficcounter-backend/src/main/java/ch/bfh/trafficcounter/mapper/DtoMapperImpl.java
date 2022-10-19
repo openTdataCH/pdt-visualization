@@ -37,6 +37,6 @@ public class DtoMapperImpl implements DtoMapper {
 	}
 
 	private GeoJsonPropertiesDto mapMeasurementPointToGeoJsonPropertiesDto(MeasurementPoint mp) {
-		return new GeoJsonPropertiesDto(2022); //TODO, where to get year from?
+		return new GeoJsonPropertiesDto(mp.getId());
 	}
 }
