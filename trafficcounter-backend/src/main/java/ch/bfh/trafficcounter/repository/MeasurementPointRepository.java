@@ -10,4 +10,6 @@ import java.util.ArrayList;
 public interface MeasurementPointRepository extends JpaRepository<MeasurementPoint, String> {
 
 	ArrayList<MeasurementPoint> findAllByActive(boolean active);
+
+	int countAllByActive(boolean active);
 }

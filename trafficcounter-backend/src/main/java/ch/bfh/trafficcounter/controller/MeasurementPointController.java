@@ -2,6 +2,7 @@ package ch.bfh.trafficcounter.controller;
 
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.service.MeasurementPointService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,9 @@ public class MeasurementPointController {
 
 	@GetMapping
 	public ResponseEntity<GeoJsonFeatureCollectionDto> getMeasurementPointsGeoJson() {
+		if (measurementPointService.getNumberOfMeasurementPoints() == 0) {
+			return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+		}
 		return ResponseEntity.ok(measurementPointService.getAllMeasurementPointsGeoJson());
 	}
 

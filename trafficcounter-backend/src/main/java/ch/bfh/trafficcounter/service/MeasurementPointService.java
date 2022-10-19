@@ -35,4 +35,12 @@ public class MeasurementPointService {
 		return dtoMapper.mapMeasurementPointsToGeoJsonFeatureCollectionDto(measurementPoints);
 	}
 
+	/**
+	 * Counts number of active measurement points, zero indicates that no data has been loaded yet
+	 * @return number of active measurement points
+	 */
+	public int getNumberOfMeasurementPoints() {
+		return measurementPointRepository.countAllByActive(true);
+	}
+
 }
