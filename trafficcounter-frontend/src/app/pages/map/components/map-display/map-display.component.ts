@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {LayerSpecification, Map,} from 'maplibre-gl';
+import {LayerSpecification, Map, Popup} from 'maplibre-gl';
 import {Observable} from "rxjs";
 import {GeoJsonFeatureCollectionDto} from "../../../../api/models/geo-json-feature-collection-dto";
 
@@ -64,15 +64,46 @@ export class MapDisplayComponent implements OnInit {
       img.onload = () => this.map.addImage('location-pin-thin', img)
       img.src = './assets/icons/location-pin-thin.svg';
       this.measurementPoints.subscribe(measurementPoints => {
-        this.map.addSource('measurementPoints', {
+        this.map.addSource(this.measurementPointLayer.id, {
           type: 'geojson',
           data: measurementPoints
         });
         this.map.addLayer(this.measurementPointLayer);
-      });
 
+        const handleMeasurementPointPopup = (e: any) => {
+          // @ts-ignore
+          const coordinates = e.features[0].geometry['coordinates'].slice();
+          // @ts-ignore
+          const description = e.features[0].properties['year'];
+
+          // Ensure that if the map is zoomed out such that multiple
+          // copies of the feature are visible, the popup appears
+          // over the copy being pointed to.
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
+
+          new Popup()
+            .setLngLat(coordinates)
+            .setHTML(description)
+            .addTo(this.map);
+        };
+
+        this.map.on('click', this.measurementPointLayer.id, handleMeasurementPointPopup);
+
+        this.map.on('mouseenter', this.measurementPointLayer.id, () => {
+          this.map.getCanvas().style.cursor = 'pointer';
+        });
+
+        this.map.on('mouseleave', this.measurementPointLayer.id, () => {
+          this.map.getCanvas().style.cursor = '';
+        });
+      });
     });
 
   }
 
 }
+
+
+
