@@ -8,14 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
  * Manages querying the api and saving the data to the database
+ *
+ * @author Sven Trachsel
  */
 @Service
 @EnableScheduling
@@ -35,6 +34,11 @@ public class DataRequestService {
 		this.mPRepo = mPRepo;
 	}
 
+	/**
+	 * Scheduled task to request data every hour
+	 *
+	 * @Author Sven Trachsel
+	 */
 	@Scheduled(fixedRate = 3600000) // do it every hour, starting immediately
 	public void requestAndPersistData() {
 		if (firstStart) {
@@ -44,6 +48,11 @@ public class DataRequestService {
 		requestAndPersistDynamicData();
 	}
 
+	/**
+	 * implementation of static data request and persistence
+	 * only enables valid measurement points (with coordinates)
+	 *
+	 */
 	private void requestAndPersistStaticData() {
 		ArrayList<MeasurementPoint> measurementPoints = new ArrayList<>();
 		D2LogicalModel staticData = api.pullMeasurementSiteTable();

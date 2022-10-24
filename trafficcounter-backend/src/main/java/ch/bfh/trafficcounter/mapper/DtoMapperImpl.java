@@ -9,9 +9,20 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
+/**
+ * Implementation of {@link DtoMapper}
+ *
+ * @author Sven Trachsel
+ */
 @Component
 public class DtoMapperImpl implements DtoMapper {
 
+	/**
+	 * Wraps measurementPoints into GeoJSON
+	 *
+	 * @param measurementPoints an arraylist of measurement-point objects to wrap in GeoJSON
+	 * @return a DTO object which can easily be serialized to GeoJSON
+	 */
 	@Override
 	public GeoJsonFeatureCollectionDto mapMeasurementPointsToGeoJsonFeatureCollectionDto(ArrayList<MeasurementPoint> measurementPoints) {
 		// check for empty array
@@ -37,6 +48,6 @@ public class DtoMapperImpl implements DtoMapper {
 	}
 
 	private GeoJsonPropertiesDto mapMeasurementPointToGeoJsonPropertiesDto(MeasurementPoint mp) {
-		return new GeoJsonPropertiesDto(2022); //TODO, where to get year from?
+		return new GeoJsonPropertiesDto(mp.getId());
 	}
 }
