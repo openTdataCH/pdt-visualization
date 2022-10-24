@@ -5,7 +5,7 @@ import lombok.*;
 /**
  * Properties class for static GeoJSON
  *
- * @Author Sven Trachsel
+ * @author Sven Trachsel
  */
 @Getter
 @Setter

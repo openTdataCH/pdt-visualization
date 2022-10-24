@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Implementation of {@link DtoMapper}
  *
- * @Author Sven Trachhsel
+ * @author Sven Trachsel
  */
 @Component
 public class DtoMapperImpl implements DtoMapper {
@@ -22,7 +22,6 @@ public class DtoMapperImpl implements DtoMapper {
 	 *
 	 * @param measurementPoints an arraylist of measurement-point objects to wrap in GeoJSON
 	 * @return a DTO object which can easily be serialized to GeoJSON
-	 * @Author Sven Trachsel
 	 */
 	@Override
 	public GeoJsonFeatureCollectionDto mapMeasurementPointsToGeoJsonFeatureCollectionDto(ArrayList<MeasurementPoint> measurementPoints) {

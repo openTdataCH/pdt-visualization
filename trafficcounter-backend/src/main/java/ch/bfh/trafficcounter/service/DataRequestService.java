@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Manages querying the api and saving the data to the database
  *
- * @Author Sven Trachsel
+ * @author Sven Trachsel
  */
 @Service
 @EnableScheduling
@@ -52,7 +52,6 @@ public class DataRequestService {
 	 * implementation of static data request and persistence
 	 * only enables valid measurement points (with coordinates)
 	 *
-	 * @Author Sven Trachsel
 	 */
 	private void requestAndPersistStaticData() {
 		ArrayList<MeasurementPoint> measurementPoints = new ArrayList<>();

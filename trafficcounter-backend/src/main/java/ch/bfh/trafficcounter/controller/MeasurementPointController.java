@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Controller for Endpoint /api/measurementpoints
  *
- * @Author Sven Trachsel
+ * @author Sven Trachsel
  */
 @RestController
 @RequestMapping("/api/measurementpoints")

@@ -8,7 +8,7 @@ import javax.persistence.Id;
  * A single Measurement Point with coordinates
  * can be enabled and disabled
  *
- * @Author Sven  Trachsel
+ * @author Sven Trachsel
  */
 @Getter
 @Setter

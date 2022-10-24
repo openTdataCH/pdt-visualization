@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Service for Measurement points
  *
- * @Author Sven Trachsel
+ * @author Sven Trachsel
  */
 @Service
 public class MeasurementPointService {

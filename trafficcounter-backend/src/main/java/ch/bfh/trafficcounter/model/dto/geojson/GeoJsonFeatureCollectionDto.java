@@ -6,7 +6,7 @@ import lombok.*;
 /**
  * Featurecollection, wrapper around GeoJSON-Features
  *
- * @Author Sven Trachsel
+ * @author Sven Trachsel
  */
 @Getter
 @Setter

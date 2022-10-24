@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Mapper for different DTOs
  *
- * @Author Sven Trachsel
+ * @author Sven Trachsel
  */
 public interface DtoMapper {
 	GeoJsonFeatureCollectionDto mapMeasurementPointsToGeoJsonFeatureCollectionDto(ArrayList<MeasurementPoint> measurementPoint);
