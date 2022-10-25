@@ -1,10 +1,15 @@
 package ch.bfh.trafficcounter.model.entity;
 
 import lombok.*;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+/**
+ * A single Measurement Point with coordinates
+ * can be enabled and disabled
+ *
+ * @author Sven Trachsel
+ */
 @Getter
 @Setter
 @AllArgsConstructor
