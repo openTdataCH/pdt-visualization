@@ -20,7 +20,9 @@ export class ErrorDisplayComponent implements OnInit {
 
   ngOnInit(): void {
     this.errorService.error$.subscribe(error => {
-      this.toastr.error(error?.message, 'An error occurred');
+      if(error != null) {
+        this.toastr.error(error.message, 'An error occurred');
+      }
     });
   }
 

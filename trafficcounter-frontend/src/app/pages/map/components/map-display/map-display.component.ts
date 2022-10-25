@@ -58,7 +58,7 @@ export class MapDisplayComponent implements OnInit {
     'source': 'measurementPoints',
     'layout': {
       'icon-image': 'location-pin-thin',
-      'text-field': ['get', 'id'],
+      //'text-field': ['get', 'id'],
       'text-offset': [0, 1.25],
       'text-anchor': 'top'
     }
@@ -68,14 +68,14 @@ export class MapDisplayComponent implements OnInit {
   }
 
   private loadIcon(id: string) {
-    const img = new Image(20, 20)
-    img.onload = () => this.map.addImage(id, img)
-    img.src = './assets/icons/location-pin-thin.svg';
+    const img = new Image(20, 20);
+    img.onload = () => this.map.addImage(id, img);
+    img.src = `./assets/icons/${id}.svg`;
   }
 
   ngOnInit(): void {
     this.map = new Map(this.mapOptions);
-    this.icons.forEach(this.loadIcon);
+    this.icons.forEach(icon => this.loadIcon(icon));
 
     // wait for map to load
     this.map.on('load', () => {
@@ -90,7 +90,7 @@ export class MapDisplayComponent implements OnInit {
 
         const handleMeasurementPointPopup = (e: any) => {
           const coordinates = e.features[0].geometry['coordinates'].slice();
-          const description = e.features[0].properties['year'];
+          const description = e.features[0].properties['id'];
 
           // Ensure that if the map is zoomed out such that multiple
           // copies of the feature are visible, the popup appears
@@ -106,7 +106,7 @@ export class MapDisplayComponent implements OnInit {
             .addTo(this.map);
         };
 
-        // add event listener for measurment points
+        // add event listener for measurement points
         this.map.on('click', this.measurementPointLayer.id, handleMeasurementPointPopup);
         this.map.on('mouseenter', this.measurementPointLayer.id, () => {
           this.map.getCanvas().style.cursor = 'pointer';
