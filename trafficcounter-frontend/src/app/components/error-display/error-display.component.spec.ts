@@ -1,6 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {ErrorDisplayComponent} from './error-display.component';
+import {ToastrModule} from "ngx-toastr";
 
 describe('ErrorDisplayComponent', () => {
   let component: ErrorDisplayComponent;
@@ -8,7 +9,8 @@ describe('ErrorDisplayComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ErrorDisplayComponent ]
+      declarations: [ ErrorDisplayComponent ],
+      imports: [ ToastrModule.forRoot() ]
     })
     .compileComponents();
 

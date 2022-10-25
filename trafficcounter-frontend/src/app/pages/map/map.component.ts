@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MeasurementPointService} from "../../services/measurement-point/measurement-point.service";
-import {catchError, map, Observable} from "rxjs";
+import {Observable} from "rxjs";
 import {GeoJsonFeatureCollectionDto} from "../../api/models/geo-json-feature-collection-dto";
 
+/**
+ * The page component for the map.
+ */
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -10,6 +13,9 @@ import {GeoJsonFeatureCollectionDto} from "../../api/models/geo-json-feature-col
 })
 export class MapComponent implements OnInit {
 
+  /**
+   * All measurement points as GeoJSON.
+   */
   measurementPoints: Observable<GeoJsonFeatureCollectionDto>;
 
   constructor(
