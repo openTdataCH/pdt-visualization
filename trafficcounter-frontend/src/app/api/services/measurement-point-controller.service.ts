@@ -13,7 +13,7 @@ import {environment} from "../../../environments/environment";
 })
 export class MeasurementPointControllerService {
 
-    protected basePath = environment.apiBasePath;
+    protected basePath = environment.api.basePath;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 

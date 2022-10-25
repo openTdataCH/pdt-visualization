@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {MeasurementPointService} from "../../services/measurement-point/measurement-point.service";
-import {map, Observable} from "rxjs";
+import {catchError, map, Observable} from "rxjs";
 import {GeoJsonFeatureCollectionDto} from "../../api/models/geo-json-feature-collection-dto";
 
 @Component({
