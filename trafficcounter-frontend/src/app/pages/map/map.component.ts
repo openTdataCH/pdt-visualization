@@ -17,17 +17,17 @@ export class MapComponent implements OnInit {
   /**
    * All measurement points as GeoJSON.
    */
-  measurementPoints: Observable<GeoJsonFeatureCollectionDto>;
+  measurementPoints$: Observable<GeoJsonFeatureCollectionDto>;
 
   get showMenu(): Observable<boolean> {
-    return this.mapConfigService.showMenu;
+    return this.mapConfigService.showMenu$;
   }
 
   constructor(
     private readonly mapConfigService: MapConfigService,
     private readonly measurementPointService: MeasurementPointService
   ) {
-    this.measurementPoints = this.measurementPointService.getAllMeasurementPoints();
+    this.measurementPoints$ = this.measurementPointService.getAllMeasurementPoints();
   }
 
   ngOnInit(): void {

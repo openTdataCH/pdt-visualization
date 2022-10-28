@@ -4,7 +4,7 @@
   <div id="map-container"
        [class.full-width]="!(showMenu | async)">
     <app-map-display
-      [measurement-points]="measurementPoints"
+      [measurement-points]="measurementPoints$"
     ></app-map-display>
   </div>
 </div>

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {MapConfigService} from "../../services/map-config/map-config.service";
 
+/**
+ * Menu bar on top of the map content.
+ */
 @Component({
   selector: 'app-map-menu-bar',
   templateUrl: './map-menu-bar.component.html',
@@ -13,8 +16,11 @@ export class MapMenuBarComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Toggles the menu display.
+   */
   toggleShowMenu() {
-    this.mapConfigService.showMenu.next(!this.mapConfigService.showMenu.value);
+    this.mapConfigService.showMenu$.next(!this.mapConfigService.showMenu$.value);
   }
 
 }

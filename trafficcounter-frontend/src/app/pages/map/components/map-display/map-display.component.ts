@@ -77,7 +77,7 @@ export class MapDisplayComponent implements OnInit {
 
   ngOnInit(): void {
     this.constructMap();
-    this.mapConfigService.showMenu.subscribe(showMenu => {
+    this.mapConfigService.showMenu$.subscribe(showMenu => {
       setTimeout(() => this.map.resize(), 1);
     });
   }

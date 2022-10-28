@@ -1,3 +1,8 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="header">
   <h1>Traffic Counter</h1>
+  <mat-select class="language-select" [value]="languageService.currentLanguage$ | async" (selectionChange)="setLanguage($event.value)">
+    <mat-option *ngFor="let language of languageService.languages" [value]="language">
+      {{ 'language.' + language | translate }}
+    </mat-option>
+  </mat-select>
 </mat-toolbar>

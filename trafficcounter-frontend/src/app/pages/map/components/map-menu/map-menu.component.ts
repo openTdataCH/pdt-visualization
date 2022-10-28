@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {MapConfigService} from "../../services/map-config/map-config.service";
 
+/**
+ * The menu for map options.
+ */
 @Component({
   selector: 'app-map-menu',
   templateUrl: './map-menu.component.html',
