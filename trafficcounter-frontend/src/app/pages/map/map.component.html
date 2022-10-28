@@ -1,8 +1,12 @@
-<h1>Map</h1>
-<div id="map-container">
-
-  <app-map-display
-    [measurement-points]="measurementPoints"
-  ></app-map-display>
+<app-map-menu-bar></app-map-menu-bar>
+<div class="map-page">
+  <app-map-menu *ngIf="showMenu | async"></app-map-menu>
+  <div id="map-container"
+       [class.full-width]="!(showMenu | async)">
+    <app-map-display
+      [measurement-points]="measurementPoints"
+    ></app-map-display>
+  </div>
 </div>
+
 

@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {LayerSpecification, Map, MapOptions, Popup} from 'maplibre-gl';
 import {Observable} from "rxjs";
 import {GeoJsonFeatureCollectionDto} from "../../../../api/models/geo-json-feature-collection-dto";
+import {MapConfigService} from "../../services/map-config/map-config.service";
 
 /**
  * Component for the map display.
@@ -28,6 +29,7 @@ export class MapDisplayComponent implements OnInit {
 
   private readonly mapOptions: MapOptions = {
     container: 'map',
+    trackResize: true,
     style: {
       glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
       version: 8,
@@ -64,7 +66,7 @@ export class MapDisplayComponent implements OnInit {
     }
   };
 
-  constructor() {
+  constructor(private readonly mapConfigService: MapConfigService) {
   }
 
   private loadIcon(id: string) {
@@ -74,6 +76,13 @@ export class MapDisplayComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.constructMap();
+    this.mapConfigService.showMenu.subscribe(showMenu => {
+      setTimeout(() => this.map.resize(), 1);
+    });
+  }
+
+  private constructMap() {
     this.map = new Map(this.mapOptions);
     this.icons.forEach(icon => this.loadIcon(icon));
 
@@ -116,10 +125,9 @@ export class MapDisplayComponent implements OnInit {
         });
       });
     });
-
   }
 
-  }
+}
 
 
 
