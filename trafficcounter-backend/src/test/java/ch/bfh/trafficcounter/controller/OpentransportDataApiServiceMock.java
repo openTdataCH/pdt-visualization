@@ -20,34 +20,34 @@ public class OpentransportDataApiServiceMock implements OpenTransportDataApiServ
 	@Override
 	public D2LogicalModel pullMeasurementSiteTable() {
 		D2LogicalModel model = new D2LogicalModel();
-		MeasurementSiteTablePublication measurementSiteTablePublication = new MeasurementSiteTablePublication();
-		MeasurementSiteTable measurementSiteTable = new MeasurementSiteTable() {{
-			MeasurementSiteRecord record = new MeasurementSiteRecord();
-			record.setId("CH-TEST");
-			MultilingualString measurementSiteName = new MultilingualString();
-			MultilingualStringValue measurementSiteNameValue = new MultilingualStringValue();
-			measurementSiteNameValue.setValue("Test-Ort");
-			MultilingualString.Values values = new MultilingualString.Values() {{
-				value = List.of(measurementSiteNameValue);
-			}};
-			measurementSiteName.setValues(values);
-			record.setMeasurementSiteName(measurementSiteName);
+		MeasurementSiteTablePublication measurementSiteTablePublication = new MeasurementSiteTablePublication() {{
+			measurementSiteTable = List.of(new MeasurementSiteTable() {{
+				MeasurementSiteRecord record = new MeasurementSiteRecord();
+				record.setId("CH-TEST");
+				MultilingualString measurementSiteName = new MultilingualString();
+				MultilingualStringValue measurementSiteNameValue = new MultilingualStringValue();
+				measurementSiteNameValue.setValue("Test-Ort");
+				MultilingualString.Values values = new MultilingualString.Values() {{
+					value = List.of(measurementSiteNameValue);
+				}};
+				measurementSiteName.setValues(values);
+				record.setMeasurementSiteName(measurementSiteName);
 
-			Point point = new Point();
-			PointByCoordinates pointByCoordinates = new PointByCoordinates();
-			PointCoordinates pointCoordinates = new PointCoordinates();
-			pointCoordinates.setLatitude(1);
-			pointCoordinates.setLongitude(2);
-			pointByCoordinates.setPointCoordinates(pointCoordinates);
-			point.setPointByCoordinates(pointByCoordinates);
+				Point point = new Point();
+				PointByCoordinates pointByCoordinates = new PointByCoordinates();
+				PointCoordinates pointCoordinates = new PointCoordinates();
+				pointCoordinates.setLatitude(1);
+				pointCoordinates.setLongitude(2);
+				pointByCoordinates.setPointCoordinates(pointCoordinates);
+				point.setPointByCoordinates(pointByCoordinates);
 
-			record.setMeasurementSiteLocation(point);
+				record.setMeasurementSiteLocation(point);
 
-			record.setMeasurementSiteNumberOfLanes(BigInteger.ONE);
-
-			measurementSiteRecord = List.of(record);
+				record.setMeasurementSiteNumberOfLanes(BigInteger.ONE);
+				measurementSiteRecord = List.of(record);
+			}});
 		}};
-		measurementSiteTable.setId("TEST");
+		measurementSiteTablePublication.getMeasurementSiteTable().get(0).setId("TEST");
 		model.setPayloadPublication(measurementSiteTablePublication);
 		return model;
 	}
