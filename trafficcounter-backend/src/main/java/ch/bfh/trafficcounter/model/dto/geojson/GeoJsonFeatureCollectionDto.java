@@ -1,6 +1,7 @@
 package ch.bfh.trafficcounter.model.dto.geojson;
 
 import java.util.ArrayList;
+
 import lombok.*;
 
 /**
@@ -10,14 +11,14 @@ import lombok.*;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class GeoJsonFeatureCollectionDto {
 
-	private static final String type = "FeatureCollection";
+	private String type = "FeatureCollection";
 	private ArrayList<GeoJsonFeatureDto> features;
 
-	public String getType() {
-		return type;
+	public GeoJsonFeatureCollectionDto(ArrayList<GeoJsonFeatureDto> features) {
+		this.features = features;
 	}
-
 }

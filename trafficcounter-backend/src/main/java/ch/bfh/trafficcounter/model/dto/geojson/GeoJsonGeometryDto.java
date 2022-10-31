@@ -9,15 +9,14 @@ import lombok.*;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class GeoJsonGeometryDto {
 
-	private static final String type = "Point";
-
+	private String type = "Point";
 	private Double[] coordinates;
 
-	public String getType() {
-		return type;
+	public GeoJsonGeometryDto(Double[] coordinates) {
+		this.coordinates = coordinates;
 	}
-
 }
