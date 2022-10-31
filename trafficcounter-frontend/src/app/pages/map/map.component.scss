@@ -1,0 +1,20 @@
+.map-page {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+
+  #map-container {
+    height: 100vh;
+    flex-basis: 70%;
+
+    &.full-width {
+      flex-basis: 100%;
+      width: 100%;
+
+      & + app-map-menu {
+        flex-basis: 0;
+        width: 0;
+      }
+    }
+  }
+}
