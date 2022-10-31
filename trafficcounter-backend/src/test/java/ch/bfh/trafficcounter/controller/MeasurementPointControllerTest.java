@@ -11,6 +11,7 @@ import static org.hamcrest.Matchers.is;
 public class MeasurementPointControllerTest extends AbstractApiTest {
 
 	@Test
+	@DirtiesContext
 	void getMeasurementPointsGeoJson() {
 		request()
 				.get("/api/measurementpoints")
