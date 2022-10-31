@@ -8,18 +8,16 @@ import lombok.*;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class GeoJsonFeatureDto {
 
-	private static final String type = "Feature";
-
+	private String type = "Feature";
 	private GeoJsonGeometryDto geometry;
-
 	private GeoJsonPropertiesDto properties;
 
-
-	public String getType() {
-		return type;
+	public GeoJsonFeatureDto(GeoJsonGeometryDto geometry, GeoJsonPropertiesDto properties) {
+		this.geometry = geometry;
+		this.properties = properties;
 	}
-
 }
