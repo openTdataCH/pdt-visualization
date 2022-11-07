@@ -1,11 +1,13 @@
+image: openjdk:17-alpine
+
 stages:
   - test
+  - doc
 
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=/.m2"
 
 test-backend:
-  image: openjdk:17-alpine
   stage: test
   script:
     - ./mvnw test -pl trafficcounter-backend
@@ -28,3 +30,14 @@ test-frontend:
       - /usr/bin/chromium-browser
       - trafficcounter-frontend/node_modules
     key: "$CI_BUILD_REF_NAME"
+
+pages:
+  stage: doc
+  script:
+    - ./mvnw javadoc:javadoc -pl trafficcounter-backend
+    - mv trafficcounter-backend/target/site/apidocs public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
