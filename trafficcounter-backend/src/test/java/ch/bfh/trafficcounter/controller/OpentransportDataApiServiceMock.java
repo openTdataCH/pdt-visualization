@@ -1,20 +1,73 @@
 package ch.bfh.trafficcounter.controller;
 
+import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
+import ch.bfh.trafficcounter.repository.MeasurementPointRepository;
 import ch.bfh.trafficcounter.service.api.OpenTransportDataApiService;
 import ch.opentdata.wsdl.*;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
+import java.time.ZonedDateTime;
+import java.util.GregorianCalendar;
 import java.util.List;
 
+import static org.mockito.Mockito.when;
+
 @Service
+@Profile("test")
 @Primary
 public class OpentransportDataApiServiceMock implements OpenTransportDataApiService {
 
+	private final MeasurementPointRepository measurementPointRepository;
+
+	@Autowired
+	public OpentransportDataApiServiceMock(MeasurementPointRepository measurementPointRepository) {
+		this.measurementPointRepository = measurementPointRepository;
+	}
+
 	@Override
 	public D2LogicalModel pullMeasuredData() {
-		return null;
+
+		final String measurementPointId = "ABC";
+		if(measurementPointRepository.findById(measurementPointId).isEmpty()) {
+			measurementPointRepository.save(MeasurementPoint.builder()
+				.id(measurementPointId)
+				.active(true)
+				.latitude(1.0)
+				.longtitude(1.0)
+				.numberOfLanes(1)
+				.build());
+		}
+
+		final D2LogicalModel d2LogicalModel = new D2LogicalModel();
+		final MeasuredDataPublication measuredDataPublication = new MeasuredDataPublication() {{
+			siteMeasurements = List.of(new SiteMeasurements() {{
+				measurementSiteReference = new MeasurementSiteRecordVersionedReference();
+				measurementSiteReference.setId(measurementPointId);
+				final SiteMeasurementsIndexMeasuredValue siteMeasurementsIndexMeasuredValue = new SiteMeasurementsIndexMeasuredValue();
+				siteMeasurementsIndexMeasuredValue.setIndex(1);
+				final MeasuredValue value = new MeasuredValue();
+				final TrafficSpeed trafficSpeed = new TrafficSpeed();
+				final SpeedValue speedValue = new SpeedValue();
+				speedValue.setNumberOfInputValuesUsed(BigInteger.valueOf(1));
+				speedValue.setSpeed(10f);
+				trafficSpeed.setAverageVehicleSpeed(speedValue);
+				value.setBasicData(trafficSpeed);
+				siteMeasurementsIndexMeasuredValue.setMeasuredValue(value);
+				measuredValue = List.of(siteMeasurementsIndexMeasuredValue);
+			}});
+		}};
+
+		final XMLGregorianCalendar xmlGregorianCalendar = Mockito.mock(XMLGregorianCalendar.class);
+		when(xmlGregorianCalendar.toGregorianCalendar()).thenReturn(GregorianCalendar.from(ZonedDateTime.now()));
+		measuredDataPublication.setPublicationTime(xmlGregorianCalendar);
+		d2LogicalModel.setPayloadPublication(measuredDataPublication);
+		return d2LogicalModel;
 	}
 
 	@Override
@@ -42,7 +95,6 @@ public class OpentransportDataApiServiceMock implements OpenTransportDataApiServ
 				point.setPointByCoordinates(pointByCoordinates);
 
 				record.setMeasurementSiteLocation(point);
-
 				record.setMeasurementSiteNumberOfLanes(BigInteger.ONE);
 				measurementSiteRecord = List.of(record);
 			}});
