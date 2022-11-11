@@ -1,17 +1,16 @@
 package ch.bfh.trafficcounter.service;
 
-import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
-import ch.bfh.trafficcounter.repository.MeasurementPointRepository;
+import ch.bfh.trafficcounter.event.UpdateEvent;
 import ch.bfh.trafficcounter.service.api.OpenTransportDataApiService;
 import ch.opentdata.wsdl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Sinks;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,15 +22,18 @@ public class DataRequestServiceImpl implements DataRequestService {
 
 	private final SpeedDataService speedDataService;
 
+	private final Sinks.Many<UpdateEvent> updateEvent;
+
 	@Autowired
 	public DataRequestServiceImpl(
 			OpenTransportDataApiService api,
 			MeasurementPointService measurementPointService,
-			SpeedDataService speedDataService
-	) {
+			SpeedDataService speedDataService,
+			Sinks.Many<UpdateEvent> updateEvent) {
 		this.api = api;
 		this.measurementPointService = measurementPointService;
 		this.speedDataService = speedDataService;
+		this.updateEvent = updateEvent;
 	}
 
 	@PostConstruct
@@ -75,6 +77,7 @@ public class DataRequestServiceImpl implements DataRequestService {
 		final List<SiteMeasurements> siteMeasurements = measuredDataPublication.getSiteMeasurements();
 
 		speedDataService.processAndPersistSpeedData(time, siteMeasurements);
+		updateEvent.tryEmitNext(UpdateEvent.SPEED_DATA);
 		System.out.println("-- Successfully requested and persisted dynamic data --");
 	}
 

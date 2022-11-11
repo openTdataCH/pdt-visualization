@@ -1,12 +1,16 @@
 package ch.bfh.trafficcounter.controller;
 
+import ch.bfh.trafficcounter.event.UpdateEvent;
 import ch.bfh.trafficcounter.model.dto.geojson.SpeedDataDto;
 import ch.bfh.trafficcounter.service.SpeedDataService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
 
 import java.util.List;
 
@@ -16,13 +20,20 @@ public class SpeedDataController {
 
     private final SpeedDataService speedDataService;
 
+    private final Sinks.Many<UpdateEvent> updateEvent;
+
     @Autowired
-    public SpeedDataController(SpeedDataService speedDataService) {
+    public SpeedDataController(SpeedDataService speedDataService, Sinks.Many<UpdateEvent> updateEvent) {
         this.speedDataService = speedDataService;
+        this.updateEvent = updateEvent;
     }
 
     @GetMapping
     public ResponseEntity<List<SpeedDataDto>> getCurrentSpeedData() {
         return ResponseEntity.ok(speedDataService.getCurrentSpeedData());
+    }
+    @GetMapping(path = "/stream-flux", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<List<SpeedDataDto>> getCurrentSpeedDataReactive() {
+        return updateEvent.asFlux().map(event -> speedDataService.getCurrentSpeedData());
     }
 }
