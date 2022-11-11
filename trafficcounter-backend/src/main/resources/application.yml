@@ -20,3 +20,14 @@ spring:
     default: dev
 trafficcounter:
   api-key: ${TRAFFICCOUNTER_API_KEY:""}
+  speed-display:
+    thresholds:
+      high: 0.9
+      neutral: 0.65
+      low: 0.0
+  schedules:
+    static-data:
+      cron: '@daily'
+      zone: Europe/Zurich
+    dynamic-data:
+      rate: 60_000

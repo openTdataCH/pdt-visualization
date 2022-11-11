@@ -1,6 +1,9 @@
 package ch.bfh.trafficcounter.service;
 
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
+import ch.opentdata.wsdl.MeasurementSiteRecord;
+
+import java.util.List;
 
 
 /**
@@ -9,6 +12,12 @@ import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
  * @author Sven Trachsel
  */
 public interface MeasurementPointService {
+
+    /**
+     * Processes and persists all measurement points.
+     * @param measurementSiteRecords measurement site records
+     */
+    void processAndPersistMeasurementPoints(List<MeasurementSiteRecord> measurementSiteRecords);
 
     /**
      * Gets a GeoJSON-List of all registered Measurement Points
