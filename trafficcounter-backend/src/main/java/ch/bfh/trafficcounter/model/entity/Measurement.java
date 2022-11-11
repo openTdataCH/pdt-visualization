@@ -2,11 +2,9 @@ package ch.bfh.trafficcounter.model.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,5 +20,8 @@ public class Measurement {
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime time;
+
+    @OneToMany(mappedBy = "measurement")
+    private Set<SpeedData> speedData;
 
 }

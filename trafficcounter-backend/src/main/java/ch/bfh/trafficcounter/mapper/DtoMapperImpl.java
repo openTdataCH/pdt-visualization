@@ -1,14 +1,14 @@
 package ch.bfh.trafficcounter.mapper;
 
-import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
-import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
-import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonGeometryDto;
-import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonPropertiesDto;
+import ch.bfh.trafficcounter.model.dto.geojson.*;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
+import ch.bfh.trafficcounter.model.entity.SpeedData;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link DtoMapper}
@@ -18,12 +18,13 @@ import java.util.List;
 @Component
 public class DtoMapperImpl implements DtoMapper {
 
-	/**
-	 * Wraps measurementPoints into GeoJSON
-	 *
-	 * @param measurementPoints an arraylist of measurement-point objects to wrap in GeoJSON
-	 * @return a DTO object which can easily be serialized to GeoJSON
-	 */
+	@Override
+	public List<SpeedDataDto> mapSpeedDataToSpeedDataDto(final Collection<SpeedData> speedData) {
+		return speedData.stream()
+				.map(value -> new SpeedDataDto(value.getMeasurementPoint().getId(), value.getAverageSpeed()))
+				.collect(Collectors.toList());
+	}
+
 	@Override
 	public GeoJsonFeatureCollectionDto mapMeasurementPointsToGeoJsonFeatureCollectionDto(List<MeasurementPoint> measurementPoints) {
 		// check for empty array

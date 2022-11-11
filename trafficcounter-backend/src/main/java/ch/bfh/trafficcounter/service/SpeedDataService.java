@@ -1,5 +1,6 @@
 package ch.bfh.trafficcounter.service;
 
+import ch.bfh.trafficcounter.model.dto.geojson.SpeedDataDto;
 import ch.opentdata.wsdl.SiteMeasurements;
 
 import java.time.LocalDateTime;
@@ -13,4 +14,6 @@ public interface SpeedDataService {
      * @param siteMeasurements site measurements
      */
     void processAndPersistSpeedData(LocalDateTime time, List<SiteMeasurements> siteMeasurements);
+
+    List<SpeedDataDto> getCurrentSpeedData();
 }
