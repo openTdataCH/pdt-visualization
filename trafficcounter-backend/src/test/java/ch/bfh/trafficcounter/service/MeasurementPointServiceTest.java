@@ -32,7 +32,7 @@ public class MeasurementPointServiceTest {
 
 	@BeforeEach
 	void init() {
-		this.measurementPointService = new MeasurementPointService(dtoMapper, measurementPointRepository);
+		this.measurementPointService = new MeasurementPointServiceImpl(dtoMapper, measurementPointRepository);
 	}
 
 	@Test

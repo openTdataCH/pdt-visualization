@@ -8,6 +8,7 @@ import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementation of {@link DtoMapper}
@@ -24,13 +25,13 @@ public class DtoMapperImpl implements DtoMapper {
 	 * @return a DTO object which can easily be serialized to GeoJSON
 	 */
 	@Override
-	public GeoJsonFeatureCollectionDto mapMeasurementPointsToGeoJsonFeatureCollectionDto(ArrayList<MeasurementPoint> measurementPoints) {
+	public GeoJsonFeatureCollectionDto mapMeasurementPointsToGeoJsonFeatureCollectionDto(List<MeasurementPoint> measurementPoints) {
 		// check for empty array
 		if (measurementPoints == null || measurementPoints.size() == 0) {
 			return null;
 		}
 
-		ArrayList<GeoJsonFeatureDto> featureDtos = new ArrayList<>();
+		final List<GeoJsonFeatureDto> featureDtos = new ArrayList<>(measurementPoints.size());
 		for (MeasurementPoint mp : measurementPoints) {
 			featureDtos.add(mapMeasurementPointToGeoJsonFeatureDto(mp));
 		}
@@ -44,7 +45,7 @@ public class DtoMapperImpl implements DtoMapper {
 	}
 
 	private GeoJsonGeometryDto mapMeasurementPointToGeoJsonGeometryDto(MeasurementPoint mp) {
-		return new GeoJsonGeometryDto(new Double[]{mp.getLongtitude(), mp.getLatitude()});
+		return new GeoJsonGeometryDto(new double[]{mp.getLongtitude(), mp.getLatitude()});
 	}
 
 	private GeoJsonPropertiesDto mapMeasurementPointToGeoJsonPropertiesDto(MeasurementPoint mp) {

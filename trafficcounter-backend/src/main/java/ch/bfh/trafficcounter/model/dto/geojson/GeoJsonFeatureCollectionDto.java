@@ -1,24 +1,27 @@
 package ch.bfh.trafficcounter.model.dto.geojson;
 
-import java.util.ArrayList;
+import lombok.Getter;
+import lombok.Setter;
 
-import lombok.*;
+import java.util.List;
 
 /**
- * Featurecollection, wrapper around GeoJSON-Features
+ * Feature collection, wrapper around GeoJSON-Features
  *
  * @author Sven Trachsel
  */
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class GeoJsonFeatureCollectionDto {
+public class GeoJsonFeatureCollectionDto extends TypedGeoJsonDto {
 
-	private String type = "FeatureCollection";
-	private ArrayList<GeoJsonFeatureDto> features;
+	private List<GeoJsonFeatureDto> features;
 
-	public GeoJsonFeatureCollectionDto(ArrayList<GeoJsonFeatureDto> features) {
+	public GeoJsonFeatureCollectionDto() {
+		super("FeatureCollection");
+	}
+
+	public GeoJsonFeatureCollectionDto(List<GeoJsonFeatureDto> features) {
+		this();
 		this.features = features;
 	}
 }

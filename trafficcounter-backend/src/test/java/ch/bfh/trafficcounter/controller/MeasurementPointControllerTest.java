@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +31,7 @@ public class MeasurementPointControllerTest extends AbstractApiTest {
 
 		assertEquals("FeatureCollection", featureCollection.getType());
 
-		ArrayList<GeoJsonFeatureDto> features = featureCollection.getFeatures();
+		List<GeoJsonFeatureDto> features = featureCollection.getFeatures();
 		assertEquals(1, features.size());
 
 		GeoJsonFeatureDto feature = features.get(0);

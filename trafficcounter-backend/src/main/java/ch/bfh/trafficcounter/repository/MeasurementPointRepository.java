@@ -4,12 +4,12 @@ import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public interface MeasurementPointRepository extends JpaRepository<MeasurementPoint, String> {
 
-	ArrayList<MeasurementPoint> findAllByActive(boolean active);
+	List<MeasurementPoint> findAllByActive(boolean active);
 
 	int countAllByActive(boolean active);
 }
