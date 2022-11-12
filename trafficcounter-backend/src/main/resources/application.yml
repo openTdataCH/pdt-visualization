@@ -18,5 +18,8 @@ spring:
       mode: always
   profiles:
     default: dev
+  web:
+    resources:
+      static-locations: classpath:/trafficcounter-frontend
 trafficcounter:
   api-key: ${TRAFFICCOUNTER_API_KEY:""}

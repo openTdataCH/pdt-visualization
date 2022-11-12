@@ -11,7 +11,7 @@
     </parent>
     <groupId>ch.bfh</groupId>
     <artifactId>trafficcounter</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
     <name>trafficcounter</name>
     <description>trafficcounter</description>
     <properties>
@@ -22,4 +22,14 @@
         <module>trafficcounter-backend</module>
         <module>trafficcounter-frontend</module>
     </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-help-plugin</artifactId>
+                <version>3.2.0</version>
+            </plugin>
+        </plugins>
+    </build>
 </project>
