@@ -1,7 +1,8 @@
 package ch.bfh.trafficcounter.service;
 
+import ch.bfh.trafficcounter.config.SpeedDisplayConfig;
 import ch.bfh.trafficcounter.mapper.DtoMapper;
-import ch.bfh.trafficcounter.model.dto.geojson.SpeedDataDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.model.entity.SpeedData;
@@ -20,6 +21,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation of {@link SpeedDataService}.
+ *
+ * @author Manuel Riesen
+ */
 @Service
 public class SpeedDataServiceImpl implements SpeedDataService {
 
@@ -97,11 +103,12 @@ public class SpeedDataServiceImpl implements SpeedDataService {
     }
 
     @Override
-    public List<SpeedDataDto> getCurrentSpeedData() {
-        return dtoMapper.mapSpeedDataToSpeedDataDto(
+    public GeoJsonFeatureCollectionDto getCurrentSpeedData() {
+        return dtoMapper.mapSpeedDataToGeoJsonFeatureCollectionDto(
                 getLatestMeasurement()
                         .map(Measurement::getSpeedData)
                         .orElse(Collections.emptySet())
         );
     }
+
 }

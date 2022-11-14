@@ -1,5 +1,6 @@
 package ch.bfh.trafficcounter.service;
 
+import ch.bfh.trafficcounter.config.SpeedDisplayConfig;
 import ch.bfh.trafficcounter.mapper.DtoMapper;
 import ch.bfh.trafficcounter.mapper.DtoMapperImpl;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
@@ -22,8 +23,10 @@ import static org.mockito.Mockito.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MeasurementPointServiceTest {
 
+	private final SpeedDisplayConfig speedDisplayConfig = new SpeedDisplayConfig();
+
 	@Spy
-	private DtoMapper dtoMapper = new DtoMapperImpl();
+	private DtoMapper dtoMapper = new DtoMapperImpl(speedDisplayConfig);
 
 	@Mock
 	private MeasurementPointRepository measurementPointRepository;
@@ -32,6 +35,10 @@ public class MeasurementPointServiceTest {
 
 	@BeforeEach
 	void init() {
+		final SpeedDisplayConfig.SpeedDisplayThresholds thresholds = new SpeedDisplayConfig.SpeedDisplayThresholds();
+		thresholds.setHigh(0.9f);
+		thresholds.setNeutral(0.65f);
+		thresholds.setLow(0.0f);
 		this.measurementPointService = new MeasurementPointServiceImpl(dtoMapper, measurementPointRepository);
 	}
 

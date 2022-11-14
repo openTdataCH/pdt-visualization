@@ -18,4 +18,10 @@ public class GeoJsonPropertiesDto {
 
 	private String id;
 
+	private SpeedDataDto speedData;
+
+	public GeoJsonPropertiesDto(String id) {
+		this.id = id;
+	}
+
 }

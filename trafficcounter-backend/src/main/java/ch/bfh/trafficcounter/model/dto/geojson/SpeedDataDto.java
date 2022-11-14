@@ -6,14 +6,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Represents speed data of a measurement point.
+ *
+ * @author Manuel Riesen
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class SpeedDataDto {
 
-    private String measurementPointId;
+    /**
+     * Average speed.
+     */
+    private float averageSpeed;
 
-    private float speed;
+    /**
+     * Speed display class name.
+     * @see SpeedDisplayClass
+     */
+    private String speedDisplayClass;
 
 }

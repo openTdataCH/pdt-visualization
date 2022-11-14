@@ -1,6 +1,7 @@
 package ch.bfh.trafficcounter.controller;
 
 import ch.bfh.trafficcounter.event.UpdateEvent;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.model.dto.geojson.SpeedDataDto;
 import ch.bfh.trafficcounter.service.SpeedDataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,11 @@ import reactor.core.publisher.Sinks;
 
 import java.util.List;
 
+/**
+ * Controller for providing speed data.
+ *
+ * @author Manuel Riesen
+ */
 @RestController
 @RequestMapping("/api/speeddata")
 public class SpeedDataController {
@@ -28,12 +34,24 @@ public class SpeedDataController {
         this.updateEvent = updateEvent;
     }
 
+    /**
+     * Gets the current speed data as GeoJson.
+     *
+     * @return GeoJson including speed data
+     */
     @GetMapping
-    public ResponseEntity<List<SpeedDataDto>> getCurrentSpeedData() {
+    public ResponseEntity<GeoJsonFeatureCollectionDto> getCurrentSpeedData() {
         return ResponseEntity.ok(speedDataService.getCurrentSpeedData());
     }
+
+    /**
+     * Gets the current speed data as GeoJson in a reactive way.
+     * The speed data can be consumed by SSE.
+     *
+     * @return GeoJson including speed data
+     */
     @GetMapping(path = "/stream-flux", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<List<SpeedDataDto>> getCurrentSpeedDataReactive() {
+    public Flux<GeoJsonFeatureCollectionDto> getCurrentSpeedDataReactive() {
         return updateEvent.asFlux().map(event -> speedDataService.getCurrentSpeedData());
     }
 }

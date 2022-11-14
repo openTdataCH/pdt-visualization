@@ -1,11 +1,16 @@
 package ch.bfh.trafficcounter.service;
 
-import ch.bfh.trafficcounter.model.dto.geojson.SpeedDataDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.opentdata.wsdl.SiteMeasurements;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Service for speed-related operations.
+ *
+ * @author Manuel Riesen
+ */
 public interface SpeedDataService {
 
     /**
@@ -15,5 +20,6 @@ public interface SpeedDataService {
      */
     void processAndPersistSpeedData(LocalDateTime time, List<SiteMeasurements> siteMeasurements);
 
-    List<SpeedDataDto> getCurrentSpeedData();
+    GeoJsonFeatureCollectionDto getCurrentSpeedData();
+
 }

@@ -1,8 +1,9 @@
 package ch.bfh.trafficcounter.service;
 
+import ch.bfh.trafficcounter.config.SpeedDisplayConfig;
 import ch.bfh.trafficcounter.mapper.DtoMapper;
 import ch.bfh.trafficcounter.mapper.DtoMapperImpl;
-import ch.bfh.trafficcounter.model.dto.geojson.SpeedDataDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.model.entity.SpeedData;
@@ -35,8 +36,10 @@ import static org.mockito.Mockito.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SpeedDataServiceImplTest {
 
+    private final SpeedDisplayConfig speedDisplayConfig = new SpeedDisplayConfig();
+
     @Spy
-    private DtoMapper dtoMapper = new DtoMapperImpl();
+    private DtoMapper dtoMapper = new DtoMapperImpl(speedDisplayConfig);
 
     @Mock
     private MeasurementRepository measurementRepository;
@@ -47,11 +50,17 @@ public class SpeedDataServiceImplTest {
     @Mock
     private SpeedDataRepository speedDataRepository;
 
+
     private SpeedDataServiceImpl speedDataService;
 
 
     @BeforeEach
     void init() {
+        final SpeedDisplayConfig.SpeedDisplayThresholds thresholds = new SpeedDisplayConfig.SpeedDisplayThresholds();
+        thresholds.setHigh(0.9f);
+        thresholds.setNeutral(0.65f);
+        thresholds.setLow(0.0f);
+        speedDisplayConfig.setThresholds(thresholds);
         this.speedDataService = new SpeedDataServiceImpl(
                 measurementRepository,
                 speedDataRepository,
@@ -156,8 +165,8 @@ public class SpeedDataServiceImplTest {
                             .build()
             )).build();
         when(measurementRepository.findTimeDesc(any(Pageable.class))).thenReturn(List.of(measurement));
-        final List<SpeedDataDto> speedData = speedDataService.getCurrentSpeedData();
-        assertEquals(1, speedData.size());
-        assertEquals(10f, speedData.get(0).getSpeed());
+        final GeoJsonFeatureCollectionDto speedDataGeoJson = speedDataService.getCurrentSpeedData();
+        assertEquals(1, speedDataGeoJson.getFeatures().size());
+        assertEquals(10f, speedDataGeoJson.getFeatures().get(0).getProperties().getSpeedData().getAverageSpeed());
     }
 }

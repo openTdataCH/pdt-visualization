@@ -16,8 +16,9 @@ public class SpeedDataControllerTest extends AbstractApiTest {
 			.get("/api/speeddata")
 			.then()
 			.assertThat()
-			.body("size()", is(1))
-			.body("[0].speed", equalTo(10f))
+			.body("features.size()", is(1))
+			.body("features[0].properties.speedData.averageSpeed", equalTo(10f))
+			.body("features[0].properties.speedData.speedDisplayClass", equalTo("high"))
 			.statusCode(HttpStatus.SC_OK);
     }
 }

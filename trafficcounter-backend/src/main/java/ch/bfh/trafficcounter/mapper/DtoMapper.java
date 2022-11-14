@@ -17,11 +17,12 @@ public interface DtoMapper {
 
 
     /**
-     * Creates speed data DTOs from speed data entities.
+     * Creates GeoJson DTOs from speed data entities.
+     *
      * @param speedData speed data entities
-     * @return speed data DTOs
+     * @return DTO containing speed data
      */
-    List<SpeedDataDto> mapSpeedDataToSpeedDataDto(Collection<SpeedData> speedData);
+    GeoJsonFeatureCollectionDto mapSpeedDataToGeoJsonFeatureCollectionDto(Collection<SpeedData> speedData);
 
     /**
      * Wraps measurementPoints into GeoJSON
