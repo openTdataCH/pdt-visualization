@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Service for speed-related operations.
+ * Service for speed-related data and operations.
  *
  * @author Manuel Riesen
  */
@@ -20,6 +20,10 @@ public interface SpeedDataService {
      */
     void processAndPersistSpeedData(LocalDateTime time, List<SiteMeasurements> siteMeasurements);
 
+    /**
+     * Gets the current speed data as GeoJSON.
+     * @return current speed data
+     */
     GeoJsonFeatureCollectionDto getCurrentSpeedData();
 
 }

@@ -1,6 +1,5 @@
 package ch.bfh.trafficcounter.service;
 
-import ch.bfh.trafficcounter.config.SpeedDisplayConfig;
 import ch.bfh.trafficcounter.mapper.DtoMapper;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
@@ -84,6 +83,7 @@ public class SpeedDataServiceImpl implements SpeedDataService {
                 .averageSpeed(averageSpeedValue)
                 .build();
     }
+
 
     @Override
     public void processAndPersistSpeedData(final LocalDateTime time, final List<SiteMeasurements> siteMeasurements) {

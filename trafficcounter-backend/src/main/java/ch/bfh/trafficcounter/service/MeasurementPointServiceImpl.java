@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Service for Measurement points
+ * Implementation of {@link MeasurementPointService}.
  *
  * @author Sven Trachsel
  */

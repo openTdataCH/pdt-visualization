@@ -13,6 +13,12 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Implementation of {@link DataRequestService}.
+ *
+ * @author Sven Trachsel
+ * @author Manuel Riesen
+ */
 @Service
 @EnableScheduling
 public class DataRequestServiceImpl implements DataRequestService {

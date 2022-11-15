@@ -7,7 +7,7 @@ import java.util.List;
 
 
 /**
- * Service for Measurement points
+ * Service for measurement points.
  *
  * @author Sven Trachsel
  */
