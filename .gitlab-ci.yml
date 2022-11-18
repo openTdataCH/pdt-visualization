@@ -80,9 +80,9 @@ deploy_dev:
     - develop
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - CONTAINER_EXISTS=$(docker ps -q -f name="trafficcounter-dev" | wc -l)
+    - CONTAINER_EXISTS=$(docker ps -a -q -f name="trafficcounter-dev" | wc -l)
     - if [ "$CONTAINER_EXISTS" == "1" ]; then docker rm -f trafficcounter-dev; fi
-    - docker run -d --name trafficcounter-dev -p 8081:8080 --env TRAFFICCOUNTER_API_KEY=$TRAFFICCOUNTER_API_KEY $CI_REGISTRY_IMAGE:latest
+    - docker run --name trafficcounter-dev -p 8081:8080 --env TRAFFICCOUNTER_API_KEY=$TRAFFICCOUNTER_API_KEY $CI_REGISTRY_IMAGE:latest
 
 pages:
   stage: doc
