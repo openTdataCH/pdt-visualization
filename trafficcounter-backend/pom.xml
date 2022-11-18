@@ -125,7 +125,9 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <wsdlDirectory>${project.basedir}/src/main/resources/wsdl/</wsdlDirectory>
+                    <wsdlDirectory>src/main/resources/ch/opentdata/wsdl/</wsdlDirectory>
+                    <xuseBaseResourceAndURLToLoadWSDL>true</xuseBaseResourceAndURLToLoadWSDL>
+                    <wsdlLocation>classpath:ch/opentdata/wsdl/Pull.wsdl</wsdlLocation>
                     <wsdlFiles>
                         <wsdlFile>Pull.wsdl</wsdlFile>
                     </wsdlFiles>
@@ -134,7 +136,7 @@
                     </vmArgs>
                     <extension>true</extension>
                     <bindingFiles>
-                        <bindingFile>${basedir}/src/main/resources/wsdl/MeasurementPublications_FEDRO_02-01-00.xsd
+                        <bindingFile>${basedir}/src/main/resources/ch/opentdata/wsdl/MeasurementPublications_FEDRO_02-01-00.xsd
                         </bindingFile>
                     </bindingFiles>
                     <packageName>ch.opentdata.wsdl</packageName>
