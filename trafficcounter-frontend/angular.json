@@ -19,6 +19,7 @@
           "options": {
             "outputPath": "dist/trafficcounter-frontend",
             "index": "src/index.html",
+            "baseHref": "/app/",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
