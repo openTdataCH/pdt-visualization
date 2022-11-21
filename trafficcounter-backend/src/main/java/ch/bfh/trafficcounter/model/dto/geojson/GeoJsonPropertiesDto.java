@@ -20,6 +20,8 @@ public class GeoJsonPropertiesDto {
 
 	private SpeedDataDto speedData;
 
+	// TODO, add vehicle amount
+
 	public GeoJsonPropertiesDto(String id) {
 		this.id = id;
 	}

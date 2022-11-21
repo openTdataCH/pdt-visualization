@@ -28,6 +28,8 @@ public class DataRequestServiceImpl implements DataRequestService {
 
 	private final SpeedDataService speedDataService;
 
+	private final VehicleAmountService vehicleAmountService;
+
 	private final Sinks.Many<UpdateEvent> updateEvent;
 
 	@Autowired
@@ -35,10 +37,11 @@ public class DataRequestServiceImpl implements DataRequestService {
 			OpenTransportDataApiService api,
 			MeasurementPointService measurementPointService,
 			SpeedDataService speedDataService,
-			Sinks.Many<UpdateEvent> updateEvent) {
+			VehicleAmountService vehicleAmountService, Sinks.Many<UpdateEvent> updateEvent) {
 		this.api = api;
 		this.measurementPointService = measurementPointService;
 		this.speedDataService = speedDataService;
+		this.vehicleAmountService = vehicleAmountService;
 		this.updateEvent = updateEvent;
 	}
 
@@ -84,7 +87,11 @@ public class DataRequestServiceImpl implements DataRequestService {
 
 		speedDataService.processAndPersistSpeedData(time, siteMeasurements);
 		updateEvent.tryEmitNext(UpdateEvent.SPEED_DATA);
-		System.out.println("-- Successfully requested and persisted dynamic data --");
+		System.out.println("-- Successfully requested and persisted speed data --");
+
+		vehicleAmountService.processAndPersistVehicleAmount(time, siteMeasurements);
+		updateEvent.tryEmitNext(UpdateEvent.VEHICLE_AMOUNT);
+		System.out.println("-- Successfully requested and persisted amount of vehicles --");
 	}
 
 }
