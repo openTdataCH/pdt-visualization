@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Properties class for static GeoJSON
+ * Represents amounts of vehicles of a measurement point.
  *
  * @author Sven Trachsel
  */
@@ -14,16 +14,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GeoJsonPropertiesDto {
+public class VehicleAmountDto {
 
-	private String id;
-
-	private SpeedDataDto speedData;
-
-	private VehicleAmountDto vehicleAmount;
-
-	public GeoJsonPropertiesDto(String id) {
-		this.id = id;
-	}
+	/**
+	 * Amount of vehicles
+	 */
+	private float numberOfVehicles;
 
 }
+

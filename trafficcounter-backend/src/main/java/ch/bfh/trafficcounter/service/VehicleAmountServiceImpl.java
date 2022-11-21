@@ -11,11 +11,14 @@ import ch.bfh.trafficcounter.repository.VehicleAmountRepository;
 import ch.opentdata.wsdl.SiteMeasurements;
 import ch.opentdata.wsdl.TrafficSpeed;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -45,29 +48,20 @@ public class VehicleAmountServiceImpl implements VehicleAmountService {
 
 	public VehicleAmount processMeasurement(final Measurement measurement, final SiteMeasurements siteMeasurements) {
 
-		// TODO
-		return null;
 
-		/*
 		final String measurementPointId = siteMeasurements.getMeasurementSiteReference().getId();
 		final MeasurementPoint measurementPoint = measurementPointRepository.findById(measurementPointId).orElseThrow();
+
 		final Integer numberOfVehicles = siteMeasurements.getMeasuredValue().stream()
 				.map(value -> value.getMeasuredValue().getBasicData())
 				.filter(value -> value instanceof TrafficSpeed)
-				.map(value -> ((TrafficSpeed) value).getNumberOfVehicles())
-				.filter(value -> value.getNumberOfInputValuesUsed().intValue() > 0)
-				.map(value -> new SpeedDataServiceImpl.TrafficSpeedAggregation(
-						value.getNumberOfInputValuesUsed().intValue(),
-						value.getSpeed() * value.getNumberOfInputValuesUsed().intValue())
-				)
-				.reduce(new SpeedDataServiceImpl.TrafficSpeedAggregation(0, 0f), SpeedDataServiceImpl.TrafficSpeedAggregation::sum)
-				.getAverageSpeed();
+				.mapToInt(value -> ((TrafficSpeed) value).getAverageVehicleSpeed().getNumberOfInputValuesUsed().intValue())
+				.sum(); //TODO, is this correct?
 		return VehicleAmount.builder()
 				.measurement(measurement)
 				.measurementPoint(measurementPoint)
 				.numberOfVehicles(numberOfVehicles)
 				.build();
-		 */
 	}
 
 	@Override
@@ -82,8 +76,17 @@ public class VehicleAmountServiceImpl implements VehicleAmountService {
 		vehicleAmountRepository.saveAll(vehicleAmounts);
 	}
 
+	private Optional<Measurement> getLatestMeasurement() {
+		return measurementRepository.findTimeDesc(Pageable.ofSize(1))
+				.stream().findFirst();
+	}
+
 	@Override
 	public GeoJsonFeatureCollectionDto getCurrentVehicleAmount() {
-		return null;
+		return dtoMapper.mapVehicleAmountToGeoJsonFeatureCollectionDto(
+				getLatestMeasurement()
+						.map(Measurement::getVehicleAmounts)
+						.orElse(Collections.emptySet())
+		);
 	}
 }

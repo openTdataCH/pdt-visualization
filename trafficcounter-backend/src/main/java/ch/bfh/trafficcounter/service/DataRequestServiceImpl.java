@@ -24,6 +24,7 @@ import java.util.List;
 public class DataRequestServiceImpl implements DataRequestService {
 
 	private final OpenTransportDataApiService api;
+
 	private final MeasurementPointService measurementPointService;
 
 	private final SpeedDataService speedDataService;
