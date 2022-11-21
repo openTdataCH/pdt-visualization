@@ -3,6 +3,8 @@ image: openjdk:17-alpine
 stages:
   - test
   - doc
+  - build
+  - deploy
 
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=/.m2"
@@ -24,12 +26,63 @@ test-frontend:
     - export CHROME_BIN=$(which chromium-browser)
     - cd trafficcounter-frontend/
     - npm install
-    - npm run test-ci
+    - npm run test
   cache:
     paths:
       - /usr/bin/chromium-browser
       - trafficcounter-frontend/node_modules
     key: "$CI_BUILD_REF_NAME"
+
+build_app:
+  stage: build
+  script:
+    - apk add --no-cache openssl ncurses-libs libstdc++ chromium chromium-chromedriver
+    - export CHROME_BIN=/usr/bin/chromium-browser
+    - ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout > version.txt
+    - ./mvnw clean install -Pbundle -DskipTests
+  artifacts:
+    paths:
+      - trafficcounter-backend/target/trafficcounter-backend.jar
+      - version.txt
+  only:
+    - develop
+    - master
+
+.docker:
+  image: docker:20.10.9
+  services:
+    - docker:20.10.9-dind
+
+build_image:
+  extends: .docker
+  stage: build
+  tags:
+    - trafficcounter
+  needs:
+    - job: build_app
+      artifacts: true
+  script:
+    - TRAFFICCOUNTER_VERSION=$(cat version.txt)
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -f Dockerfile . -t $CI_REGISTRY_IMAGE:$TRAFFICCOUNTER_VERSION-$CI_PIPELINE_IID -t $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:$TRAFFICCOUNTER_VERSION-$CI_PIPELINE_IID
+    - docker push $CI_REGISTRY_IMAGE:latest
+  only:
+    - develop
+    - master
+
+deploy_dev:
+  extends: .docker
+  stage: deploy
+  tags:
+    - trafficcounter
+  only:
+    - develop
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - CONTAINER_EXISTS=$(docker ps -a -q -f name="trafficcounter-dev" | wc -l)
+    - if [ "$CONTAINER_EXISTS" == "1" ]; then docker rm -f trafficcounter-dev; fi
+    - docker run -d --name trafficcounter-dev -p 8081:8080 --env TRAFFICCOUNTER_API_KEY=$TRAFFICCOUNTER_API_KEY $CI_REGISTRY_IMAGE:latest
 
 pages:
   stage: doc

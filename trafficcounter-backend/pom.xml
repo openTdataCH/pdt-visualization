@@ -5,10 +5,10 @@
     <parent>
         <groupId>ch.bfh</groupId>
         <artifactId>trafficcounter</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.1-SNAPSHOT</version>
     </parent>
     <artifactId>trafficcounter-backend</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
     <name>trafficcounter-backend</name>
     <description>trafficcounter-backend</description>
     <dependencies>
@@ -39,7 +39,6 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -100,6 +99,7 @@
     </dependencies>
 
     <build>
+        <finalName>trafficcounter-backend</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -125,7 +125,9 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <wsdlDirectory>${project.basedir}/src/main/resources/wsdl/</wsdlDirectory>
+                    <wsdlDirectory>src/main/resources/ch/opentdata/wsdl/</wsdlDirectory>
+                    <xuseBaseResourceAndURLToLoadWSDL>true</xuseBaseResourceAndURLToLoadWSDL>
+                    <wsdlLocation>classpath:ch/opentdata/wsdl/Pull.wsdl</wsdlLocation>
                     <wsdlFiles>
                         <wsdlFile>Pull.wsdl</wsdlFile>
                     </wsdlFiles>
@@ -134,7 +136,7 @@
                     </vmArgs>
                     <extension>true</extension>
                     <bindingFiles>
-                        <bindingFile>${basedir}/src/main/resources/wsdl/MeasurementPublications_FEDRO_02-01-00.xsd
+                        <bindingFile>${basedir}/src/main/resources/ch/opentdata/wsdl/MeasurementPublications_FEDRO_02-01-00.xsd
                         </bindingFile>
                     </bindingFiles>
                     <packageName>ch.opentdata.wsdl</packageName>
@@ -143,7 +145,7 @@
                     </sourceDestDir>
                     <wsdlOptions>
                         <wsdlOption>
-                            <wsdl>${basedir}/src/main/resources/wsdl/Pull.wsdl</wsdl>
+                            <wsdl>wsdl/Pull.wsdl</wsdl>
                             <validate>none</validate>
                         </wsdlOption>
                     </wsdlOptions>
@@ -158,7 +160,51 @@
                     <additionalJOption>-Xdoclint:none</additionalJOption>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>bundle</id>
+            <dependencies>
+                <dependency>
+                    <groupId>ch.bfh</groupId>
+                    <artifactId>trafficcounter-frontend</artifactId>
+                    <version>${project.version}</version>
+                    <type>jar</type>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.10</version>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>ch.bfh</groupId>
+                                            <artifactId>trafficcounter-frontend</artifactId>
+                                            <version>${project.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/classes/</outputDirectory>
+                                            <includes>trafficcounter-frontend/**</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
