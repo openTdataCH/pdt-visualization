@@ -2,5 +2,11 @@
   "language": {
     "de": "German",
     "en": "English"
+  },
+  "map": {
+    "menu": {
+      "measurement-points": "Measurement points",
+      "vehicle-amount": "Amount of vehicles"
+    }
   }
 }

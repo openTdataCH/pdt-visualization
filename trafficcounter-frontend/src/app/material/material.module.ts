@@ -4,12 +4,14 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatSelectModule} from "@angular/material/select";
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 
 const MATERIAL_MODULES = [
   MatToolbarModule,
   MatButtonModule,
   MatIconModule,
-  MatSelectModule
+  MatSelectModule,
+  MatButtonToggleModule
 ];
 
 @NgModule({

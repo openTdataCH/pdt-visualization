@@ -3,6 +3,7 @@ import {LayerSpecification, Map, MapOptions, Popup} from 'maplibre-gl';
 import {Observable} from "rxjs";
 import {GeoJsonFeatureCollectionDto} from "../../../../api/models/geo-json-feature-collection-dto";
 import {MapConfigService} from "../../services/map-config/map-config.service";
+import {MapMode} from "../../models/map-mode";
 
 /**
  * Component for the map display.
@@ -21,7 +22,7 @@ export class MapDisplayComponent implements OnInit {
    * Measurement points to display on the map.
    */
   @Input('measurement-points')
-  measurementPoints!: Observable<GeoJsonFeatureCollectionDto>;
+  measurementPoints$!: Observable<GeoJsonFeatureCollectionDto>;
 
   private readonly icons: Array<string> = [
     'location-pin-thin'
@@ -80,6 +81,12 @@ export class MapDisplayComponent implements OnInit {
     this.mapConfigService.showMenu$.subscribe(showMenu => {
       setTimeout(() => this.map.resize(), 1);
     });
+    this.mapConfigService.mapMode$.subscribe(mapMode => {
+      if(mapMode === MapMode.VehicleAmount) {
+        //TODO handle vehicle amount
+        console.log('vehicle amount mode');
+      }
+    });
   }
 
   private constructMap() {
@@ -89,41 +96,42 @@ export class MapDisplayComponent implements OnInit {
     // wait for map to load
     this.map.on('load', () => {
 
-      // wait for measurement points to load
-      this.measurementPoints.subscribe(measurementPoints => {
-        this.map.addSource(this.measurementPointLayer.id, {
-          type: 'geojson',
-          data: measurementPoints
-        });
-        this.map.addLayer(this.measurementPointLayer);
+      this.measurementPoints$.subscribe(measurementPoints => this.displayMeasurementPoints(measurementPoints));
+    });
+  }
 
-        const handleMeasurementPointPopup = (e: any) => {
-          const coordinates = e.features[0].geometry['coordinates'].slice();
-          const description = e.features[0].properties['id'];
+  private displayMeasurementPoints(measurementPoints: GeoJsonFeatureCollectionDto): void {
+    this.map.addSource(this.measurementPointLayer.id, {
+      type: 'geojson',
+      data: measurementPoints
+    });
+    this.map.addLayer(this.measurementPointLayer);
 
-          // Ensure that if the map is zoomed out such that multiple
-          // copies of the feature are visible, the popup appears
-          // over the copy being pointed to.
-          // See: https://maplibre.org/maplibre-gl-js-docs/example/popup-on-click/
-          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
+    const handleMeasurementPointPopup = (e: any) => {
+      const coordinates = e.features[0].geometry['coordinates'].slice();
+      const description = e.features[0].properties['id'];
 
-          new Popup()
-            .setLngLat(coordinates)
-            .setHTML(description)
-            .addTo(this.map);
-        };
+      // Ensure that if the map is zoomed out such that multiple
+      // copies of the feature are visible, the popup appears
+      // over the copy being pointed to.
+      // See: https://maplibre.org/maplibre-gl-js-docs/example/popup-on-click/
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
 
-        // add event listener for measurement points
-        this.map.on('click', this.measurementPointLayer.id, handleMeasurementPointPopup);
-        this.map.on('mouseenter', this.measurementPointLayer.id, () => {
-          this.map.getCanvas().style.cursor = 'pointer';
-        });
-        this.map.on('mouseleave', this.measurementPointLayer.id, () => {
-          this.map.getCanvas().style.cursor = '';
-        });
-      });
+      new Popup()
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(this.map);
+    };
+
+    // add event listener for measurement points
+    this.map.on('click', this.measurementPointLayer.id, handleMeasurementPointPopup);
+    this.map.on('mouseenter', this.measurementPointLayer.id, () => {
+      this.map.getCanvas().style.cursor = 'pointer';
+    });
+    this.map.on('mouseleave', this.measurementPointLayer.id, () => {
+      this.map.getCanvas().style.cursor = '';
     });
   }
 

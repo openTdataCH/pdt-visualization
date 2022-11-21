@@ -2,5 +2,11 @@
   "language": {
     "en": "Deutsch",
     "de": "Englisch"
+  },
+  "map": {
+    "menu": {
+      "measurement-points": "Messpunkte",
+      "vehicle-amount": "Anzahl Fahrzeuge"
+    }
   }
 }
