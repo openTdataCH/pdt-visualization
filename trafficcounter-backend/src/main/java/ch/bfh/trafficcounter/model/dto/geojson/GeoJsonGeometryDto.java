@@ -1,6 +1,7 @@
 package ch.bfh.trafficcounter.model.dto.geojson;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Geometry class for static GeoJSON
@@ -9,14 +10,16 @@ import lombok.*;
  */
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class GeoJsonGeometryDto {
+public class GeoJsonGeometryDto extends TypedGeoJsonDto {
 
-	private String type = "Point";
-	private Double[] coordinates;
+	private double[] coordinates;
 
-	public GeoJsonGeometryDto(Double[] coordinates) {
+	public GeoJsonGeometryDto() {
+		super("Point");
+	}
+
+	public GeoJsonGeometryDto(double[] coordinates) {
+		this();
 		this.coordinates = coordinates;
 	}
 }

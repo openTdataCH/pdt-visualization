@@ -1,3 +1,6 @@
+import {SpeedDataDto} from "./speed-data-dto";
+
 export interface GeoJsonPropertiesDto {
-    year: number;
+    id: number;
+    speedData?: SpeedDataDto
 }

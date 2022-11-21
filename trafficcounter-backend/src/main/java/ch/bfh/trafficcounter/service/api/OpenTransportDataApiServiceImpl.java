@@ -11,6 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implementation of {@link OpenTransportDataApiService}.
+ *
+ * @author Manuel Riesen
+ */
 @Service
 public class OpenTransportDataApiServiceImpl implements OpenTransportDataApiService {
 
