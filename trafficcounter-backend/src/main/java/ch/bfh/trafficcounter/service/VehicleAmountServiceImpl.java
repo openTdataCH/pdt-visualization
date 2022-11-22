@@ -56,7 +56,7 @@ public class VehicleAmountServiceImpl implements VehicleAmountService {
 				.map(value -> value.getMeasuredValue().getBasicData())
 				.filter(value -> value instanceof TrafficSpeed)
 				.mapToInt(value -> ((TrafficSpeed) value).getAverageVehicleSpeed().getNumberOfInputValuesUsed().intValue())
-				.sum(); //TODO, is this correct?
+				.sum();
 		return VehicleAmount.builder()
 				.measurement(measurement)
 				.measurementPoint(measurementPoint)
