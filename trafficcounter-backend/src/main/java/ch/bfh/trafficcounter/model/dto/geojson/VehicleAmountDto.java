@@ -19,7 +19,7 @@ public class VehicleAmountDto {
 	/**
 	 * Amount of vehicles
 	 */
-	private float numberOfVehicles;
+	private Integer numberOfVehicles;
 
 }
 
