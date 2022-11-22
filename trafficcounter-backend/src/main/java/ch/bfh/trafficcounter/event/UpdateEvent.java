@@ -8,11 +8,11 @@ package ch.bfh.trafficcounter.event;
  */
 public enum UpdateEvent {
 
-	/**
-	 * Vehicle amount update event.
-	 */
-	VEHICLE_AMOUNT,
-	/**
+     /**
+      * Vehicle amount update event.
+      */
+     VEHICLE_AMOUNT,
+     /**
      * Speed data update event.
      */
     SPEED_DATA

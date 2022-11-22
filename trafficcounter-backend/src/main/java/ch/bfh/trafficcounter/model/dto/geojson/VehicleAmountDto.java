@@ -16,10 +16,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class VehicleAmountDto {
 
-	/**
-	 * Amount of vehicles
-	 */
-	private Integer numberOfVehicles;
+     /**
+      * Amount of vehicles
+      */
+     private Integer numberOfVehicles;
 
 }
 
