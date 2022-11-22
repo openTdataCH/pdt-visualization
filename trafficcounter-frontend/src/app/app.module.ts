@@ -15,6 +15,7 @@ import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {LanguageService} from "./services/language/language.service";
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {APP_BASE_HREF} from '@angular/common';
+import {ErrorService} from "./services/error/error.service";
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -47,7 +48,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     })
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
+    ErrorService,
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true, deps: [ErrorService]},
     {provide: APP_BASE_HREF, useValue: '/app'}
   ],
   bootstrap: [AppComponent]

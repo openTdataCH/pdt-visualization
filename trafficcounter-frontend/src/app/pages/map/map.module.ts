@@ -9,6 +9,7 @@ import {MapMenuBarComponent} from "./components/map-menu-bar/map-menu-bar.compon
 import { MapMenuComponent } from './components/map-menu/map-menu.component';
 import {TranslateModule} from "@ngx-translate/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {ErrorService} from "../../services/error/error.service";
 
 
 @NgModule({
