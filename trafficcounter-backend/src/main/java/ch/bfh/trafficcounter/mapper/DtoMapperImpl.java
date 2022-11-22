@@ -4,6 +4,7 @@ import ch.bfh.trafficcounter.config.SpeedDisplayConfig;
 import ch.bfh.trafficcounter.model.dto.geojson.*;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.model.entity.SpeedData;
+import ch.bfh.trafficcounter.model.entity.VehicleAmount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,6 +48,27 @@ public class DtoMapperImpl implements DtoMapper {
                             speedDisplayConfig.getSpeedDisplayClass(maxSpeed > 0 ? data.getAverageSpeed() / maxSpeed : 0)
                     );
                     geoJsonFeatureDto.getProperties().setSpeedData(speedDataDto);
+                    return geoJsonFeatureDto;
+                })
+                .collect(Collectors.toList()));
+    }
+
+    @Override
+    public GeoJsonFeatureCollectionDto mapVehicleAmountToGeoJsonFeatureCollectionDto(Collection<VehicleAmount> vehicleAmounts) {
+
+        // check for empty array
+        if (vehicleAmounts == null || vehicleAmounts.size() == 0) {
+            return null;
+        }
+
+        final float maxSpeed = vehicleAmounts.stream().max(Comparator.comparing(VehicleAmount::getNumberOfVehicles))
+                .map(VehicleAmount::getNumberOfVehicles).orElse(0);
+
+        return new GeoJsonFeatureCollectionDto(vehicleAmounts.stream()
+                .map(data -> {
+                    final GeoJsonFeatureDto geoJsonFeatureDto = mapMeasurementPointToGeoJsonFeatureDto(data.getMeasurementPoint());
+                    final VehicleAmountDto vehicleAmountDto = new VehicleAmountDto(data.getNumberOfVehicles());
+                    geoJsonFeatureDto.getProperties().setVehicleAmount(vehicleAmountDto);
                     return geoJsonFeatureDto;
                 })
                 .collect(Collectors.toList()));

@@ -1,9 +1,9 @@
 package ch.bfh.trafficcounter.mapper;
 
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
-import ch.bfh.trafficcounter.model.dto.geojson.SpeedDataDto;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.model.entity.SpeedData;
+import ch.bfh.trafficcounter.model.entity.VehicleAmount;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,6 +23,14 @@ public interface DtoMapper {
      * @return DTO containing speed data
      */
     GeoJsonFeatureCollectionDto mapSpeedDataToGeoJsonFeatureCollectionDto(Collection<SpeedData> speedData);
+
+    /**
+     * Creates GeoJson DTOs from vehicle amount entities.
+     *
+     * @param vehicleAmounts vehicleAmount entities
+     * @return DTO containing vehicle amounts
+     */
+    GeoJsonFeatureCollectionDto mapVehicleAmountToGeoJsonFeatureCollectionDto(Collection<VehicleAmount> vehicleAmounts);
 
     /**
      * Wraps measurementPoints into GeoJSON
