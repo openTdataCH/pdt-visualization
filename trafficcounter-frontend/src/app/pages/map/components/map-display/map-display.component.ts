@@ -77,13 +77,12 @@ export class MapDisplayComponent implements OnInit {
 
   private readonly vehicleAmountLayer: LayerSpecification = {
     'id': 'vehicleAmount',
-    'type': 'symbol',
+    'type': 'circle',
     'source': 'vehicleAmount',
-    'layout': {
-      'icon-image': 'location-pin-thin',
-      'text-field': ['get', 'vehicleAmount.numberOfVehicles'],
-      'text-offset': [0, 1.25],
-      'text-anchor': 'top'
+    'paint': {
+      'circle-radius': [ "*", 1, ['get', 'numberOfVehicles', ['get', 'vehicleAmount'] ] ],
+      'circle-color': 'red',
+      'circle-opacity': 0.5
     }
   };
 
@@ -103,7 +102,6 @@ export class MapDisplayComponent implements OnInit {
     });
     this.mapConfigService.mapMode$.subscribe(mapMode => {
       if(mapMode === MapMode.VehicleAmount) {
-        console.log('vehicle amount mode');
         this.vehicleAmountSubscription = this.vehicleAmount$.subscribe(vehicleAmount => {
           //TODO handle vehicle amount
           this.displayVehicleAmount(vehicleAmount);
@@ -120,17 +118,19 @@ export class MapDisplayComponent implements OnInit {
 
     // wait for map to load
     this.map.on('load', () => {
-
       this.measurementPoints$.subscribe(measurementPoints => this.displayMeasurementPoints(measurementPoints));
     });
   }
 
-  private displayMeasurementPoints(measurementPoints: GeoJsonFeatureCollectionDto): void {
-    this.updateLayer(this.measurementPointLayer, measurementPoints);
+  private addPopupHandling(mode: MapMode, descriptionGetter: (e: any) => string): (e: any) => void {
+    return (e: any) => {
 
-    const handleMeasurementPointPopup = (e: any) => {
+      if(this.mapConfigService.mapMode$.value !== mode) {
+        return;
+      }
+
       const coordinates = e.features[0].geometry['coordinates'].slice();
-      const description = e.features[0].properties['id'];
+      const description = descriptionGetter(e);
 
       // Ensure that if the map is zoomed out such that multiple
       // copies of the feature are visible, the popup appears
@@ -144,22 +144,35 @@ export class MapDisplayComponent implements OnInit {
         .setLngLat(coordinates)
         .setHTML(description)
         .addTo(this.map);
-    };
+    }
+
+  }
+
+  private displayMeasurementPoints(measurementPoints: GeoJsonFeatureCollectionDto): void {
+    this.updateLayer(this.measurementPointLayer, measurementPoints);
 
     // add event listener for measurement points
-    this.map.on('click', this.measurementPointLayer.id, handleMeasurementPointPopup);
+    this.map.on('click', this.measurementPointLayer.id, this.addPopupHandling(MapMode.MeasurementPoints, (e) => e.features[0].properties['id']));
     this.addDefaultListeners(this.measurementPointLayer.id);
   }
 
-
   private displayVehicleAmount(vehicleAmount: GeoJsonFeatureCollectionDto): void {
     this.updateLayer(this.vehicleAmountLayer, vehicleAmount);
+
+    // add event listener for measurement points
+    this.map.on('click', this.vehicleAmountLayer.id, this.addPopupHandling(MapMode.VehicleAmount, (e) => {
+      return JSON.parse(e.features[0].properties['vehicleAmount'])['numberOfVehicles'];
+    }));
 
     // add event listener for measurement points
     this.addDefaultListeners(this.measurementPointLayer.id);
   }
 
   private updateLayer(layer: LayerSpecification, data: GeoJsonFeatureCollectionDto) {
+    const layerExists = this.map.getLayer(layer.id) !== undefined;
+    if(layerExists) {
+      this.map.removeLayer(layer.id);
+    }
     const sourceExists = this.map.getSource(layer.id) !== undefined;
     if(sourceExists) {
       this.map.removeSource(layer.id);
@@ -168,10 +181,7 @@ export class MapDisplayComponent implements OnInit {
       type: 'geojson',
       data: data
     });
-    const layerExists = this.map.getLayer(layer.id) !== undefined;
-    if(layerExists) {
-      this.map.removeLayer(layer.id);
-    }
+
     this.map.addLayer(layer);
   }
 

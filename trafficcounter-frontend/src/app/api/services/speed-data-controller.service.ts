@@ -1,4 +1,4 @@
-import {Inject, Injectable, Optional} from '@angular/core';
+import {Inject, Injectable, NgZone, Optional} from '@angular/core';
 import {HttpClient, HttpEvent, HttpHeaders, HttpResponse} from '@angular/common/http';
 
 import {Observable} from 'rxjs';
@@ -7,17 +7,19 @@ import {BASE_PATH} from "../variables";
 import {GeoJsonFeatureCollectionDto} from "../models/geo-json-feature-collection-dto";
 import {environment} from "../../../environments/environment";
 import {ApiModule} from "../api.module";
+import {ReactiveSseService} from "./reactive-sse-service";
 
 @Injectable({
     providedIn: ApiModule
 })
-export class SpeedDataControllerService {
+export class SpeedDataControllerService extends ReactiveSseService {
 
     protected basePath = environment.api.basePath;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+    constructor(zone: NgZone, protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+      super(zone);
         if (basePath) {
             this.basePath = basePath;
         }
@@ -104,14 +106,9 @@ export class SpeedDataControllerService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<GeoJsonFeatureCollectionDto>('get',`${this.basePath}/api/speeddata/stream-flux`,
-            {
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
+        const url = `${this.basePath}/speeddata/stream-flux`;
+
+        return this.createEventStream(url);
     }
 
 }
