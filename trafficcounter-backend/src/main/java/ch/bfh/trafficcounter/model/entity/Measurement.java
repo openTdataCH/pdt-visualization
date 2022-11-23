@@ -38,4 +38,10 @@ public class Measurement {
     @OneToMany(mappedBy = "measurement")
     private Set<SpeedData> speedData;
 
+    /**
+     * Amount of vehicles measured at the time.
+     */
+    @OneToMany(mappedBy = "measurement")
+    private Set<VehicleAmount> vehicleAmounts;
+
 }
