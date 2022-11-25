@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { MeasurementPointService } from './measurement-point.service';
+import {MeasurementPointService} from './measurement-point.service';
 import {HttpClientModule} from "@angular/common/http";
 import {ApiModule} from "../../api/api.module";
 
