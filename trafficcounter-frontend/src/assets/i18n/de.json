@@ -6,7 +6,8 @@
   "map": {
     "menu": {
       "measurement-points": "Messpunkte",
-      "vehicle-amount": "Anzahl Fahrzeuge"
+      "vehicle-amount": "Anzahl Fahrzeuge",
+      "vehicle-speed": "Geschwindigkeit der Fahrzeuge"
     }
   }
 }

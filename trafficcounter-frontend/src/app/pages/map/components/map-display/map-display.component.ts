@@ -32,8 +32,19 @@ export class MapDisplayComponent implements OnInit {
 
   private vehicleAmountSubscription: Subscription | null = null;
 
+  /**
+   * Speed of vehicles to display on the map
+   */
+  @Input('vehicle-speed')
+  vehicleSpeed$!: Observable<GeoJsonFeatureCollectionDto>;
+
+  private vehicleSpeedSubscription: Subscription | null = null;
+
   private readonly icons: Array<string> = [
-    'location-pin-thin'
+    'location-pin-thin',
+    'location-pin-high',
+    'location-pin-neutral',
+    'location-pin-low'
   ];
 
   private readonly mapOptions: MapOptions = {
@@ -86,8 +97,18 @@ export class MapDisplayComponent implements OnInit {
     }
   };
 
-  constructor(private readonly mapConfigService: MapConfigService) {
-  }
+  private readonly vehicleSpeedLayer: LayerSpecification = {
+    'id': 'vehicleSpeed',
+    'type': 'symbol',
+    'source': 'vehicleSpeed',
+    'layout': {
+      'icon-image': [ 'concat', 'location-pin-', ['get', 'speedDisplayClass', ['get', 'vehicleSpeed'] ] ],
+      'text-offset': [0, 1.25],
+      'text-anchor': 'top'
+    }
+  };
+
+  constructor(private readonly mapConfigService: MapConfigService) {}
 
   private loadIcon(id: string) {
     const img = new Image(20, 20);
@@ -100,6 +121,7 @@ export class MapDisplayComponent implements OnInit {
     this.mapConfigService.showMenu$.subscribe(showMenu => {
       setTimeout(() => this.map.resize(), 1);
     });
+
     this.mapConfigService.mapMode$.subscribe(mapMode => {
       if(mapMode === MapMode.VehicleAmount) {
         this.vehicleAmountSubscription = this.vehicleAmount$.subscribe(vehicleAmount => {
@@ -110,6 +132,18 @@ export class MapDisplayComponent implements OnInit {
         this.vehicleAmountSubscription?.unsubscribe();
       }
     });
+
+    this.mapConfigService.mapMode$.subscribe(mapMode => {
+      if(mapMode == MapMode.VehicleSpeed) {
+        console.log(this.vehicleSpeed$);
+        this.vehicleSpeedSubscription = this.vehicleSpeed$.subscribe(vehicleSpeed => {
+          // TODO handle vehicle speed
+          this.displayVehicleSpeed(vehicleSpeed);
+        })
+      } else {
+        this.vehicleSpeedSubscription?.unsubscribe();
+      }
+    })
   }
 
   private constructMap() {
@@ -165,6 +199,20 @@ export class MapDisplayComponent implements OnInit {
     }));
 
     // add event listener for measurement points
+    this.addDefaultListeners(this.measurementPointLayer.id);
+  }
+
+  private displayVehicleSpeed(vehicleSpeed: GeoJsonFeatureCollectionDto): void {
+    this.updateLayer(this.vehicleSpeedLayer, vehicleSpeed);
+
+    console.log(this.vehicleSpeedLayer);
+
+    // add event listener for measurement points
+    this.map.on('click', this.vehicleSpeedLayer.id, this.addPopupHandling(MapMode.VehicleAmount, (e) => {
+      return JSON.parse(e.features[0].properties['vehicleSpeed'])['speedOfVehicles'];
+    }));
+
+    // add default event listener for measurement points
     this.addDefaultListeners(this.measurementPointLayer.id);
   }
 
