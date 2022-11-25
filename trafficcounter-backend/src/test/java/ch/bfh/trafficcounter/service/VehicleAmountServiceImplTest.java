@@ -6,11 +6,9 @@ import ch.bfh.trafficcounter.mapper.DtoMapperImpl;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
-import ch.bfh.trafficcounter.model.entity.SpeedData;
 import ch.bfh.trafficcounter.model.entity.VehicleAmount;
 import ch.bfh.trafficcounter.repository.MeasurementPointRepository;
 import ch.bfh.trafficcounter.repository.MeasurementRepository;
-import ch.bfh.trafficcounter.repository.SpeedDataRepository;
 import ch.bfh.trafficcounter.repository.VehicleAmountRepository;
 import ch.opentdata.wsdl.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -162,7 +160,7 @@ public class VehicleAmountServiceImplTest {
 								.measurementPoint(MeasurementPoint.builder().id("ABC").build())
 								.build()
 				)).build();
-		when(measurementRepository.findTimeDesc(any(Pageable.class))).thenReturn(List.of(measurement));
+		when(measurementRepository.findLatest()).thenReturn(Optional.of(measurement));
 		final GeoJsonFeatureCollectionDto vehicleAmountGeoJson = vehicleAmountService.getCurrentVehicleAmount();
 		assertEquals(1, vehicleAmountGeoJson.getFeatures().size());
 		assertEquals(3, vehicleAmountGeoJson.getFeatures().get(0).getProperties().getVehicleAmount().getNumberOfVehicles());

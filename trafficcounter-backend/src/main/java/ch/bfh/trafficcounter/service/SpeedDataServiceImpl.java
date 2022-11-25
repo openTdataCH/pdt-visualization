@@ -11,8 +11,9 @@ import ch.bfh.trafficcounter.repository.SpeedDataRepository;
 import ch.opentdata.wsdl.SiteMeasurements;
 import ch.opentdata.wsdl.TrafficSpeed;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  * @author Manuel Riesen
  */
 @Service
+@Transactional
 public class SpeedDataServiceImpl implements SpeedDataService {
 
     private final MeasurementRepository measurementRepository;
@@ -98,7 +100,7 @@ public class SpeedDataServiceImpl implements SpeedDataService {
     }
 
     private Optional<Measurement> getLatestMeasurement() {
-        return measurementRepository.findTimeDesc(Pageable.ofSize(1))
+        return measurementRepository.findLatest()
                 .stream().findFirst();
     }
 

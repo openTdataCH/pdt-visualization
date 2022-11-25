@@ -11,8 +11,9 @@ import ch.bfh.trafficcounter.repository.VehicleAmountRepository;
 import ch.opentdata.wsdl.SiteMeasurements;
 import ch.opentdata.wsdl.TrafficSpeed;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
  * @author Sven Trachsel
  */
 @Service
+@Transactional
 public class VehicleAmountServiceImpl implements VehicleAmountService {
 
 
@@ -77,8 +79,7 @@ public class VehicleAmountServiceImpl implements VehicleAmountService {
 	}
 
 	private Optional<Measurement> getLatestMeasurement() {
-		return measurementRepository.findTimeDesc(Pageable.ofSize(1))
-				.stream().findFirst();
+		return measurementRepository.findLatest();
 	}
 
 	@Override
