@@ -102,7 +102,7 @@ export class MapDisplayComponent implements OnInit {
     'type': 'symbol',
     'source': 'vehicleSpeed',
     'layout': {
-      'icon-image': [ 'concat', 'location-pin-', ['get', 'speedDisplayClass', ['get', 'vehicleSpeed'] ] ],
+      'icon-image': [ 'concat', 'location-pin-', ['get', 'speedDisplayClass', ['get', 'speedData'] ] ],
       'text-offset': [0, 1.25],
       'text-anchor': 'top'
     }
@@ -137,7 +137,6 @@ export class MapDisplayComponent implements OnInit {
       if(mapMode == MapMode.VehicleSpeed) {
         console.log(this.vehicleSpeed$);
         this.vehicleSpeedSubscription = this.vehicleSpeed$.subscribe(vehicleSpeed => {
-          // TODO handle vehicle speed
           this.displayVehicleSpeed(vehicleSpeed);
         })
       } else {
