@@ -103,11 +103,11 @@ export class MapDisplayComponent implements OnInit {
     this.mapConfigService.mapMode$.subscribe(mapMode => {
       if(mapMode === MapMode.VehicleAmount) {
         this.vehicleAmountSubscription = this.vehicleAmount$.subscribe(vehicleAmount => {
-          //TODO handle vehicle amount
           this.displayVehicleAmount(vehicleAmount);
         });
       } else {
         this.vehicleAmountSubscription?.unsubscribe();
+        this.removeLayer(this.vehicleAmountLayer);
       }
     });
   }
@@ -166,6 +166,11 @@ export class MapDisplayComponent implements OnInit {
 
     // add event listener for measurement points
     this.addDefaultListeners(this.measurementPointLayer.id);
+  }
+
+  private removeLayer(layer: LayerSpecification) {
+    this.map.removeLayer(layer.id);
+    this.map.removeSource(layer.id);
   }
 
   private updateLayer(layer: LayerSpecification, data: GeoJsonFeatureCollectionDto) {
