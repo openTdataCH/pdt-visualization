@@ -36,7 +36,7 @@ public class VehicleAmountController {
 	 *
 	 * @return GeoJson including amount of vehicles
 	 */
-	@GetMapping
+	@GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GeoJsonFeatureCollectionDto> getCurrentAmountOfVehicles() {
 		return ResponseEntity.ok(vehicleAmountService.getCurrentVehicleAmount());
 	}
