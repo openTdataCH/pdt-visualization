@@ -164,7 +164,7 @@ public class SpeedDataServiceImplTest {
                             .measurementPoint(MeasurementPoint.builder().id("ABC").build())
                             .build()
             )).build();
-        when(measurementRepository.findTimeDesc(any(Pageable.class))).thenReturn(List.of(measurement));
+        when(measurementRepository.findLatest()).thenReturn(Optional.of(measurement));
         final GeoJsonFeatureCollectionDto speedDataGeoJson = speedDataService.getCurrentSpeedData();
         assertEquals(1, speedDataGeoJson.getFeatures().size());
         assertEquals(10f, speedDataGeoJson.getFeatures().get(0).getProperties().getSpeedData().getAverageSpeed());

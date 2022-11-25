@@ -27,12 +27,10 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
     Optional<Measurement> findByTime(LocalDateTime time);
 
     /**
-     * Finds measurements and orders by time descending.
-     * @param pageable pageable for more specific queries
-     * @return measurements by time descending
+     * Finds the latest measurement
+     * @return latest measurement
      */
     @Query("SELECT m FROM Measurement m " +
-            "JOIN FETCH m.speedData " +
-            "ORDER BY m.time DESC")
-    List<Measurement> findTimeDesc(Pageable pageable);
+            "WHERE m.time = (SELECT MAX(m2.time) FROM Measurement m2)")
+    Optional<Measurement> findLatest();
 }

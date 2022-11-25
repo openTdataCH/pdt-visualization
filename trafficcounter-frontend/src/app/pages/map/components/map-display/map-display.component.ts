@@ -80,9 +80,9 @@ export class MapDisplayComponent implements OnInit {
     'type': 'circle',
     'source': 'vehicleAmount',
     'paint': {
-      'circle-radius': [ "*", 1, ['get', 'numberOfVehicles', ['get', 'vehicleAmount'] ] ],
-      'circle-color': 'red',
-      'circle-opacity': 0.5
+      'circle-radius': [ "*", 0.5, ['get', 'numberOfVehicles', ['get', 'vehicleAmount'] ] ],
+      'circle-color': '#d22525',
+      'circle-opacity': 0.2
     }
   };
 

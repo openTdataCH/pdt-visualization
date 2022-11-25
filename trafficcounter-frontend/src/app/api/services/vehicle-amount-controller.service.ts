@@ -70,7 +70,7 @@ export class VehicleAmountControllerService extends ReactiveSseService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<GeoJsonFeatureCollectionDto>('get',`${this.basePath}/api/vehicleamount`,
+        return this.httpClient.request<GeoJsonFeatureCollectionDto>('get',`${this.basePath}/vehicleamount`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
