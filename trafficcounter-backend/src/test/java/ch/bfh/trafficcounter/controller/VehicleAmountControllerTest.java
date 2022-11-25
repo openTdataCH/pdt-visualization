@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class VehicleAmountControllerTest extends AbstractApiTest {
@@ -16,7 +15,6 @@ public class VehicleAmountControllerTest extends AbstractApiTest {
 				.get("/api/vehicleamount")
 				.then()
 				.assertThat()
-				.body("features.size()", is(1))
 				.body("features[0].properties.vehicleAmount.numberOfVehicles", equalTo(1))
 				.statusCode(HttpStatus.SC_OK);
 	}
