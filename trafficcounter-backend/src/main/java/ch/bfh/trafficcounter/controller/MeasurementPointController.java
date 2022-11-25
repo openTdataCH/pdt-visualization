@@ -3,6 +3,7 @@ package ch.bfh.trafficcounter.controller;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.service.MeasurementPointService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,7 @@ public class MeasurementPointController {
 	 *
 	 * @return ResponseEntity with either data (and 200 ok) or 503 Service unavailable Status code
 	 */
-	@GetMapping
+	@GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GeoJsonFeatureCollectionDto> getMeasurementPointsGeoJson() {
 		if (measurementPointService.getNumberOfMeasurementPoints() == 0) {
 			return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);

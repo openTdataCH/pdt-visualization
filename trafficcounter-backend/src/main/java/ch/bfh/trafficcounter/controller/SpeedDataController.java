@@ -39,7 +39,7 @@ public class SpeedDataController {
      *
      * @return GeoJson including speed data
      */
-    @GetMapping
+    @GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GeoJsonFeatureCollectionDto> getCurrentSpeedData() {
         return ResponseEntity.ok(speedDataService.getCurrentSpeedData());
     }
