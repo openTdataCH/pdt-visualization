@@ -141,6 +141,7 @@ export class MapDisplayComponent implements OnInit {
         })
       } else {
         this.vehicleSpeedSubscription?.unsubscribe();
+        this.removeLayer(this.vehicleSpeedLayer);
       }
     })
   }
