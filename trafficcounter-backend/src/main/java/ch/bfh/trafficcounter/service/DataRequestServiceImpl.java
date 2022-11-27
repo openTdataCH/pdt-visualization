@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Sinks;
 
 import javax.annotation.PostConstruct;
@@ -20,7 +21,7 @@ import java.util.List;
  * @author Manuel Riesen
  */
 @Service
-@EnableScheduling
+@Transactional
 public class DataRequestServiceImpl implements DataRequestService {
 
 	private final OpenTransportDataApiService api;

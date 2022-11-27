@@ -1,6 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { MapMenuBarComponent } from './map-menu-bar.component';
+import {MapMenuBarComponent} from './map-menu-bar.component';
+import {MaterialModule} from "../../../../material/material.module";
 
 describe('MapMenuBarComponent', () => {
   let component: MapMenuBarComponent;
@@ -8,7 +9,8 @@ describe('MapMenuBarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MapMenuBarComponent ]
+      declarations: [ MapMenuBarComponent ],
+      imports: [ MaterialModule ]
     })
     .compileComponents();
 

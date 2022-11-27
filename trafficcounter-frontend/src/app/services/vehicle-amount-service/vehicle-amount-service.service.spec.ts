@@ -1,11 +1,11 @@
 import {TestBed} from '@angular/core/testing';
 
-import {MeasurementPointService} from './measurement-point.service';
+import {VehicleAmountServiceService} from './vehicle-amount-service.service';
 import {HttpClientModule} from "@angular/common/http";
 import {ApiModule} from "../../api/api.module";
 
-describe('MeasurementPointService', () => {
-  let service: MeasurementPointService;
+describe('VehicleAmountServiceService', () => {
+  let service: VehicleAmountServiceService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -14,7 +14,7 @@ describe('MeasurementPointService', () => {
         ApiModule
       ],
     });
-    service = TestBed.inject(MeasurementPointService);
+    service = TestBed.inject(VehicleAmountServiceService);
   });
 
   it('should be created', () => {

@@ -10,9 +10,6 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
-    properties:
-      hibernate:
-        hbm2ddl:
   sql:
     init:
       mode: always

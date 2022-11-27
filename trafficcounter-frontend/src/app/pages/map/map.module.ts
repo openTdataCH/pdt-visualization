@@ -7,6 +7,9 @@ import { MapDisplayComponent } from './components/map-display/map-display.compon
 import {MaterialModule} from "../../material/material.module";
 import {MapMenuBarComponent} from "./components/map-menu-bar/map-menu-bar.component";
 import { MapMenuComponent } from './components/map-menu/map-menu.component';
+import {TranslateModule} from "@ngx-translate/core";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {ErrorService} from "../../services/error/error.service";
 
 
 @NgModule({
@@ -16,10 +19,13 @@ import { MapMenuComponent } from './components/map-menu/map-menu.component';
     MapMenuBarComponent,
     MapMenuComponent
   ],
-  imports: [
-    CommonModule,
-    MapRoutingModule,
-    MaterialModule
-  ]
+    imports: [
+        CommonModule,
+        MapRoutingModule,
+        MaterialModule,
+        TranslateModule,
+        FormsModule,
+        ReactiveFormsModule
+    ]
 })
 export class MapModule { }

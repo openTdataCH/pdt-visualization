@@ -5,9 +5,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 /**
  * Handler for HTTP errors.
  */
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ErrorService {
 
   private readonly errorSubject$: BehaviorSubject<HttpErrorResponse|null> = new BehaviorSubject<HttpErrorResponse|null>(null)
