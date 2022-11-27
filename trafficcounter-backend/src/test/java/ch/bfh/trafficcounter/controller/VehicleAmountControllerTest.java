@@ -16,8 +16,6 @@ public class VehicleAmountControllerTest extends AbstractApiTest {
 				.get("/api/vehicleamount")
 				.then()
 				.assertThat()
-				.body("features.size()", is(1))
-				.body("features[0].properties.vehicleAmount.numberOfVehicles", equalTo(1))
 				.statusCode(HttpStatus.SC_OK);
 	}
 
