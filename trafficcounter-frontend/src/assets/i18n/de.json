@@ -1,6 +1,13 @@
 {
   "language": {
-    "en": "Deutsch",
-    "de": "Englisch"
+    "en": "Englisch",
+    "de": "Deutsch"
+  },
+  "map": {
+    "menu": {
+      "measurement-points": "Messpunkte",
+      "vehicle-amount": "Anzahl Fahrzeuge",
+      "vehicle-speed": "Geschwindigkeit der Fahrzeuge"
+    }
   }
 }

@@ -3,6 +3,10 @@
   justify-content: space-between;
   flex-direction: row;
 
+  app-map-menu {
+    flex-grow: 1;
+  }
+
   #map-container {
     height: 100vh;
     flex-basis: 70%;

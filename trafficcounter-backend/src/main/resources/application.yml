@@ -3,20 +3,31 @@ spring:
     name: trafficcounter
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:db
+    url: jdbc:h2:mem:db;DB_CLOSE_ON_EXIT=FALSE
     username: sa
     password: password
   jpa:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
-    properties:
-      hibernate:
-        hbm2ddl:
   sql:
     init:
       mode: always
   profiles:
     default: dev
+  web:
+    resources:
+      static-locations: classpath:/trafficcounter-frontend
 trafficcounter:
   api-key: ${TRAFFICCOUNTER_API_KEY:""}
+  speed-display:
+    thresholds:
+      high: 0.9
+      neutral: 0.65
+      low: 0.0
+  schedules:
+    static-data:
+      cron: '@daily'
+      zone: Europe/Zurich
+    dynamic-data:
+      rate: 60_000

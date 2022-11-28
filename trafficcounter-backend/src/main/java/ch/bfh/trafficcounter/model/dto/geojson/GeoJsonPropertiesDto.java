@@ -1,6 +1,9 @@
 package ch.bfh.trafficcounter.model.dto.geojson;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Properties class for static GeoJSON
@@ -14,5 +17,13 @@ import lombok.*;
 public class GeoJsonPropertiesDto {
 
 	private String id;
+
+	private SpeedDataDto speedData;
+
+	private VehicleAmountDto vehicleAmount;
+
+	public GeoJsonPropertiesDto(String id) {
+		this.id = id;
+	}
 
 }

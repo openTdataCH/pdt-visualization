@@ -5,6 +5,8 @@
        [class.full-width]="!(showMenu | async)">
     <app-map-display
       [measurement-points]="measurementPoints$"
+      [vehicle-amount]="vehicleAmount$"
+      [vehicle-speed]="vehicleSpeed$"
     ></app-map-display>
   </div>
 </div>

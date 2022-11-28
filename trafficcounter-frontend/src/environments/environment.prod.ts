@@ -1,3 +1,7 @@
 export const environment = {
-  production: true
+  production: true,
+  api: {
+    basePath: '/api',
+    retries: 3
+  }
 };
