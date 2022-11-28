@@ -129,7 +129,7 @@ export class MapDisplayComponent implements OnInit {
         });
       } else {
         this.vehicleAmountSubscription?.unsubscribe();
-        this.removeLayer(this.vehicleAmountLayer);
+        this.removeLayerIfExists(this.vehicleAmountLayer);
       }
     });
 
@@ -141,7 +141,7 @@ export class MapDisplayComponent implements OnInit {
         })
       } else {
         this.vehicleSpeedSubscription?.unsubscribe();
-        this.removeLayer(this.vehicleSpeedLayer);
+        this.removeLayerIfExists(this.vehicleSpeedLayer);
       }
     })
   }
@@ -215,12 +215,7 @@ export class MapDisplayComponent implements OnInit {
     this.addDefaultListeners(this.measurementPointLayer.id);
   }
 
-  private removeLayer(layer: LayerSpecification) {
-    this.map.removeLayer(layer.id);
-    this.map.removeSource(layer.id);
-  }
-
-  private updateLayer(layer: LayerSpecification, data: GeoJsonFeatureCollectionDto) {
+  private removeLayerIfExists(layer: LayerSpecification) {
     const layerExists = this.map.getLayer(layer.id) !== undefined;
     if(layerExists) {
       this.map.removeLayer(layer.id);
@@ -229,6 +224,12 @@ export class MapDisplayComponent implements OnInit {
     if(sourceExists) {
       this.map.removeSource(layer.id);
     }
+  }
+
+  private updateLayer(layer: LayerSpecification, data: GeoJsonFeatureCollectionDto) {
+
+    this.removeLayerIfExists(layer);
+
     this.map.addSource(layer.id, {
       type: 'geojson',
       data: data
