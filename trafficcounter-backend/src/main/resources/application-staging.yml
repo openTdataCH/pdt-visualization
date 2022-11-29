@@ -1,0 +1,8 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/trafficcounter
+    username: trafficcounter-user
+    password: ${TRAFFICCOUNTER_DB_PASSWORD}
