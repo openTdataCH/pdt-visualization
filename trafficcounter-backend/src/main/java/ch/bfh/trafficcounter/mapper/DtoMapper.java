@@ -33,6 +33,15 @@ public interface DtoMapper {
     GeoJsonFeatureCollectionDto mapVehicleAmountToGeoJsonFeatureCollectionDto(Collection<VehicleAmount> vehicleAmounts);
 
     /**
+     * Creates GeoJson DTOs from vehicle amount and speed data entities.
+     *
+     * @param vehicleAmounts vehicleAmount entities
+     * @param speedData speed data entities
+     * @return DTO containing vehicle amounts
+     */
+    GeoJsonFeatureCollectionDto mapVehicleDataToGeoJsonFeatureCollectionDto(Collection<VehicleAmount> vehicleAmounts, Collection<SpeedData> speedData);
+
+    /**
      * Wraps measurementPoints into GeoJSON
      *
      * @param measurementPoints an arraylist of measurement-point objects to wrap in GeoJSON
