@@ -79,7 +79,7 @@ deploy_staging:
   stage: deploy
   needs:
     - job: build_image
-    - job: test-backened
+    - job: test-backend
     - job: test-frontend
   tags:
     - trafficcounter
