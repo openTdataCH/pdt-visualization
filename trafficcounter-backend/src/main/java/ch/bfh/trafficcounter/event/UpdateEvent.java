@@ -15,5 +15,9 @@ public enum UpdateEvent {
      /**
      * Speed data update event.
      */
-    SPEED_DATA
+    SPEED_DATA,
+    /**
+     * Event for all dynamic data
+     */
+    ALL
 }
