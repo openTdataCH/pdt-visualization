@@ -25,8 +25,8 @@ export class MapComponent implements OnInit {
    */
   vehicleData$: Observable<GeoJsonFeatureCollectionDto>;
 
-  get showMenu(): Observable<boolean> {
-    return this.mapConfigService.showMenu$;
+  get showSidebar$(): Observable<boolean> {
+    return this.mapConfigService.showSidebar$;
   }
 
   constructor(

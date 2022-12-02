@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {MapMode} from "../../models/map-mode";
+import {GeoJsonPropertiesDto} from "../../../../api/models/geo-json-properties-dto";
 
 /**
  * Service for map configuration.
@@ -13,12 +14,13 @@ export class MapConfigService {
   /**
    * State of the menu display.
    */
-  showMenu$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  showSidebar$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
   /**
    * Mode of the map.
    */
   mapMode$: BehaviorSubject<MapMode> = new BehaviorSubject<MapMode>(MapMode.MeasurementPoints);
+  selectedPointInfo$: BehaviorSubject<GeoJsonPropertiesDto | null> = new BehaviorSubject<GeoJsonPropertiesDto | null>(null);
 
   constructor() { }
 }

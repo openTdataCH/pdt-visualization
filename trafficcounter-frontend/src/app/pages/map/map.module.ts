@@ -6,10 +6,10 @@ import { MapComponent } from './map.component';
 import { MapDisplayComponent } from './components/map-display/map-display.component';
 import {MaterialModule} from "../../material/material.module";
 import {MapMenuBarComponent} from "./components/map-menu-bar/map-menu-bar.component";
-import { MapMenuComponent } from './components/map-menu/map-menu.component';
 import {TranslateModule} from "@ngx-translate/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {ErrorService} from "../../services/error/error.service";
+import { InfoCardComponent } from './components/info-card/info-card.component';
+import {MapSideBarComponent} from "./components/map-side-bar/map-side-bar.component";
 
 
 @NgModule({
@@ -17,7 +17,8 @@ import {ErrorService} from "../../services/error/error.service";
     MapComponent,
     MapDisplayComponent,
     MapMenuBarComponent,
-    MapMenuComponent
+    MapSideBarComponent,
+    InfoCardComponent
   ],
     imports: [
         CommonModule,
