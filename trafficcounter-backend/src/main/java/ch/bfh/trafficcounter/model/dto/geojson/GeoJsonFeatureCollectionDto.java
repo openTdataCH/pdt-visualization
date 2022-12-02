@@ -14,14 +14,14 @@ import java.util.List;
 @Setter
 public class GeoJsonFeatureCollectionDto extends TypedGeoJsonDto {
 
-	private List<GeoJsonFeatureDto> features;
+    private List<GeoJsonFeatureDto> features;
 
-	public GeoJsonFeatureCollectionDto() {
-		super("FeatureCollection");
-	}
+    public GeoJsonFeatureCollectionDto() {
+        super("FeatureCollection");
+    }
 
-	public GeoJsonFeatureCollectionDto(List<GeoJsonFeatureDto> features) {
-		this();
-		this.features = features;
-	}
+    public GeoJsonFeatureCollectionDto(List<GeoJsonFeatureDto> features) {
+        this();
+        this.features = features;
+    }
 }

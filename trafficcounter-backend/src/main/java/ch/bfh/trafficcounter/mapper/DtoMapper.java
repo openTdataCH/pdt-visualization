@@ -36,7 +36,7 @@ public interface DtoMapper {
      * Creates GeoJson DTOs from vehicle amount and speed data entities.
      *
      * @param vehicleAmounts vehicleAmount entities
-     * @param speedData speed data entities
+     * @param speedData      speed data entities
      * @return DTO containing vehicle amounts
      */
     GeoJsonFeatureCollectionDto mapVehicleDataToGeoJsonFeatureCollectionDto(Collection<VehicleAmount> vehicleAmounts, Collection<SpeedData> speedData);

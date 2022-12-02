@@ -24,6 +24,7 @@ public class SpeedDataDto {
 
     /**
      * Speed display class name.
+     *
      * @see SpeedDisplayClass
      */
     private String speedDisplayClass;

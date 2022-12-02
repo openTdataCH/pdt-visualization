@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {LayerSpecification, Map, MapOptions, Popup} from 'maplibre-gl';
+import {LayerSpecification, Map, MapOptions} from 'maplibre-gl';
 import {Observable} from "rxjs";
 import {GeoJsonFeatureCollectionDto} from "../../../../api/models/geo-json-feature-collection-dto";
 import {MapConfigService} from "../../services/map-config/map-config.service";
@@ -17,20 +17,17 @@ import {GeoJsonPropertiesDto} from "../../../../api/models/geo-json-properties-d
 })
 export class MapDisplayComponent implements OnInit {
 
-  private map!: Map;
-
   /**
    * Measurement points to display on the map.
    */
   @Input('measurement-points')
   measurementPoints$!: Observable<GeoJsonFeatureCollectionDto>;
-
   /**
    * Vehicle data to display on the map.
    */
   @Input('vehicle-data')
   vehicleData$!: Observable<GeoJsonFeatureCollectionDto>;
-
+  private map!: Map;
   private readonly icons: Array<string> = [
     'location-pin-thin',
     'location-pin-high',
@@ -96,7 +93,7 @@ export class MapDisplayComponent implements OnInit {
     'type': 'circle',
     'source': 'vehicleAmount',
     'paint': {
-      'circle-radius': [ "*", 0.5, ['get', 'numberOfVehicles', ['get', 'vehicleAmount'] ] ],
+      'circle-radius': ["*", 0.5, ['get', 'numberOfVehicles', ['get', 'vehicleAmount']]],
       'circle-color': '#d22525',
       'circle-opacity': 0.2
     }
@@ -107,18 +104,13 @@ export class MapDisplayComponent implements OnInit {
     'type': 'symbol',
     'source': 'vehicleSpeed',
     'layout': {
-      'icon-image': [ 'concat', 'location-pin-', ['get', 'speedDisplayClass', ['get', 'speedData'] ] ],
+      'icon-image': ['concat', 'location-pin-', ['get', 'speedDisplayClass', ['get', 'speedData']]],
       'text-offset': [0, 1.25],
       'text-anchor': 'top'
     }
   };
 
-  constructor(private readonly mapConfigService: MapConfigService) {}
-
-  private loadIcon(id: string) {
-    const img = new Image(20, 20);
-    img.onload = () => this.map.addImage(id, img);
-    img.src = `./assets/icons/${id}.svg`;
+  constructor(private readonly mapConfigService: MapConfigService) {
   }
 
   ngOnInit(): void {
@@ -135,19 +127,25 @@ export class MapDisplayComponent implements OnInit {
 
       this.mapConfigService.mapMode$.subscribe(mapMode => {
 
-        if(mapMode === MapMode.VehicleAmount) {
+        if (mapMode === MapMode.VehicleAmount) {
           this.displayVehicleAmount(vehicleData);
         } else {
           this.removeLayerIfExists(this.vehicleAmountLayer);
         }
-        if(mapMode == MapMode.VehicleSpeed) {
-            this.displayVehicleSpeed(vehicleData);
+        if (mapMode == MapMode.VehicleSpeed) {
+          this.displayVehicleSpeed(vehicleData);
         } else {
           this.removeLayerIfExists(this.vehicleSpeedLayer);
         }
       });
       this.updateVehicleDataLayer(vehicleData);
     });
+  }
+
+  private loadIcon(id: string) {
+    const img = new Image(20, 20);
+    img.onload = () => this.map.addImage(id, img);
+    img.src = `./assets/icons/${id}.svg`;
   }
 
   private constructMap() {
@@ -208,11 +206,11 @@ export class MapDisplayComponent implements OnInit {
 
   private removeLayerIfExists(layer: LayerSpecification) {
     const layerExists = this.map.getLayer(layer.id) !== undefined;
-    if(layerExists) {
+    if (layerExists) {
       this.map.removeLayer(layer.id);
     }
     const sourceExists = this.map.getSource(layer.id) !== undefined;
-    if(sourceExists) {
+    if (sourceExists) {
       this.map.removeSource(layer.id);
     }
   }

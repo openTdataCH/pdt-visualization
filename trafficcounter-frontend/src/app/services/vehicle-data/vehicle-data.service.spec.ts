@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { VehicleDataService } from './vehicle-data.service';
+import {VehicleDataService} from './vehicle-data.service';
 import {HttpClientModule} from "@angular/common/http";
 import {ApiModule} from "../../api/api.module";
 

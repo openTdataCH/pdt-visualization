@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {VehicleDataControllerService} from "../../api/services/vehicle-data-controller.service";
 import {Observable} from "rxjs";
 import {GeoJsonFeatureCollectionDto} from "../../api/models/geo-json-feature-collection-dto";
@@ -8,7 +8,8 @@ import {GeoJsonFeatureCollectionDto} from "../../api/models/geo-json-feature-col
 })
 export class VehicleDataService {
 
-  constructor(private readonly vehicleDataControllerService: VehicleDataControllerService) { }
+  constructor(private readonly vehicleDataControllerService: VehicleDataControllerService) {
+  }
 
   /**
    * Gets the amount of vehicles from the API as GeoJSON.

@@ -15,13 +15,15 @@ public interface SpeedDataService {
 
     /**
      * Processes and persists all speed data
-     * @param time measurement time
+     *
+     * @param time             measurement time
      * @param siteMeasurements site measurements
      */
     void processAndPersistSpeedData(LocalDateTime time, List<SiteMeasurements> siteMeasurements);
 
     /**
      * Gets the current speed data as GeoJSON.
+     *
      * @return current speed data
      */
     GeoJsonFeatureCollectionDto getCurrentSpeedData();

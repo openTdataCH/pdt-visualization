@@ -13,17 +13,19 @@ import java.util.List;
  */
 public interface VehicleAmountService {
 
-	/**
-	 * Processes and persists amount of vehicles
-	 * @param time measurement time
-	 * @param siteMeasurements site measurements
-	 */
-	void processAndPersistVehicleAmount(LocalDateTime time, List<SiteMeasurements> siteMeasurements);
+    /**
+     * Processes and persists amount of vehicles
+     *
+     * @param time             measurement time
+     * @param siteMeasurements site measurements
+     */
+    void processAndPersistVehicleAmount(LocalDateTime time, List<SiteMeasurements> siteMeasurements);
 
-	/**
-	 * Gets the amount of vehicles data as GeoJSON.
-	 * @return amount of vehicles
-	 */
-	GeoJsonFeatureCollectionDto getCurrentVehicleAmount();
+    /**
+     * Gets the amount of vehicles data as GeoJSON.
+     *
+     * @return amount of vehicles
+     */
+    GeoJsonFeatureCollectionDto getCurrentVehicleAmount();
 
 }

@@ -22,5 +22,6 @@ export class MapConfigService {
   mapMode$: BehaviorSubject<MapMode> = new BehaviorSubject<MapMode>(MapMode.MeasurementPoints);
   selectedPointInfo$: BehaviorSubject<GeoJsonPropertiesDto | null> = new BehaviorSubject<GeoJsonPropertiesDto | null>(null);
 
-  constructor() { }
+  constructor() {
+  }
 }

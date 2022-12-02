@@ -11,9 +11,9 @@ import java.sql.SQLException;
 @Profile("dev")
 public class DevDatasourceConfig {
 
-	@Bean(initMethod = "start", destroyMethod = "stop")
-	public Server inMemoryH2DatabaseaServer() throws SQLException {
-		return Server.createTcpServer(
-				"-tcp", "-tcpAllowOthers", "-tcpPort", "9090");
-	}
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public Server inMemoryH2DatabaseaServer() throws SQLException {
+        return Server.createTcpServer(
+            "-tcp", "-tcpAllowOthers", "-tcpPort", "9090");
+    }
 }

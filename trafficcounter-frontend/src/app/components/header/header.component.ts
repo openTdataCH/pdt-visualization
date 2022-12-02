@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {LanguageService} from "../../services/language/language.service";
 
 /**
@@ -11,7 +11,8 @@ import {LanguageService} from "../../services/language/language.service";
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(readonly languageService: LanguageService) { }
+  constructor(readonly languageService: LanguageService) {
+  }
 
   ngOnInit(): void {
   }

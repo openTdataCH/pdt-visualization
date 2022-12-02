@@ -8,7 +8,7 @@ describe('ErrorService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ AppModule ]
+      imports: [AppModule]
     });
     service = TestBed.inject(ErrorService);
   });

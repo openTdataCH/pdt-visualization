@@ -12,16 +12,16 @@ import lombok.Setter;
 @Setter
 public class GeoJsonFeatureDto extends TypedGeoJsonDto {
 
-	private GeoJsonGeometryDto geometry;
-	private GeoJsonPropertiesDto properties;
+    private GeoJsonGeometryDto geometry;
+    private GeoJsonPropertiesDto properties;
 
-	public GeoJsonFeatureDto() {
-		super("Feature");
-	}
+    public GeoJsonFeatureDto() {
+        super("Feature");
+    }
 
-	public GeoJsonFeatureDto(GeoJsonGeometryDto geometry, GeoJsonPropertiesDto properties) {
-		this();
-		this.geometry = geometry;
-		this.properties = properties;
-	}
+    public GeoJsonFeatureDto(GeoJsonGeometryDto geometry, GeoJsonPropertiesDto properties) {
+        this();
+        this.geometry = geometry;
+        this.properties = properties;
+    }
 }

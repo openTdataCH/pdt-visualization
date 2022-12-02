@@ -23,55 +23,55 @@ import static org.mockito.Mockito.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MeasurementPointServiceTest {
 
-	private final SpeedDisplayConfig speedDisplayConfig = new SpeedDisplayConfig();
+    private final SpeedDisplayConfig speedDisplayConfig = new SpeedDisplayConfig();
 
-	@Spy
-	private DtoMapper dtoMapper = new DtoMapperImpl(speedDisplayConfig);
+    @Spy
+    private DtoMapper dtoMapper = new DtoMapperImpl(speedDisplayConfig);
 
-	@Mock
-	private MeasurementPointRepository measurementPointRepository;
+    @Mock
+    private MeasurementPointRepository measurementPointRepository;
 
-	private MeasurementPointService measurementPointService;
+    private MeasurementPointService measurementPointService;
 
-	@BeforeEach
-	void init() {
-		final SpeedDisplayConfig.SpeedDisplayThresholds thresholds = new SpeedDisplayConfig.SpeedDisplayThresholds();
-		thresholds.setHigh(0.9f);
-		thresholds.setNeutral(0.65f);
-		thresholds.setLow(0.0f);
-		this.measurementPointService = new MeasurementPointServiceImpl(dtoMapper, measurementPointRepository);
-	}
+    @BeforeEach
+    void init() {
+        final SpeedDisplayConfig.SpeedDisplayThresholds thresholds = new SpeedDisplayConfig.SpeedDisplayThresholds();
+        thresholds.setHigh(0.9f);
+        thresholds.setNeutral(0.65f);
+        thresholds.setLow(0.0f);
+        this.measurementPointService = new MeasurementPointServiceImpl(dtoMapper, measurementPointRepository);
+    }
 
-	@Test
-	void testGetAllMeasurementPointsGeoJson_active() {
-		final ArrayList<MeasurementPoint> measurementPoints = new ArrayList<>(0);
-		final MeasurementPoint measurementPoint = MeasurementPoint.builder()
-				.id("TEST")
-				.numberOfLanes(1)
-				.longtitude(1)
-				.latitude(1)
-				.active(true)
-				.build();
-		measurementPoints.add(measurementPoint);
-		when(measurementPointRepository.findAllByActive(true)).thenReturn(measurementPoints);
+    @Test
+    void testGetAllMeasurementPointsGeoJson_active() {
+        final ArrayList<MeasurementPoint> measurementPoints = new ArrayList<>(0);
+        final MeasurementPoint measurementPoint = MeasurementPoint.builder()
+            .id("TEST")
+            .numberOfLanes(1)
+            .longtitude(1)
+            .latitude(1)
+            .active(true)
+            .build();
+        measurementPoints.add(measurementPoint);
+        when(measurementPointRepository.findAllByActive(true)).thenReturn(measurementPoints);
 
-		final GeoJsonFeatureCollectionDto result = measurementPointService.getAllMeasurementPointsGeoJson();
-		verify(dtoMapper, times(1)).mapMeasurementPointsToGeoJsonFeatureCollectionDto(any());
-		assertEquals(1, result.getFeatures().size());
-		assertEquals(measurementPoint.getId(), result.getFeatures().get(0).getProperties().getId());
-		assertEquals(measurementPoint.getLongtitude(), result.getFeatures().get(0).getGeometry().getCoordinates()[0]);
-		assertEquals(measurementPoint.getLatitude(), result.getFeatures().get(0).getGeometry().getCoordinates()[1]);
-	}
+        final GeoJsonFeatureCollectionDto result = measurementPointService.getAllMeasurementPointsGeoJson();
+        verify(dtoMapper, times(1)).mapMeasurementPointsToGeoJsonFeatureCollectionDto(any());
+        assertEquals(1, result.getFeatures().size());
+        assertEquals(measurementPoint.getId(), result.getFeatures().get(0).getProperties().getId());
+        assertEquals(measurementPoint.getLongtitude(), result.getFeatures().get(0).getGeometry().getCoordinates()[0]);
+        assertEquals(measurementPoint.getLatitude(), result.getFeatures().get(0).getGeometry().getCoordinates()[1]);
+    }
 
 
-	@Test
-	void testGetNumberOfMeasurementPoints() {
-		final int numActive = 10;
-		when(measurementPointRepository.countAllByActive(true)).thenReturn(numActive);
+    @Test
+    void testGetNumberOfMeasurementPoints() {
+        final int numActive = 10;
+        when(measurementPointRepository.countAllByActive(true)).thenReturn(numActive);
 
-		final int result = measurementPointService.getNumberOfMeasurementPoints();
+        final int result = measurementPointService.getNumberOfMeasurementPoints();
 
-		assertEquals(numActive, result);
-	}
+        assertEquals(numActive, result);
+    }
 
 }

@@ -6,9 +6,9 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Repository for vehicle amount
- * @see VehicleAmount
  *
  * @author Sven Trachsel
+ * @see VehicleAmount
  */
 @Repository
 public interface VehicleAmountRepository extends JpaRepository<VehicleAmount, Long> {

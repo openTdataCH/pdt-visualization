@@ -1,8 +1,8 @@
 <app-map-menu-bar></app-map-menu-bar>
 <div class="map-page">
   <app-map-side-bar *ngIf="showSidebar$ | async"></app-map-side-bar>
-  <div id="map-container"
-       [class.full-width]="!(showSidebar$ | async)">
+  <div [class.full-width]="!(showSidebar$ | async)"
+       id="map-container">
     <app-map-display
       [measurement-points]="measurementPoints$"
       [vehicle-data]="vehicleData$"

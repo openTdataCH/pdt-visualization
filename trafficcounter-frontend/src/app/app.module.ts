@@ -5,7 +5,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ApiModule} from "./api/api.module";
-import {HttpClientModule, HTTP_INTERCEPTORS, HttpClient} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/http";
 import {ErrorDisplayComponent} from './components/error-display/error-display.component';
 import {ErrorInterceptor} from "./interceptors/error.interceptor";
 import {ToastrModule} from "ngx-toastr";
@@ -18,7 +18,7 @@ import {APP_BASE_HREF} from '@angular/common';
 import {ErrorService} from "./services/error/error.service";
 
 export function HttpLoaderFactory(http: HttpClient) {
-    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
 @NgModule({

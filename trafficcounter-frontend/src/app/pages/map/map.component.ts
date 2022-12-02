@@ -25,10 +25,6 @@ export class MapComponent implements OnInit {
    */
   vehicleData$: Observable<GeoJsonFeatureCollectionDto>;
 
-  get showSidebar$(): Observable<boolean> {
-    return this.mapConfigService.showSidebar$;
-  }
-
   constructor(
     private readonly mapConfigService: MapConfigService,
     private readonly measurementPointService: MeasurementPointService,
@@ -36,6 +32,10 @@ export class MapComponent implements OnInit {
   ) {
     this.measurementPoints$ = this.measurementPointService.getAllMeasurementPoints();
     this.vehicleData$ = this.vehicleDataService.getVehicleDataReactive();
+  }
+
+  get showSidebar$(): Observable<boolean> {
+    return this.mapConfigService.showSidebar$;
   }
 
   ngOnInit(): void {

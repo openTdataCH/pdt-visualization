@@ -16,30 +16,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class MeasurementPointControllerTest extends AbstractApiTest {
 
-	@Test
-	void getMeasurementPointsGeoJson() {
-		GeoJsonFeatureCollectionDto featureCollection = request()
-				.get("/api/measurementpoints")
-				.then()
-				.assertThat()
-				.body("features.size()", is(1))
-				.statusCode(HttpStatus.SC_OK)
-				.extract().body().as(GeoJsonFeatureCollectionDto.class);
+    @Test
+    void getMeasurementPointsGeoJson() {
+        GeoJsonFeatureCollectionDto featureCollection = request()
+            .get("/api/measurementpoints")
+            .then()
+            .assertThat()
+            .body("features.size()", is(1))
+            .statusCode(HttpStatus.SC_OK)
+            .extract().body().as(GeoJsonFeatureCollectionDto.class);
 
-		assertEquals("FeatureCollection", featureCollection.getType());
+        assertEquals("FeatureCollection", featureCollection.getType());
 
-		List<GeoJsonFeatureDto> features = featureCollection.getFeatures();
-		assertEquals(1, features.size());
+        List<GeoJsonFeatureDto> features = featureCollection.getFeatures();
+        assertEquals(1, features.size());
 
-		GeoJsonFeatureDto feature = features.get(0);
-		assertEquals("Feature", feature.getType());
+        GeoJsonFeatureDto feature = features.get(0);
+        assertEquals("Feature", feature.getType());
 
-		GeoJsonGeometryDto geometry = feature.getGeometry();
-		assertEquals("Point", geometry.getType());
-		assertEquals(2.0, geometry.getCoordinates()[0]);
-		assertEquals(1.0, geometry.getCoordinates()[1]);
+        GeoJsonGeometryDto geometry = feature.getGeometry();
+        assertEquals("Point", geometry.getType());
+        assertEquals(2.0, geometry.getCoordinates()[0]);
+        assertEquals(1.0, geometry.getCoordinates()[1]);
 
-		GeoJsonPropertiesDto properties = feature.getProperties();
-		assertEquals("CH-TEST", properties.getId());
-	}
+        GeoJsonPropertiesDto properties = feature.getProperties();
+        assertEquals("CH-TEST", properties.getId());
+    }
 }

@@ -54,13 +54,13 @@ public class VehicleDataController {
     public Flux<ServerSentEvent<GeoJsonFeatureCollectionDto>> getCurrentVehicleDataReactive() {
         final Mono<GeoJsonFeatureCollectionDto> blockingWrapper = Mono.fromCallable(vehicleDataService::getCurrentVehicleData);
         return updateEvent.asFlux()
-                .map(event -> blockingWrapper.subscribeOn(Schedulers.boundedElastic()).flux())
-                .flatMap(flux -> flux.map(vehicleData -> ServerSentEvent.<GeoJsonFeatureCollectionDto>builder()
-                                .data(vehicleData)
-                                .event("message")
-                                .build()
-                        )
-                );
+            .map(event -> blockingWrapper.subscribeOn(Schedulers.boundedElastic()).flux())
+            .flatMap(flux -> flux.map(vehicleData -> ServerSentEvent.<GeoJsonFeatureCollectionDto>builder()
+                    .data(vehicleData)
+                    .event("message")
+                    .build()
+                )
+            );
     }
 
 }

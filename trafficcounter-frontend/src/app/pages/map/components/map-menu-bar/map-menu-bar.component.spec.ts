@@ -9,10 +9,10 @@ describe('MapMenuBarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MapMenuBarComponent ],
-      imports: [ MaterialModule ]
+      declarations: [MapMenuBarComponent],
+      imports: [MaterialModule]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(MapMenuBarComponent);
     component = fixture.componentInstance;

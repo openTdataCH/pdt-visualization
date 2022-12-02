@@ -9,10 +9,11 @@ import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
  */
 public interface VehicleDataService {
 
-	/**
-	 * Gets the amount of vehicles data as GeoJSON.
-	 * @return amount of vehicles
-	 */
-	GeoJsonFeatureCollectionDto getCurrentVehicleData();
+    /**
+     * Gets the amount of vehicles data as GeoJSON.
+     *
+     * @return amount of vehicles
+     */
+    GeoJsonFeatureCollectionDto getCurrentVehicleData();
 
 }

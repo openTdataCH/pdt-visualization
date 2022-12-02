@@ -10,10 +10,10 @@ describe('ErrorDisplayComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ErrorDisplayComponent ],
-      imports: [ AppModule, ToastrModule.forRoot() ]
+      declarations: [ErrorDisplayComponent],
+      imports: [AppModule, ToastrModule.forRoot()]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(ErrorDisplayComponent);
     component = fixture.componentInstance;

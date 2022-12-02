@@ -8,24 +8,26 @@ import java.util.List;
 
 /**
  * Repository for measurement point entities.
- * @see MeasurementPoint
  *
  * @author Sven Trachsel
+ * @see MeasurementPoint
  */
 @Repository
 public interface MeasurementPointRepository extends JpaRepository<MeasurementPoint, String> {
 
-	/**
-	 * Finds all measurement points by their active state.
-	 * @param active active state
-	 * @return measurement points matching active state
-	 */
-	List<MeasurementPoint> findAllByActive(boolean active);
+    /**
+     * Finds all measurement points by their active state.
+     *
+     * @param active active state
+     * @return measurement points matching active state
+     */
+    List<MeasurementPoint> findAllByActive(boolean active);
 
-	/**
-	 * Counts all measurement points by their active state.
-	 * @param active active state
-	 * @return number of measurement points
-	 */
-	int countAllByActive(boolean active);
+    /**
+     * Counts all measurement points by their active state.
+     *
+     * @param active active state
+     * @return number of measurement points
+     */
+    int countAllByActive(boolean active);
 }

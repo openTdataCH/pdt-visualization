@@ -15,16 +15,16 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class AbstractApiTest {
 
-	@LocalServerPort
-	protected int port;
+    @LocalServerPort
+    protected int port;
 
-	protected RequestSpecification request() {
-		return RestAssured
-				.given()
-				.accept(ContentType.JSON)
-				.contentType(ContentType.JSON)
-				.port(this.port)
-				.header("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-	}
+    protected RequestSpecification request() {
+        return RestAssured
+            .given()
+            .accept(ContentType.JSON)
+            .contentType(ContentType.JSON)
+            .port(this.port)
+            .header("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+    }
 
 }

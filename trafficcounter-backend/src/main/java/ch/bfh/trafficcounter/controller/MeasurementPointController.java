@@ -18,25 +18,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/measurementpoints")
 public class MeasurementPointController {
 
-	private final MeasurementPointService measurementPointService;
+    private final MeasurementPointService measurementPointService;
 
-	public MeasurementPointController(MeasurementPointService measurementPointService) {
-		this.measurementPointService = measurementPointService;
-	}
+    public MeasurementPointController(MeasurementPointService measurementPointService) {
+        this.measurementPointService = measurementPointService;
+    }
 
-	/**
-	 * Checks if data is present, if data is present, sends data
-	 * if not, send 503, service unavailable
-	 *
-	 * @return ResponseEntity with either data (and 200 ok) or 503 Service unavailable Status code
-	 */
-	@GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<GeoJsonFeatureCollectionDto> getMeasurementPointsGeoJson() {
-		if (measurementPointService.getNumberOfMeasurementPoints() == 0) {
-			return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
-		}
-		return ResponseEntity.ok(measurementPointService.getAllMeasurementPointsGeoJson());
-	}
+    /**
+     * Checks if data is present, if data is present, sends data
+     * if not, send 503, service unavailable
+     *
+     * @return ResponseEntity with either data (and 200 ok) or 503 Service unavailable Status code
+     */
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GeoJsonFeatureCollectionDto> getMeasurementPointsGeoJson() {
+        if (measurementPointService.getNumberOfMeasurementPoints() == 0) {
+            return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+        }
+        return ResponseEntity.ok(measurementPointService.getAllMeasurementPointsGeoJson());
+    }
 
 
 }

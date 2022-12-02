@@ -20,34 +20,34 @@ import javax.persistence.Id;
 @Entity
 public class MeasurementPoint {
 
-	/**
-	 * Official ID of measurement point.
-	 */
-	@Id
-	private String id;
+    /**
+     * Official ID of measurement point.
+     */
+    @Id
+    private String id;
 
-	/**
-	 * Latitude.
-	 */
-	@Column(nullable = false, updatable = false)
-	private double latitude;
+    /**
+     * Latitude.
+     */
+    @Column(nullable = false, updatable = false)
+    private double latitude;
 
-	/**
-	 * Longitude.
-	 */
-	@Column(nullable = false, updatable = false)
-	private double longtitude;
+    /**
+     * Longitude.
+     */
+    @Column(nullable = false, updatable = false)
+    private double longtitude;
 
-	/**
-	 * Number of lanes.
-	 */
-	@Column(nullable = false, updatable = false)
-	private int numberOfLanes;
+    /**
+     * Number of lanes.
+     */
+    @Column(nullable = false, updatable = false)
+    private int numberOfLanes;
 
-	/**
-	 * Active state.
-	 */
-	@Column(nullable = false, updatable = false)
-	private boolean active;
+    /**
+     * Active state.
+     */
+    @Column(nullable = false, updatable = false)
+    private boolean active;
 
 }

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { MapSideBarComponent } from './map-side-bar.component';
+import {MapSideBarComponent} from './map-side-bar.component';
 import {MaterialModule} from "../../../../material/material.module";
 import {TranslateModule} from "@ngx-translate/core";
 
@@ -10,10 +10,10 @@ describe('MapMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MapSideBarComponent ],
-      imports: [ MaterialModule, TranslateModule.forRoot() ]
+      declarations: [MapSideBarComponent],
+      imports: [MaterialModule, TranslateModule.forRoot()]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(MapSideBarComponent);
     component = fixture.componentInstance;

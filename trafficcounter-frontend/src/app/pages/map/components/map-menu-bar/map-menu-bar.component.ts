@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MapConfigService} from "../../services/map-config/map-config.service";
 
 /**
@@ -11,7 +11,8 @@ import {MapConfigService} from "../../services/map-config/map-config.service";
 })
 export class MapMenuBarComponent implements OnInit {
 
-  constructor(private readonly mapConfigService: MapConfigService) { }
+  constructor(private readonly mapConfigService: MapConfigService) {
+  }
 
   ngOnInit(): void {
   }
