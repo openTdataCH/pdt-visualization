@@ -44,7 +44,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 	}
 
 	private Optional<Measurement> getLatestMeasurement() {
-		return measurementRepository.findTimeDesc(Pageable.ofSize(1))
+		return measurementRepository.findLatest()
 				.stream().findFirst();
 	}
 
