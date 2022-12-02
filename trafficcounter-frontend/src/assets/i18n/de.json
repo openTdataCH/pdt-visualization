@@ -8,6 +8,20 @@
       "measurement-points": "Messpunkte",
       "vehicle-amount": "Anzahl Fahrzeuge",
       "vehicle-speed": "Geschwindigkeit der Fahrzeuge"
+    },
+    "info-card": {
+      "title": "Messdaten",
+      "description": {
+        "id": "ID",
+        "speed-rating": "Geschw. Bewertung",
+        "average-speed": "Durchschn. Geschw.",
+        "number-of-vehicles": "Anzahl Fahrzeuge"
+      },
+      "speed-display-class": {
+        "high": "Hohe Geschw.",
+        "neutral": "Neutrale Geschw.",
+        "low": "Tiefe Geschw."
+      }
     }
   }
 }

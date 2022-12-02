@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * Controller for combined vehicle data
@@ -22,40 +24,43 @@ import reactor.core.publisher.Sinks;
 @RequestMapping("/api/vehicledata")
 public class VehicleDataController {
 
-	private final VehicleDataService vehicleDataService;
+    private final VehicleDataService vehicleDataService;
 
-	private final Sinks.Many<UpdateEvent> updateEvent;
+    private final Sinks.Many<UpdateEvent> updateEvent;
 
-	@Autowired
-	public VehicleDataController(VehicleDataService vehicleDataService, Sinks.Many<UpdateEvent> updateEvent) {
-		this.vehicleDataService = vehicleDataService;
-		this.updateEvent = updateEvent;
-	}
+    @Autowired
+    public VehicleDataController(VehicleDataService vehicleDataService, Sinks.Many<UpdateEvent> updateEvent) {
+        this.vehicleDataService = vehicleDataService;
+        this.updateEvent = updateEvent;
+    }
 
-	/**
-	 * Gets the current amount of vehicles and their speed as GeoJson.
-	 *
-	 * @return GeoJson including amount of vehicles
-	 */
-	@GetMapping
-	public ResponseEntity<GeoJsonFeatureCollectionDto> getCurrentVehicleData() {
-		return ResponseEntity.ok(vehicleDataService.getCurrentVehicleData());
-	}
+    /**
+     * Gets the current amount of vehicles and their speed as GeoJson.
+     *
+     * @return GeoJson including amount of vehicles
+     */
+    @GetMapping
+    public ResponseEntity<GeoJsonFeatureCollectionDto> getCurrentVehicleData() {
+        return ResponseEntity.ok(vehicleDataService.getCurrentVehicleData());
+    }
 
-	/**
-	 * Gets the current amount of vehicles and their speed as GeoJson in a reactive way.
-	 * The speed data can be consumed by SSE.
-	 *
-	 * @return GeoJson including amount of vehicles
-	 */
-	@GetMapping(path = "/stream-flux", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public Flux<ServerSentEvent<GeoJsonFeatureCollectionDto>> getCurrentVehicleDataReactive() {
-		return updateEvent.asFlux().map(event -> ServerSentEvent
-				.<GeoJsonFeatureCollectionDto>builder()
-				.data(vehicleDataService.getCurrentVehicleData())
-				.event("message")
-				.build()
-		);
-	}
+    /**
+     * Gets the current amount of vehicles and their speed as GeoJson in a reactive way.
+     * The speed data can be consumed by SSE.
+     *
+     * @return GeoJson including amount of vehicles
+     */
+    @GetMapping(path = "/stream-flux", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<ServerSentEvent<GeoJsonFeatureCollectionDto>> getCurrentVehicleDataReactive() {
+        final Mono<GeoJsonFeatureCollectionDto> blockingWrapper = Mono.fromCallable(vehicleDataService::getCurrentVehicleData);
+        return updateEvent.asFlux()
+                .map(event -> blockingWrapper.subscribeOn(Schedulers.boundedElastic()).flux())
+                .flatMap(flux -> flux.map(vehicleData -> ServerSentEvent.<GeoJsonFeatureCollectionDto>builder()
+                                .data(vehicleData)
+                                .event("message")
+                                .build()
+                        )
+                );
+    }
 
 }

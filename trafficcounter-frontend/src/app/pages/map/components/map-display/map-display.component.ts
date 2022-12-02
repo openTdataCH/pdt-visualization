@@ -1,9 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {LayerSpecification, Map, MapOptions, Popup} from 'maplibre-gl';
-import {Observable, Subscription} from "rxjs";
+import {Observable} from "rxjs";
 import {GeoJsonFeatureCollectionDto} from "../../../../api/models/geo-json-feature-collection-dto";
 import {MapConfigService} from "../../services/map-config/map-config.service";
 import {MapMode} from "../../models/map-mode";
+import {GeoJsonPropertiesDto} from "../../../../api/models/geo-json-properties-dto";
 
 /**
  * Component for the map display.
@@ -25,20 +26,10 @@ export class MapDisplayComponent implements OnInit {
   measurementPoints$!: Observable<GeoJsonFeatureCollectionDto>;
 
   /**
-   * Amount of vehicles to display on the map.
+   * Vehicle data to display on the map.
    */
-  @Input('vehicle-amount')
-  vehicleAmount$!: Observable<GeoJsonFeatureCollectionDto>;
-
-  private vehicleAmountSubscription: Subscription | null = null;
-
-  /**
-   * Speed of vehicles to display on the map
-   */
-  @Input('vehicle-speed')
-  vehicleSpeed$!: Observable<GeoJsonFeatureCollectionDto>;
-
-  private vehicleSpeedSubscription: Subscription | null = null;
+  @Input('vehicle-data')
+  vehicleData$!: Observable<GeoJsonFeatureCollectionDto>;
 
   private readonly icons: Array<string> = [
     'location-pin-thin',
@@ -72,6 +63,20 @@ export class MapDisplayComponent implements OnInit {
     },
     center: [8.1336, 46.784], // starting position [lng, lat]
     zoom: 7.5 // starting zoom
+  }
+
+  private readonly vehicleDataLayer: LayerSpecification = {
+    'id': 'vehicleData',
+    'type': 'circle',
+    'source': 'vehicleData',
+    'layout': {
+      'visibility': 'visible'
+    },
+    'paint': {
+      'circle-color': 'blue',
+      'circle-opacity': 0,
+      'circle-radius': 5
+    }
   }
 
   private readonly measurementPointLayer: LayerSpecification = {
@@ -118,53 +123,63 @@ export class MapDisplayComponent implements OnInit {
 
   ngOnInit(): void {
     this.constructMap();
-    this.mapConfigService.showMenu$.subscribe(showMenu => {
+    this.mapConfigService.showSidebar$.subscribe(showMenu => {
       setTimeout(() => this.map.resize(), 1);
     });
-
-    this.mapConfigService.mapMode$.subscribe(mapMode => {
-      if(mapMode === MapMode.VehicleAmount) {
-        this.vehicleAmountSubscription = this.vehicleAmount$.subscribe(vehicleAmount => {
-          this.displayVehicleAmount(vehicleAmount);
-        });
-      } else {
-        this.vehicleAmountSubscription?.unsubscribe();
-        this.removeLayerIfExists(this.vehicleAmountLayer);
-      }
+    this.map.on('load', () => {
+      this.measurementPoints$.subscribe(measurementPoints => {
+        this.displayMeasurementPoints(measurementPoints);
+      });
     });
+    this.vehicleData$.subscribe(vehicleData => {
 
-    this.mapConfigService.mapMode$.subscribe(mapMode => {
-      if(mapMode == MapMode.VehicleSpeed) {
-        console.log(this.vehicleSpeed$);
-        this.vehicleSpeedSubscription = this.vehicleSpeed$.subscribe(vehicleSpeed => {
-          this.displayVehicleSpeed(vehicleSpeed);
-        })
-      } else {
-        this.vehicleSpeedSubscription?.unsubscribe();
-        this.removeLayerIfExists(this.vehicleSpeedLayer);
-      }
-    })
+      this.mapConfigService.mapMode$.subscribe(mapMode => {
+
+        if(mapMode === MapMode.VehicleAmount) {
+          this.displayVehicleAmount(vehicleData);
+        } else {
+          this.removeLayerIfExists(this.vehicleAmountLayer);
+        }
+        if(mapMode == MapMode.VehicleSpeed) {
+            this.displayVehicleSpeed(vehicleData);
+        } else {
+          this.removeLayerIfExists(this.vehicleSpeedLayer);
+        }
+      });
+      this.updateVehicleDataLayer(vehicleData);
+    });
   }
 
   private constructMap() {
     this.map = new Map(this.mapOptions);
     this.icons.forEach(icon => this.loadIcon(icon));
-
-    // wait for map to load
-    this.map.on('load', () => {
-      this.measurementPoints$.subscribe(measurementPoints => this.displayMeasurementPoints(measurementPoints));
-    });
   }
 
-  private addPopupHandling(mode: MapMode, descriptionGetter: (e: any) => string): (e: any) => void {
-    return (e: any) => {
+  private displayMeasurementPoints(measurementPoints: GeoJsonFeatureCollectionDto): void {
+    this.updateLayer(this.measurementPointLayer, measurementPoints);
 
-      if(this.mapConfigService.mapMode$.value !== mode) {
-        return;
-      }
+    //TODO remove if not used
+    /*
+    this.map.on('mouseenter', this.measurementPointLayer.id, () => {
+      this.map.getCanvas().style.cursor = 'not-allowed';
+    });
+    this.map.on('mouseleave', this.measurementPointLayer.id, () => {
+      this.map.getCanvas().style.cursor = '';
+    });*/
+  }
 
+  private updateVehicleDataLayer(vehicleData: GeoJsonFeatureCollectionDto): void {
+    this.updateLayer(this.vehicleDataLayer, vehicleData);
+
+    this.map.on('click', this.vehicleDataLayer.id, (e: any) => {
       const coordinates = e.features[0].geometry['coordinates'].slice();
-      const description = descriptionGetter(e);
+
+      this.map.on('mouseenter', this.vehicleDataLayer.id, () => {
+        this.map.getCanvas().style.cursor = 'pointer';
+      });
+      this.map.on('mouseleave', this.vehicleDataLayer.id, () => {
+        this.map.getCanvas().style.cursor = '';
+      });
 
       // Ensure that if the map is zoomed out such that multiple
       // copies of the feature are visible, the popup appears
@@ -173,46 +188,22 @@ export class MapDisplayComponent implements OnInit {
       while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
       }
-
-      new Popup()
-        .setLngLat(coordinates)
-        .setHTML(description)
-        .addTo(this.map);
-    }
-  }
-
-  private displayMeasurementPoints(measurementPoints: GeoJsonFeatureCollectionDto): void {
-    this.updateLayer(this.measurementPointLayer, measurementPoints);
-
-    // add event listener for measurement points
-    this.map.on('click', this.measurementPointLayer.id, this.addPopupHandling(MapMode.MeasurementPoints, (e) => e.features[0].properties['id']));
-    this.addDefaultListeners(this.measurementPointLayer.id);
+      const rawProperties = e.features[0].properties;
+      const properties: GeoJsonPropertiesDto = {
+        id: rawProperties.id,
+        speedData: JSON.parse(rawProperties.speedData),
+        vehicleAmount: JSON.parse(rawProperties.vehicleAmount)
+      }
+      this.setSelectedPointInfo(properties as GeoJsonPropertiesDto);
+    });
   }
 
   private displayVehicleAmount(vehicleAmount: GeoJsonFeatureCollectionDto): void {
     this.updateLayer(this.vehicleAmountLayer, vehicleAmount);
-
-    // add event listener for measurement points
-    this.map.on('click', this.vehicleAmountLayer.id, this.addPopupHandling(MapMode.VehicleAmount, (e) => {
-      return JSON.parse(e.features[0].properties['vehicleAmount'])['numberOfVehicles'];
-    }));
-
-    // add event listener for measurement points
-    this.addDefaultListeners(this.measurementPointLayer.id);
   }
 
   private displayVehicleSpeed(vehicleSpeed: GeoJsonFeatureCollectionDto): void {
     this.updateLayer(this.vehicleSpeedLayer, vehicleSpeed);
-
-    console.log(this.vehicleSpeedLayer);
-
-    // add event listener for measurement points
-    this.map.on('click', this.vehicleSpeedLayer.id, this.addPopupHandling(MapMode.VehicleAmount, (e) => {
-      return JSON.parse(e.features[0].properties['vehicleSpeed'])['speedOfVehicles'];
-    }));
-
-    // add default event listener for measurement points
-    this.addDefaultListeners(this.measurementPointLayer.id);
   }
 
   private removeLayerIfExists(layer: LayerSpecification) {
@@ -238,13 +229,12 @@ export class MapDisplayComponent implements OnInit {
     this.map.addLayer(layer);
   }
 
-  private addDefaultListeners(layerId: string) {
-    this.map.on('mouseenter', layerId, () => {
-      this.map.getCanvas().style.cursor = 'pointer';
-    });
-    this.map.on('mouseleave', layerId, () => {
-      this.map.getCanvas().style.cursor = '';
-    });
+  private setSelectedPointInfo(selectedPointInfo: GeoJsonPropertiesDto) {
+    this.mapConfigService.selectedPointInfo$.next(selectedPointInfo);
+  }
+
+  private clearSelectedPointInfo() {
+    this.mapConfigService.selectedPointInfo$.next(null);
   }
 
 }

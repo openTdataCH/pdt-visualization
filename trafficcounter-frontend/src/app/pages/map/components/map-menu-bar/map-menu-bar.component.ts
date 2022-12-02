@@ -19,8 +19,8 @@ export class MapMenuBarComponent implements OnInit {
   /**
    * Toggles the menu display.
    */
-  toggleShowMenu() {
-    this.mapConfigService.showMenu$.next(!this.mapConfigService.showMenu$.value);
+  toggleShowSidebar() {
+    this.mapConfigService.showSidebar$.next(!this.mapConfigService.showSidebar$.value);
   }
 
 }

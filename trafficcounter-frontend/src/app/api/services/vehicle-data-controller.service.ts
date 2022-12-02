@@ -1,25 +1,25 @@
 import {Inject, Injectable, NgZone, Optional} from '@angular/core';
 import {HttpClient, HttpEvent, HttpHeaders, HttpResponse} from '@angular/common/http';
 
-import {Observable, of} from 'rxjs';
-import {GeoJsonFeatureCollectionDto} from "../models/geo-json-feature-collection-dto";
+import {Observable} from 'rxjs';
 import {Configuration} from "../configuration";
 import {BASE_PATH} from "../variables";
+import {GeoJsonFeatureCollectionDto} from "../models/geo-json-feature-collection-dto";
 import {environment} from "../../../environments/environment";
 import {ApiModule} from "../api.module";
 import {ReactiveSseService} from "./reactive-sse-service";
 
 @Injectable({
-  providedIn: ApiModule
+    providedIn: ApiModule
 })
-export class VehicleAmountControllerService extends ReactiveSseService {
+export class VehicleDataControllerService extends ReactiveSseService {
 
     protected basePath = environment.api.basePath;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
     constructor(zone: NgZone, protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
-        super(zone);
+      super(zone);
         if (basePath) {
             this.basePath = basePath;
         }
@@ -50,10 +50,10 @@ export class VehicleAmountControllerService extends ReactiveSseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getCurrentAmountOfVehicles(observe?: 'body', reportProgress?: boolean): Observable<GeoJsonFeatureCollectionDto>;
-    public getCurrentAmountOfVehicles(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<GeoJsonFeatureCollectionDto>>;
-    public getCurrentAmountOfVehicles(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<GeoJsonFeatureCollectionDto>>;
-    public getCurrentAmountOfVehicles(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public getCurrentVehicleData(observe?: 'body', reportProgress?: boolean): Observable<GeoJsonFeatureCollectionDto>;
+    public getCurrentVehicleData(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<GeoJsonFeatureCollectionDto>>;
+    public getCurrentVehicleData(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<GeoJsonFeatureCollectionDto>>;
+    public getCurrentVehicleData(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -70,7 +70,7 @@ export class VehicleAmountControllerService extends ReactiveSseService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<GeoJsonFeatureCollectionDto>('get',`${this.basePath}/vehicleamount`,
+        return this.httpClient.request<GeoJsonFeatureCollectionDto>('get',`${this.basePath}/vehicledata`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -86,10 +86,10 @@ export class VehicleAmountControllerService extends ReactiveSseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getCurrentAmountOfVehiclesReactive(observe?: 'body', reportProgress?: boolean): Observable<GeoJsonFeatureCollectionDto>;
-    public getCurrentAmountOfVehiclesReactive(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<GeoJsonFeatureCollectionDto>>;
-    public getCurrentAmountOfVehiclesReactive(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<GeoJsonFeatureCollectionDto>>;
-    public getCurrentAmountOfVehiclesReactive(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public getCurrentVehicleDataReactive(observe?: 'body', reportProgress?: boolean): Observable<GeoJsonFeatureCollectionDto>;
+    public getCurrentVehicleDataReactive(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<GeoJsonFeatureCollectionDto>>;
+    public getCurrentVehicleDataReactive(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<GeoJsonFeatureCollectionDto>>;
+    public getCurrentVehicleDataReactive(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -106,7 +106,7 @@ export class VehicleAmountControllerService extends ReactiveSseService {
         const consumes: string[] = [
         ];
 
-        const url = `${this.basePath}/vehicleamount/stream-flux`;
+        const url = `${this.basePath}/vehicledata/stream-flux`;
 
         return this.createEventStream(url);
     }

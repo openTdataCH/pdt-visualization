@@ -1,0 +1,25 @@
+<mat-card class="info-card">
+  <mat-card-header>
+  <mat-card-title>{{ 'map.info-card.title' | translate }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <table>
+      <tr>
+        <th>{{ 'map.info-card.description.id' | translate }}:</th>
+        <td>{{ info.id }}</td>
+      </tr>
+      <tr>
+        <th>{{ 'map.info-card.description.speed-rating' | translate }}:</th>
+        <td>{{ 'map.info-card.speed-display-class.' + info.speedData?.speedDisplayClass | translate }}</td>
+      </tr>
+      <tr>
+        <th>{{ 'map.info-card.description.average-speed' | translate }}:</th>
+        <td>{{ info.speedData?.averageSpeed }} km/h</td>
+      </tr>
+      <tr>
+        <th>{{ 'map.info-card.description.number-of-vehicles' | translate }}:</th>
+        <td>{{ info.vehicleAmount?.numberOfVehicles }}</td>
+      </tr>
+    </table>
+  </mat-card-content>
+</mat-card>

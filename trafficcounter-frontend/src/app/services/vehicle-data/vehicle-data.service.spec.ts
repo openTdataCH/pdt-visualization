@@ -1,11 +1,11 @@
-import {TestBed} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
-import {VehicleAmountServiceService} from './vehicle-amount-service.service';
+import { VehicleDataService } from './vehicle-data.service';
 import {HttpClientModule} from "@angular/common/http";
 import {ApiModule} from "../../api/api.module";
 
-describe('VehicleAmountServiceService', () => {
-  let service: VehicleAmountServiceService;
+describe('VehicleDataServiceService', () => {
+  let service: VehicleDataService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -14,7 +14,7 @@ describe('VehicleAmountServiceService', () => {
         ApiModule
       ],
     });
-    service = TestBed.inject(VehicleAmountServiceService);
+    service = TestBed.inject(VehicleDataService);
   });
 
   it('should be created', () => {
