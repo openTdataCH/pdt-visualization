@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {GeoJsonPropertiesDto} from "../../../../api/models/geo-json-properties-dto";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-info-card',
@@ -16,5 +17,4 @@ export class InfoCardComponent implements OnInit {
   ngOnInit(): void {
 
   }
-
 }

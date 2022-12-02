@@ -132,10 +132,8 @@ export class MapDisplayComponent implements OnInit {
       });
     });
     this.vehicleData$.subscribe(vehicleData => {
-      console.log('got vehicle data');
 
       this.mapConfigService.mapMode$.subscribe(mapMode => {
-        console.log('update');
 
         if(mapMode === MapMode.VehicleAmount) {
           this.displayVehicleAmount(vehicleData);

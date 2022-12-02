@@ -8,6 +8,20 @@
       "measurement-points": "Measurement points",
       "vehicle-amount": "Amount of vehicles",
       "vehicle-speed": "Speed of vehicles"
+    },
+    "info-card": {
+      "title": "Measured data",
+      "description": {
+        "id": "ID",
+        "speed-rating": "Speed rating",
+        "average-speed": "Average speed",
+        "number-of-vehicles": "Number of vehicles"
+      },
+      "speed-display-class": {
+        "high": "High speed",
+        "neutral": "Neutral speed",
+        "low": "Low speed"
+      }
     }
   }
 }
