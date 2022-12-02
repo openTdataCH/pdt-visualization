@@ -3,6 +3,7 @@ package ch.bfh.trafficcounter.controller;
 import ch.bfh.trafficcounter.event.UpdateEvent;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.service.VehicleAmountService;
+import ch.bfh.trafficcounter.service.VehicleDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +22,13 @@ import reactor.core.publisher.Sinks;
 @RequestMapping("/api/vehicledata")
 public class VehicleDataController {
 
-	private final VehicleAmountService vehicleAmountService;
+	private final VehicleDataService vehicleDataService;
 
 	private final Sinks.Many<UpdateEvent> updateEvent;
 
 	@Autowired
-	public VehicleDataController(VehicleAmountService vehicleAmountService, Sinks.Many<UpdateEvent> updateEvent) {
-		this.vehicleAmountService = vehicleAmountService;
+	public VehicleDataController(VehicleDataService vehicleDataService, Sinks.Many<UpdateEvent> updateEvent) {
+		this.vehicleDataService = vehicleDataService;
 		this.updateEvent = updateEvent;
 	}
 
@@ -38,7 +39,7 @@ public class VehicleDataController {
 	 */
 	@GetMapping
 	public ResponseEntity<GeoJsonFeatureCollectionDto> getCurrentVehicleData() {
-		return ResponseEntity.ok(vehicleAmountService.getCurrentVehicleAmount());
+		return ResponseEntity.ok(vehicleDataService.getCurrentVehicleData());
 	}
 
 	/**
@@ -49,7 +50,7 @@ public class VehicleDataController {
 	 */
 	@GetMapping(path = "/stream-flux", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<GeoJsonFeatureCollectionDto> getCurrentVehicleDataReactive() {
-		return updateEvent.asFlux().map(event -> vehicleAmountService.getCurrentVehicleAmount());
+		return updateEvent.asFlux().map(event -> vehicleDataService.getCurrentVehicleData());
 	}
 
 }
