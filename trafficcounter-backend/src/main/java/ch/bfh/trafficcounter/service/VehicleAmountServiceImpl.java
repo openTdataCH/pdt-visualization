@@ -50,7 +50,6 @@ public class VehicleAmountServiceImpl implements VehicleAmountService {
 
 	public VehicleAmount processMeasurement(final Measurement measurement, final SiteMeasurements siteMeasurements) {
 
-
 		final String measurementPointId = siteMeasurements.getMeasurementSiteReference().getId();
 		final MeasurementPoint measurementPoint = measurementPointRepository.findById(measurementPointId).orElseThrow();
 

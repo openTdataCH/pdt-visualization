@@ -22,14 +22,14 @@ public class MeasurementPointControllerTest extends AbstractApiTest {
 				.get("/api/measurementpoints")
 				.then()
 				.assertThat()
-				.body("features.size()", is(2))
+				.body("features.size()", is(1))
 				.statusCode(HttpStatus.SC_OK)
 				.extract().body().as(GeoJsonFeatureCollectionDto.class);
 
 		assertEquals("FeatureCollection", featureCollection.getType());
 
 		List<GeoJsonFeatureDto> features = featureCollection.getFeatures();
-		assertEquals(2, features.size());
+		assertEquals(1, features.size());
 
 		GeoJsonFeatureDto feature = features.get(0);
 		assertEquals("Feature", feature.getType());

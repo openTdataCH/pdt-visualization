@@ -33,7 +33,7 @@ public class OpentransportDataApiServiceMock implements OpenTransportDataApiServ
 	@Override
 	public D2LogicalModel pullMeasuredData() {
 
-		final String measurementPointId = "ABC";
+		final String measurementPointId = "CH-TEST";
 		if(measurementPointRepository.findById(measurementPointId).isEmpty()) {
 			measurementPointRepository.save(MeasurementPoint.builder()
 				.id(measurementPointId)
