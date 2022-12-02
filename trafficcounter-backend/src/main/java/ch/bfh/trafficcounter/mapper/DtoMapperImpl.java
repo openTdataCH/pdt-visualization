@@ -61,9 +61,6 @@ public class DtoMapperImpl implements DtoMapper {
             return null;
         }
 
-        final float maxSpeed = vehicleAmounts.stream().max(Comparator.comparing(VehicleAmount::getNumberOfVehicles))
-                .map(VehicleAmount::getNumberOfVehicles).orElse(0);
-
         return new GeoJsonFeatureCollectionDto(vehicleAmounts.stream()
                 .map(data -> {
                     final GeoJsonFeatureDto geoJsonFeatureDto = mapMeasurementPointToGeoJsonFeatureDto(data.getMeasurementPoint());
@@ -72,6 +69,40 @@ public class DtoMapperImpl implements DtoMapper {
                     return geoJsonFeatureDto;
                 })
                 .collect(Collectors.toList()));
+    }
+
+    @Override
+    public GeoJsonFeatureCollectionDto mapVehicleDataToGeoJsonFeatureCollectionDto(Collection<VehicleAmount> vehicleAmounts, Collection<SpeedData> speedData) {
+
+        // TODO, this is insane: stream two datasources simultaneously?
+
+        if (vehicleAmounts == null || vehicleAmounts.size() == 0 || speedData == null || speedData.size() == 0) {
+            return null;
+        }
+
+/*
+        final float maxSpeed = speedData.stream().max(Comparator.comparing(SpeedData::getAverageSpeed))
+                .map(SpeedData::getAverageSpeed).orElse(0f);
+
+        return new GeoJsonFeatureCollectionDto(speedData.stream()
+                .map(vehicleSpeeds -> {
+                    final GeoJsonFeatureDto geoJsonFeatureDto = mapMeasurementPointToGeoJsonFeatureDto(vehicleSpeeds.getMeasurementPoint());
+                    final SpeedDataDto speedDataDto = new SpeedDataDto(
+                            vehicleSpeeds.getAverageSpeed(),
+                            speedDisplayConfig.getSpeedDisplayClass(maxSpeed > 0 ? vehicleSpeeds.getAverageSpeed() / maxSpeed : 0)
+                    );
+                    geoJsonFeatureDto.getProperties().setSpeedData(speedDataDto);
+
+                    final VehicleAmountDto vehicleAmountDto = new VehicleAmountDto(vehicleAmounts.stream().filter(amountData -> amountData.getMeasurementPoint().getId().equals(vehicleSpeeds.getMeasurementPoint().getId().)));
+                    geoJsonFeatureDto.getProperties().setVehicleAmount(vehicleAmountDto);
+
+                    return geoJsonFeatureDto;
+                })
+                .collect(Collectors.toList()));
+
+ */
+
+        return null;
     }
 
     @Override
