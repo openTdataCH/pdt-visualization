@@ -88,12 +88,12 @@ public class DataRequestServiceImpl implements DataRequestService {
 		final List<SiteMeasurements> siteMeasurements = measuredDataPublication.getSiteMeasurements();
 
 		speedDataService.processAndPersistSpeedData(time, siteMeasurements);
-		updateEvent.tryEmitNext(UpdateEvent.SPEED_DATA);
 		System.out.println("-- Successfully requested and persisted speed data --");
 
 		vehicleAmountService.processAndPersistVehicleAmount(time, siteMeasurements);
-		updateEvent.tryEmitNext(UpdateEvent.VEHICLE_AMOUNT);
 		System.out.println("-- Successfully requested and persisted amount of vehicles --");
+
+		updateEvent.tryEmitNext(UpdateEvent.ALL);
 	}
 
 }
