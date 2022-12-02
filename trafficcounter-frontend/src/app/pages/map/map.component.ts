@@ -3,9 +3,7 @@ import {MeasurementPointService} from "../../services/measurement-point/measurem
 import {Observable} from "rxjs";
 import {GeoJsonFeatureCollectionDto} from "../../api/models/geo-json-feature-collection-dto";
 import {MapConfigService} from "./services/map-config/map-config.service";
-import {VehicleAmountService} from "../../services/vehicle-amount-service/vehicle-amount.service";
-import { VehicleSpeedService } from 'src/app/services/vehicle-speed-service/vehicle-speed.service';
-import {VehicleDataService} from "../../services/vehicle-data-service/vehicle-data.service";
+import {VehicleDataService} from "../../services/vehicle-data/vehicle-data.service";
 
 /**
  * The page component for the map.

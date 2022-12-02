@@ -106,7 +106,7 @@ export class VehicleDataControllerService extends ReactiveSseService {
         const consumes: string[] = [
         ];
 
-        const url = `${this.basePath}/vehicledata/live`;
+        const url = `${this.basePath}/vehicledata/stream-flux`;
 
         return this.createEventStream(url);
     }

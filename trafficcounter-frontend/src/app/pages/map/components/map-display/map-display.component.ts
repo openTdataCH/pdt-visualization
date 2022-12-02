@@ -112,7 +112,9 @@ export class MapDisplayComponent implements OnInit {
       setTimeout(() => this.map.resize(), 1);
     });
     this.vehicleData$.subscribe(vehicleData => {
+      console.log('got vehicle data');
       this.mapConfigService.mapMode$.subscribe(mapMode => {
+        console.log('update');
         if(mapMode === MapMode.VehicleAmount) {
           this.displayVehicleAmount(vehicleData);
         } else {
@@ -123,7 +125,7 @@ export class MapDisplayComponent implements OnInit {
         } else {
           this.removeLayerIfExists(this.vehicleSpeedLayer);
         }
-      }).unsubscribe();
+      });
     });
   }
 
@@ -185,8 +187,6 @@ export class MapDisplayComponent implements OnInit {
   private displayVehicleSpeed(vehicleSpeed: GeoJsonFeatureCollectionDto): void {
     this.updateLayer(this.vehicleSpeedLayer, vehicleSpeed);
 
-    console.log(this.vehicleSpeedLayer);
-
     // add event listener for measurement points
     this.map.on('click', this.vehicleSpeedLayer.id, this.addPopupHandling(MapMode.VehicleAmount, (e) => {
       return JSON.parse(e.features[0].properties['vehicleSpeed'])['speedOfVehicles'];
@@ -227,7 +227,6 @@ export class MapDisplayComponent implements OnInit {
       this.map.getCanvas().style.cursor = '';
     });
   }
-
 }
 
 
