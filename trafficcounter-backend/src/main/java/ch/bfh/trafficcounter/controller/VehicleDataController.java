@@ -2,11 +2,11 @@ package ch.bfh.trafficcounter.controller;
 
 import ch.bfh.trafficcounter.event.UpdateEvent;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
-import ch.bfh.trafficcounter.service.VehicleAmountService;
 import ch.bfh.trafficcounter.service.VehicleDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,8 +49,13 @@ public class VehicleDataController {
 	 * @return GeoJson including amount of vehicles
 	 */
 	@GetMapping(path = "/stream-flux", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public Flux<GeoJsonFeatureCollectionDto> getCurrentVehicleDataReactive() {
-		return updateEvent.asFlux().map(event -> vehicleDataService.getCurrentVehicleData());
+	public Flux<ServerSentEvent<GeoJsonFeatureCollectionDto>> getCurrentVehicleDataReactive() {
+		return updateEvent.asFlux().map(event -> ServerSentEvent
+				.<GeoJsonFeatureCollectionDto>builder()
+				.data(vehicleDataService.getCurrentVehicleData())
+				.event("message")
+				.build()
+		);
 	}
 
 }
