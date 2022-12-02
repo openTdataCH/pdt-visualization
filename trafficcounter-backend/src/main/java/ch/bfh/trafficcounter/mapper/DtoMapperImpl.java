@@ -8,7 +8,6 @@ import ch.bfh.trafficcounter.model.entity.VehicleAmount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -72,12 +71,9 @@ public class DtoMapperImpl implements DtoMapper {
 	@Override
 	public GeoJsonFeatureCollectionDto mapVehicleDataToGeoJsonFeatureCollectionDto(Collection<VehicleAmount> vehicleAmounts, Collection<SpeedData> speedData) {
 
-		// TODO, this is insane: stream two datasources simultaneously?
-
 		if (vehicleAmounts == null || vehicleAmounts.size() == 0 || speedData == null || speedData.size() == 0) {
 			return null;
 		}
-
 
 		final float maxSpeed = speedData.stream().max(Comparator.comparing(SpeedData::getAverageSpeed))
 				.map(SpeedData::getAverageSpeed).orElse(0f);
@@ -93,19 +89,18 @@ public class DtoMapperImpl implements DtoMapper {
 					return geoJsonFeatureDto;
 				}).toList();
 
-		ArrayList<GeoJsonFeatureDto> speedDataGeoJsonFeatureDtos = new ArrayList<>(speedDataGeoJsonFeatureDtosList);
+		// only contains speed data
+		ArrayList<GeoJsonFeatureDto> geoJsonFeatureDtos = new ArrayList<>(speedDataGeoJsonFeatureDtosList);
 
-
+		// add vehicle amount data
 		for (GeoJsonFeatureDto geoJsonFeatureDto :
-				speedDataGeoJsonFeatureDtos) {
-
-
+				geoJsonFeatureDtos) {
 
 			Optional<VehicleAmount> vehicleAmount = vehicleAmounts.stream().filter(amount -> amount.getMeasurementPoint().getId().equals(geoJsonFeatureDto.getProperties().getId())).findFirst();
 
 			VehicleAmountDto vehicleAmountDto = new VehicleAmountDto();
 			if (vehicleAmount.isEmpty()) {
-				System.out.println("No vehicleamount for speeddata found");
+				System.out.printf("No vehicleamount for speeddata with id %s found", geoJsonFeatureDto.getProperties().getId());
 				continue;
 			}
 			vehicleAmountDto.setNumberOfVehicles(vehicleAmount.get().getNumberOfVehicles());
@@ -114,9 +109,7 @@ public class DtoMapperImpl implements DtoMapper {
 
 		}
 
-		// new feature dto for every speed / amount pair
-
-		return new GeoJsonFeatureCollectionDto(speedDataGeoJsonFeatureDtos);
+		return new GeoJsonFeatureCollectionDto(geoJsonFeatureDtos);
 	}
 
 	@Override
