@@ -20,10 +20,4 @@ export class VehicleSpeedService {
     return this.vehicleSpeedControllerService.getCurrentSpeedData();
   }
 
-  /**
-   * @returns speed of vehicles read from the API as GeoJSON in a reactive way.
-   */
-  public getSpeedDataReactive(): Observable<GeoJsonFeatureCollectionDto> {
-    return this.vehicleSpeedControllerService.getCurrentSpeedDataReactive();
-  }
 }

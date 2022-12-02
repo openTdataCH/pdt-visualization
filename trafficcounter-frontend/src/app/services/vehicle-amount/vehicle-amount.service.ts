@@ -10,7 +10,7 @@ import {GeoJsonFeatureCollectionDto} from "../../api/models/geo-json-feature-col
 @Injectable({
   providedIn: 'root'
 })
-export class VehicleAmountServiceService {
+export class VehicleAmountService {
 
   constructor(private readonly vehicleAmountControllerService: VehicleAmountControllerService) { }
 
@@ -20,13 +20,5 @@ export class VehicleAmountServiceService {
   public getVehicleAmount(): Observable<GeoJsonFeatureCollectionDto> {
     return this.vehicleAmountControllerService.getCurrentAmountOfVehicles();
   }
-
-  /**
-   * Gets the amount of vehicles from the API as GeoJSON in a reactive way.
-   */
-  public getVehicleAmountReactive(): Observable<GeoJsonFeatureCollectionDto> {
-    return this.vehicleAmountControllerService.getCurrentAmountOfVehiclesReactive();
-  }
-
 
 }

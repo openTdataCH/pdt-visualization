@@ -2,7 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ApiModule } from 'src/app/api/api.module';
 
-import { VehicleSpeedService } from './vehicle-speed-service.service';
+import { VehicleSpeedService } from './vehicle-speed.service';
 
 describe('VehicleSpeedService', () => {
   let service: VehicleSpeedService;

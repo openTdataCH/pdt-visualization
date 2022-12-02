@@ -25,20 +25,10 @@ export class MapDisplayComponent implements OnInit {
   measurementPoints$!: Observable<GeoJsonFeatureCollectionDto>;
 
   /**
-   * Amount of vehicles to display on the map.
+   * Vehicle data to display on the map.
    */
-  @Input('vehicle-amount')
-  vehicleAmount$!: Observable<GeoJsonFeatureCollectionDto>;
-
-  private vehicleAmountSubscription: Subscription | null = null;
-
-  /**
-   * Speed of vehicles to display on the map
-   */
-  @Input('vehicle-speed')
-  vehicleSpeed$!: Observable<GeoJsonFeatureCollectionDto>;
-
-  private vehicleSpeedSubscription: Subscription | null = null;
+  @Input('vehicle-data')
+  vehicleData$!: Observable<GeoJsonFeatureCollectionDto>;
 
   private readonly icons: Array<string> = [
     'location-pin-thin',
@@ -121,29 +111,20 @@ export class MapDisplayComponent implements OnInit {
     this.mapConfigService.showMenu$.subscribe(showMenu => {
       setTimeout(() => this.map.resize(), 1);
     });
-
-    this.mapConfigService.mapMode$.subscribe(mapMode => {
-      if(mapMode === MapMode.VehicleAmount) {
-        this.vehicleAmountSubscription = this.vehicleAmount$.subscribe(vehicleAmount => {
-          this.displayVehicleAmount(vehicleAmount);
-        });
-      } else {
-        this.vehicleAmountSubscription?.unsubscribe();
-        this.removeLayerIfExists(this.vehicleAmountLayer);
-      }
+    this.vehicleData$.subscribe(vehicleData => {
+      this.mapConfigService.mapMode$.subscribe(mapMode => {
+        if(mapMode === MapMode.VehicleAmount) {
+          this.displayVehicleAmount(vehicleData);
+        } else {
+          this.removeLayerIfExists(this.vehicleAmountLayer);
+        }
+        if(mapMode == MapMode.VehicleSpeed) {
+            this.displayVehicleSpeed(vehicleData);
+        } else {
+          this.removeLayerIfExists(this.vehicleSpeedLayer);
+        }
+      }).unsubscribe();
     });
-
-    this.mapConfigService.mapMode$.subscribe(mapMode => {
-      if(mapMode == MapMode.VehicleSpeed) {
-        console.log(this.vehicleSpeed$);
-        this.vehicleSpeedSubscription = this.vehicleSpeed$.subscribe(vehicleSpeed => {
-          this.displayVehicleSpeed(vehicleSpeed);
-        })
-      } else {
-        this.vehicleSpeedSubscription?.unsubscribe();
-        this.removeLayerIfExists(this.vehicleSpeedLayer);
-      }
-    })
   }
 
   private constructMap() {
