@@ -1,5 +1,7 @@
 package ch.bfh.trafficcounter.mapper;
 
+import ch.bfh.trafficcounter.model.HistoricMeasurement;
+import ch.bfh.trafficcounter.model.dto.HistoricDataCollectionDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.model.entity.SpeedData;
@@ -48,5 +50,8 @@ public interface DtoMapper {
      * @return a DTO object which can easily be serialized to GeoJSON
      */
     GeoJsonFeatureCollectionDto mapMeasurementPointsToGeoJsonFeatureCollectionDto(List<MeasurementPoint> measurementPoints);
+
+    //TODO, JavaDoc
+    HistoricDataCollectionDto mapHistoricVehicleDataToHistoricDataDto(List<HistoricMeasurement> measurements, String duration);
 
 }

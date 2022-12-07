@@ -1,15 +1,14 @@
 package ch.bfh.trafficcounter.controller;
 
 import ch.bfh.trafficcounter.event.UpdateEvent;
+import ch.bfh.trafficcounter.model.dto.HistoricDataCollectionDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.service.VehicleDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.ServerSentEvent;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
@@ -63,4 +62,16 @@ public class VehicleDataController {
             );
     }
 
-}
+    /**
+     * Gets the historic data for the given measurementpoint for the given duration.
+     * @param id id of the measurementpoint
+     * @param duration duration wanted (implies resolution 24h -> hourly, 7d -> daily)
+     * @return a Json with historic data
+     */
+    @GetMapping("/api/vehicledata/history/{id}")
+    public ResponseEntity<HistoricDataCollectionDto> getHistoricalVehicleData(@PathVariable("id") String id, @RequestParam("duration") String duration) {
+        return ResponseEntity.ok(vehicleDataService.getHistoricalVehicleData(id, duration));
+    }
+
+
+    }
