@@ -112,6 +112,13 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         return dtoMapper.mapHistoricVehicleDataToHistoricDataDto(historicalMeasurements, duration.substring(duration.length() - 2));
     }
 
+    @Override
+    public boolean hasHistoricData(String id) {
+        //TODO, implement
+        return false;
+    }
+
+
     /**
      * Aggregate data for a time period
      *

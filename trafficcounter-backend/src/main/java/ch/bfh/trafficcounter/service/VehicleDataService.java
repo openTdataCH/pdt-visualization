@@ -26,4 +26,10 @@ public interface VehicleDataService {
      */
     HistoricDataCollectionDto getHistoricalVehicleData(String measurementPointId, String duration)  throws IllegalArgumentException;
 
+    /**
+     * Checks whether historic data for the measurement point is available
+     * @param id the id of the measurement point
+     * @return true if data is available, false if not
+     */
+	boolean hasHistoricData(String id);
 }
