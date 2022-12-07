@@ -12,6 +12,6 @@ public class HistoricDataDto {
 
     private int avgVehicleAmount;
 
-    private int avgVehicleSpeed;
+    private double avgVehicleSpeed;
 
 }
