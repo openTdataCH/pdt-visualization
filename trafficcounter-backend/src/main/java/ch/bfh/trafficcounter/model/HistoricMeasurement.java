@@ -5,12 +5,11 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class HistoricMeasurement {
 
     int ordinal;
 
-    int avgVehicleSpeed;
+    double avgVehicleSpeed;
 
     int avgVehicleAmount;
 
