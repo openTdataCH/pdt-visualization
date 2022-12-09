@@ -22,6 +22,17 @@
         "neutral": "Neutrale Geschw.",
         "low": "Tiefe Geschw."
       }
+    },
+    "histogram": {
+      "title": "Histogramm",
+      "label": {
+        "speedData": "Geschwindigkeitsdaten",
+        "vehicleAmount": "Anzahl Fahrzeuge"
+      },
+      "menu": {
+        "24h": "24 Stunden",
+        "7d": "7 Tage"
+      }
     }
   }
 }

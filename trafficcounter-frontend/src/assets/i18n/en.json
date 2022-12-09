@@ -22,6 +22,17 @@
         "neutral": "Neutral speed",
         "low": "Low speed"
       }
+    },
+    "histogram": {
+      "title": "Histogram",
+      "label": {
+        "speedData": "Speed data",
+        "vehicleAmount": "Vehicle amount"
+      },
+      "menu": {
+        "24h": "24 hours",
+        "7d": "7 days"
+      }
     }
   }
 }

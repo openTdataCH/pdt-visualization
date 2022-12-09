@@ -3,8 +3,7 @@ import {Chart} from "chart.js/auto";
 import {HistoricDataCollectionDto} from "../../../../api/models/historic-data-collection-dto";
 import {ChartData} from "chart.js";
 import {HistogramType} from './histogram-type';
-
-const DEFAUT_BACKGROUND_COLOR = '#3e95cd';
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-histogram',
@@ -36,20 +35,20 @@ export class HistogramComponent implements OnInit {
       labels: labels,
       datasets: [
         {
-          label: 'speed-data',
-          backgroundColor: DEFAUT_BACKGROUND_COLOR,
+          label: this.translateService.instant('map.histogram.label.speedData'),
+          backgroundColor: 'red',
           data: speedData
         },
         {
-          label: 'vehicle-amount',
-          backgroundColor: DEFAUT_BACKGROUND_COLOR,
+          label: this.translateService.instant('map.histogram.label.vehicleAmount'),
+          backgroundColor: 'blue',
           data: vehicleAmount
         }
       ]
     }
   }
 
-  constructor() {
+  constructor(private readonly translateService: TranslateService) {
   }
 
   ngOnInit(): void {
@@ -66,7 +65,7 @@ export class HistogramComponent implements OnInit {
             },
             title: {
               display: true,
-              text: 'Chart.js Bar Chart'
+              text: this.translateService.instant('map.histogram.title')
             }
           }
         }
