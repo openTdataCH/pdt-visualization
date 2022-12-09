@@ -43,6 +43,15 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
      * @return a list of all found measurements in between start and end time
      * @author Sven Trachsel
      */
-    Optional<List<Measurement>> findAllByTimeBetween(LocalDateTime start, LocalDateTime end);
+    List<Measurement> findAllByTimeBetween(LocalDateTime start, LocalDateTime end);
+
+    /**
+     * Counts the number of records between two dates
+     * @param start start time for search
+     * @param end end time for search
+     * @return number of records found
+     * @author Sven Trachsel
+     */
+    Integer countAllByTimeIsBetween(LocalDateTime start, LocalDateTime end);
 
 }
