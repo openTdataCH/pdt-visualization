@@ -10,6 +10,8 @@ import {TranslateModule} from "@ngx-translate/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {InfoCardComponent} from './components/info-card/info-card.component';
 import {MapSideBarComponent} from "./components/map-side-bar/map-side-bar.component";
+import { HistogramComponent } from './components/histogram/histogram.component';
+import { HistogramMenuComponent } from './components/histogram-menu/histogram-menu.component';
 
 
 @NgModule({
@@ -18,7 +20,9 @@ import {MapSideBarComponent} from "./components/map-side-bar/map-side-bar.compon
     MapDisplayComponent,
     MapMenuBarComponent,
     MapSideBarComponent,
-    InfoCardComponent
+    InfoCardComponent,
+    HistogramComponent,
+    HistogramMenuComponent
   ],
   imports: [
     CommonModule,

@@ -20,7 +20,10 @@ export class MapConfigService {
    * Mode of the map.
    */
   mapMode$: BehaviorSubject<MapMode> = new BehaviorSubject<MapMode>(MapMode.MeasurementPoints);
+
   selectedPointInfo$: BehaviorSubject<GeoJsonPropertiesDto | null> = new BehaviorSubject<GeoJsonPropertiesDto | null>(null);
+
+  histogramDuration$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null)
 
   constructor() {
   }

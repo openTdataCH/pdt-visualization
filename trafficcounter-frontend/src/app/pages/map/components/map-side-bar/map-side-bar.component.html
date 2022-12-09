@@ -12,4 +12,15 @@
     ></app-info-card>
   </div>
 
+  <app-histogram-menu></app-histogram-menu>
+
+  <div *ngIf="histogramDuration$ | async as histogramDuration">
+    <div *ngIf="histogramData$ | async as histogramData">
+    <app-histogram
+      *ngIf="histogramDuration !== null && histogramData !== null"
+      [duration]="histogramDuration"
+      [data]="this.histogramData"
+    ></app-histogram>
+  </div>
+
 </div>
