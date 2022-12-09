@@ -11,6 +11,7 @@ import ch.bfh.trafficcounter.repository.MeasurementPointRepository;
 import ch.bfh.trafficcounter.repository.MeasurementRepository;
 import ch.bfh.trafficcounter.repository.SpeedDataRepository;
 import ch.bfh.trafficcounter.repository.VehicleAmountRepository;
+import net.bytebuddy.asm.Advice;
 import org.glassfish.pfl.basic.contain.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -104,10 +105,13 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 
         int ordinal = 1;
         for (List<Measurement> m : historicalData) {
+            LocalDateTime time = timeSpans.get(ordinal-1).first();
             if (m.isEmpty()) {
+                historicalMeasurements.add(new HistoricMeasurement(ordinal, time, 0, 0));
+                ordinal++;
                 continue;
             }
-            historicalMeasurements.add(aggregateVehicleDataForMeasurementPoint(m, measurementPointId, ordinal));
+            historicalMeasurements.add(aggregateVehicleDataForMeasurementPoint(m, measurementPointId, ordinal, time));
             ordinal++;
         }
 
@@ -128,7 +132,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
      * @param ordinal the number indicating the order of the measurement in the period
      * @return a historic measurement
      */
-    private HistoricMeasurement aggregateVehicleDataForMeasurementPoint(List<Measurement> historicalData, String measurementPointId, int ordinal) {
+    private HistoricMeasurement aggregateVehicleDataForMeasurementPoint(List<Measurement> historicalData, String measurementPointId, int ordinal, LocalDateTime time) {
 
         double speed = 0;
         int amount = 0;
@@ -145,7 +149,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         double avgSpeed = speed / historicalData.size();
         int avgAmount = amount / historicalData.size();
 
-        return new HistoricMeasurement(ordinal, avgSpeed, avgAmount);
+        return new HistoricMeasurement(ordinal, time, avgSpeed, avgAmount);
     }
 
 }
