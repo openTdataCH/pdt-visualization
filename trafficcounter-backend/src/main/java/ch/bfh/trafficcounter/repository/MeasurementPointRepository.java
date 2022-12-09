@@ -33,6 +33,7 @@ public interface MeasurementPointRepository extends JpaRepository<MeasurementPoi
 
     /**
      * Returns if measurement point is found
+     *
      * @param id id of the measurement point
      * @return true if found, false if not
      */

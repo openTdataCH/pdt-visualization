@@ -53,8 +53,9 @@ public interface DtoMapper {
 
     /**
      * Wraps historic measurements into a Json
+     *
      * @param measurements List of historic measurements for each measurement time implied by resolution
-     * @param resolution given resolution, implies amount of measurements (daily -> 7, hourly -> 24)
+     * @param resolution   given resolution, implies amount of measurements (daily -> 7, hourly -> 24)
      * @return a DTO object for transmitting historic data
      */
     HistoricDataCollectionDto mapHistoricVehicleDataToHistoricDataDto(List<HistoricMeasurement> measurements, String resolution);

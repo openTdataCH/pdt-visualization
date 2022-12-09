@@ -11,15 +11,16 @@ import ch.bfh.trafficcounter.repository.MeasurementPointRepository;
 import ch.bfh.trafficcounter.repository.MeasurementRepository;
 import ch.bfh.trafficcounter.repository.SpeedDataRepository;
 import ch.bfh.trafficcounter.repository.VehicleAmountRepository;
-import net.bytebuddy.asm.Advice;
 import org.glassfish.pfl.basic.contain.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -73,7 +74,6 @@ public class VehicleDataServiceImpl implements VehicleDataService {
     @Override
     public HistoricDataCollectionDto getHistoricalVehicleData(String measurementPointId, String duration) {
 
-        LocalDateTime start;
         LocalDateTime now = LocalDateTime.now();
         ArrayList<List<Measurement>> historicalData = new ArrayList<>();
         ArrayList<Pair<LocalDateTime, LocalDateTime>> timeSpans = new ArrayList<>();
@@ -105,7 +105,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 
         int ordinal = 1;
         for (List<Measurement> m : historicalData) {
-            LocalDateTime time = timeSpans.get(ordinal-1).first();
+            LocalDateTime time = timeSpans.get(ordinal - 1).first();
             if (m.isEmpty()) {
                 historicalMeasurements.add(new HistoricMeasurement(ordinal, time, 0, 0));
                 ordinal++;
@@ -127,9 +127,9 @@ public class VehicleDataServiceImpl implements VehicleDataService {
     /**
      * Aggregate data for a time period
      *
-     * @param historicalData a list of historical measurements
+     * @param historicalData     a list of historical measurements
      * @param measurementPointId the id of the measurement point to aggregate data for
-     * @param ordinal the number indicating the order of the measurement in the period
+     * @param ordinal            the number indicating the order of the measurement in the period
      * @return a historic measurement
      */
     private HistoricMeasurement aggregateVehicleDataForMeasurementPoint(List<Measurement> historicalData, String measurementPointId, int ordinal, LocalDateTime time) {

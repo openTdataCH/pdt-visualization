@@ -2,7 +2,6 @@ package ch.bfh.trafficcounter.controller;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.annotation.DirtiesContext;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
