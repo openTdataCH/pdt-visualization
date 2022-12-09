@@ -6,14 +6,12 @@ import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonGeometryDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonPropertiesDto;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class MeasurementPointControllerTest extends AbstractApiTest {
 
     @Test

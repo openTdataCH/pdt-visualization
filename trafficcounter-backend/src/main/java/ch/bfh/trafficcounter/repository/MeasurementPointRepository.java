@@ -30,4 +30,12 @@ public interface MeasurementPointRepository extends JpaRepository<MeasurementPoi
      * @return number of measurement points
      */
     int countAllByActive(boolean active);
+
+    /**
+     * Returns if measurement point is found
+     *
+     * @param id id of the measurement point
+     * @return true if found, false if not
+     */
+    Boolean existsMeasurementPointById(String id);
 }

@@ -1,6 +1,9 @@
 package ch.bfh.trafficcounter.mapper;
 
 import ch.bfh.trafficcounter.config.SpeedDisplayConfig;
+import ch.bfh.trafficcounter.model.HistoricMeasurement;
+import ch.bfh.trafficcounter.model.dto.HistoricDataCollectionDto;
+import ch.bfh.trafficcounter.model.dto.HistoricDataDto;
 import ch.bfh.trafficcounter.model.dto.geojson.*;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.model.entity.SpeedData;
@@ -127,7 +130,26 @@ public class DtoMapperImpl implements DtoMapper {
         return new GeoJsonFeatureCollectionDto(featureDtos);
     }
 
-    // following methos are not used from outside and are therefore not part of interface. private for cleanliness
+    @Override
+    public HistoricDataCollectionDto mapHistoricVehicleDataToHistoricDataDto(List<HistoricMeasurement> measurements, String resolution) {
+
+        if (measurements.size() == 0) {
+            return null;
+        }
+
+        HistoricDataDto[] measurementsArray = new HistoricDataDto[measurements.size()];
+
+        int cnt = 0;
+        for (HistoricMeasurement h : measurements) {
+            HistoricDataDto historicDataDto = new HistoricDataDto(h.getOrdinal(), h.getTime(), h.getAvgVehicleAmount(), h.getAvgVehicleSpeed());
+            measurementsArray[cnt] = historicDataDto;
+            cnt++;
+        }
+
+        return new HistoricDataCollectionDto(resolution, measurementsArray);
+    }
+
+    // following methods are not used from outside and are therefore not part of interface. private for cleanliness
     private GeoJsonFeatureDto mapMeasurementPointToGeoJsonFeatureDto(MeasurementPoint mp) {
         return new GeoJsonFeatureDto(mapMeasurementPointToGeoJsonGeometryDto(mp), mapMeasurementPointToGeoJsonPropertiesDto(mp));
     }
