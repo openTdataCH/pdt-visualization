@@ -68,8 +68,8 @@ public class VehicleDataController {
      * Gets the historic data for the given measurementpoint for the given duration.
      *
      * @param id       id of the measurementpoint
-     * @param duration duration wanted (implies resolution 24h -> hourly, 7d -> daily)
-     * @return a Json with historic data
+     * @param duration contains the wanted duration (implies resolution 24h -> hourly, 7d -> daily)
+     * @return a JSON with historic data
      */
     @GetMapping("/history/{id}")
     public ResponseEntity<HistoricDataCollectionDto> getHistoricalVehicleData(@PathVariable String id, @RequestParam("duration") String duration) {

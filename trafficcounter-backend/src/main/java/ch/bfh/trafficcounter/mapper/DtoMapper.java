@@ -52,7 +52,7 @@ public interface DtoMapper {
     GeoJsonFeatureCollectionDto mapMeasurementPointsToGeoJsonFeatureCollectionDto(List<MeasurementPoint> measurementPoints);
 
     /**
-     * Wraps historic measurements into a Json
+     * Wraps historic measurements into a JSON
      *
      * @param measurements List of historic measurements for each measurement time implied by resolution
      * @param resolution   given resolution, implies amount of measurements (daily -> 7, hourly -> 24)
