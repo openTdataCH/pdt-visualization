@@ -73,6 +73,9 @@ public class VehicleDataController {
      */
     @GetMapping("/history/{id}")
     public ResponseEntity<HistoricDataCollectionDto> getHistoricalVehicleData(@PathVariable String id, @RequestParam("duration") String duration) {
+        if (!duration.equals("24h") && !duration.equals("7d")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("duration %s not allowed", duration));
+        }
         if (!vehicleDataService.hasHistoricData(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("no historic data for %s found", id));
         }

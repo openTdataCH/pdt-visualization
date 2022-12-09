@@ -53,5 +53,4 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
      * @author Sven Trachsel
      */
     Integer countAllByTimeIsBetween(LocalDateTime start, LocalDateTime end);
-
 }

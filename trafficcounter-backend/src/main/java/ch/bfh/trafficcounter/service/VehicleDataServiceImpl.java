@@ -116,8 +116,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 
     @Override
     public boolean hasHistoricData(String id) {
-        LocalDateTime now = LocalDateTime.now();
-        return measurementRepository.countAllByTimeIsBetween(now.minusDays(1), now) > 0;
+        return measurementPointRepository.existsMeasurementPointById(id);
     }
 
 
