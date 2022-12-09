@@ -7,7 +7,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class VehicleDataControllerTest extends AbstractApiTest {
 
     @Test
@@ -21,6 +20,50 @@ public class VehicleDataControllerTest extends AbstractApiTest {
             .body("features[0].properties.speedData.speedDisplayClass", equalTo("high"))
             .body("features[0].properties.vehicleAmount.numberOfVehicles", equalTo(1))
             .statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    void testGetHistoricVehicleData24h() {
+        request()
+            .get("/api/vehicledata/history/CH-TEST?duration=24h")
+            .then()
+            .assertThat()
+            .body("resolution", equalTo("h"))
+            .body("measurements[0].ordinal", equalTo(1))
+            .body("measurements[0].avgVehicleAmount", equalTo(1))
+            .body("measurements[0].avgVehicleSpeed", equalTo(10f))
+            .statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    void testGetHistoricVehicleData7d() {
+        request()
+            .get("/api/vehicledata/history/CH-TEST?duration=7d")
+            .then()
+            .assertThat()
+            .body("resolution", equalTo("d"))
+            .body("measurements[0].ordinal", equalTo(1))
+            .body("measurements[0].avgVehicleAmount", equalTo(1))
+            .body("measurements[0].avgVehicleSpeed", equalTo(10f))
+            .statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    void testGetHistoricVehicleData30d_negative() {
+        request()
+            .get("/api/vehicledata/history/CH-TEST?duration=30d")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_BAD_REQUEST);
+    }
+
+    @Test
+    void testGetHistoricVehicleDataWrongEndpoint_negative() {
+        request()
+            .get("/api/vehicledata/history/CH-TESTX?duration=24h")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NOT_FOUND);
     }
 
 }

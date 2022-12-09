@@ -11,7 +11,9 @@ import ch.bfh.trafficcounter.repository.MeasurementPointRepository;
 import ch.bfh.trafficcounter.repository.MeasurementRepository;
 import ch.bfh.trafficcounter.repository.SpeedDataRepository;
 import ch.bfh.trafficcounter.repository.VehicleAmountRepository;
+import org.glassfish.pfl.basic.contain.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,18 +74,18 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 
         LocalDateTime start;
         LocalDateTime now = LocalDateTime.now();
-        ArrayList<Optional<List<Measurement>>> historicalData = new ArrayList<>();
-        Map<LocalDateTime, LocalDateTime> timeSpans = new HashMap<>();
+        ArrayList<List<Measurement>> historicalData = new ArrayList<>();
+        ArrayList<Pair<LocalDateTime, LocalDateTime>> timeSpans = new ArrayList<>();
 
         switch (duration) {
             case "24h":
                 for (long i = 1L; i <= 24L; i++) {
-                    timeSpans.put(now.minusHours(i), now.minusHours(i - 1));
+                    timeSpans.add(new Pair<>(now.minusHours(i - 1), now.minusHours(i)));
                 }
                 break;
             case "7d":
                 for (long i = 1L; i <= 7L; i++) {
-                    timeSpans.put(now.minusDays(i), now.minusDays(i - 1));
+                    timeSpans.add(new Pair<>(now.minusDays(i - 1), now.minusDays(i)));
                 }
                 break;
             default:
@@ -91,8 +93,8 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         }
 
         // gets data either hourly 24x or daily 7x
-        for (Map.Entry<LocalDateTime, LocalDateTime> ts : timeSpans.entrySet()) {
-            historicalData.add(measurementRepository.findAllByTimeBetween(ts.getKey(), ts.getValue()));
+        for (Pair<LocalDateTime, LocalDateTime> ts : timeSpans) {
+            historicalData.add(measurementRepository.findAllByTimeBetween(ts.second(), ts.first()));
         }
         if (historicalData.isEmpty()) {
             return null;
@@ -101,21 +103,20 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         ArrayList<HistoricMeasurement> historicalMeasurements = new ArrayList<>();
 
         int ordinal = 1;
-        for (Optional<List<Measurement>> m : historicalData) {
+        for (List<Measurement> m : historicalData) {
             if (m.isEmpty()) {
                 continue;
             }
-            historicalMeasurements.add(aggregateVehicleDataForMeasurementPoint(m.get(), measurementPointId, ordinal));
+            historicalMeasurements.add(aggregateVehicleDataForMeasurementPoint(m, measurementPointId, ordinal));
             ordinal++;
         }
 
-        return dtoMapper.mapHistoricVehicleDataToHistoricDataDto(historicalMeasurements, duration.substring(duration.length() - 2));
+        return dtoMapper.mapHistoricVehicleDataToHistoricDataDto(historicalMeasurements, duration.substring(duration.length() - 1));
     }
 
     @Override
     public boolean hasHistoricData(String id) {
-        //TODO, implement
-        return false;
+        return measurementPointRepository.existsMeasurementPointById(id);
     }
 
 
@@ -131,6 +132,10 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 
         double speed = 0;
         int amount = 0;
+
+        if (historicalData.size() < 1) {
+            return null;
+        }
 
         for (Measurement m : historicalData) {
             speed += m.getSpeedData().stream().filter(mp -> mp.getMeasurementPoint().getId().equals(measurementPointId)).mapToDouble(SpeedData::getAverageSpeed).average().orElse(Double.NaN);

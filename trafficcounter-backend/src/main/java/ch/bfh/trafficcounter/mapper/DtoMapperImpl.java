@@ -133,6 +133,10 @@ public class DtoMapperImpl implements DtoMapper {
     @Override
     public HistoricDataCollectionDto mapHistoricVehicleDataToHistoricDataDto(List<HistoricMeasurement> measurements, String resolution) {
 
+        if (measurements.size() == 0) {
+            return null;
+        }
+
         HistoricDataDto[] measurementsArray = new HistoricDataDto[measurements.size()];
 
         int cnt = 0;
