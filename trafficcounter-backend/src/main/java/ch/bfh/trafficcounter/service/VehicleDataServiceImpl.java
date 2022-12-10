@@ -5,8 +5,6 @@ import ch.bfh.trafficcounter.model.HistoricMeasurement;
 import ch.bfh.trafficcounter.model.dto.HistoricDataCollectionDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
-import ch.bfh.trafficcounter.model.entity.SpeedData;
-import ch.bfh.trafficcounter.model.entity.VehicleAmount;
 import ch.bfh.trafficcounter.repository.MeasurementPointRepository;
 import ch.bfh.trafficcounter.repository.MeasurementRepository;
 import ch.bfh.trafficcounter.repository.SpeedDataRepository;
@@ -77,6 +75,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         LocalDateTime now = LocalDateTime.now();
         ArrayList<List<Measurement>> historicalData = new ArrayList<>();
         ArrayList<Pair<LocalDateTime, LocalDateTime>> timeSpans = new ArrayList<>();
+        ArrayList<HistoricMeasurement> historicMeasurements = new ArrayList<>();
 
         switch (duration) {
             case "24h":
@@ -94,64 +93,33 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         }
 
         // gets data either hourly 24x or daily 7x
-        for (Pair<LocalDateTime, LocalDateTime> ts : timeSpans) {
-            historicalData.add(measurementRepository.findAllByTimeBetweenAndMeasurementPointId(measurementPointId, ts.second(), ts.first()));
-        }
-        if (historicalData.isEmpty()) {
-            return null;
-        }
-
-        ArrayList<HistoricMeasurement> historicalMeasurements = new ArrayList<>();
-
         int ordinal = 1;
-        for (List<Measurement> m : historicalData) {
-            LocalDateTime time = timeSpans.get(ordinal - 1).first();
-            if (m.isEmpty()) {
-                historicalMeasurements.add(new HistoricMeasurement(ordinal, time, 0, 0));
-                ordinal++;
-                continue;
+        for (Pair<LocalDateTime, LocalDateTime> ts : timeSpans) {
+            Double avgSpeed = measurementRepository.findAverageVehicleSpeedByTimeBetweenAndMeasurementPointId(measurementPointId, ts.second(), ts.first());
+            Integer avgAmount = measurementRepository.findAverageVehicleAmountByTimeBetweenAndMeasurementPointId(measurementPointId, ts.second(), ts.first());
+
+            if (avgSpeed == null) {
+                avgSpeed = 0d;
             }
-            historicalMeasurements.add(aggregateVehicleDataForMeasurementPoint(m, measurementPointId, ordinal, time));
+            if (avgAmount == null) {
+                avgAmount = 0;
+            }
+
+            historicMeasurements.add(new HistoricMeasurement(
+                ordinal,
+                ts.first(),
+                avgSpeed,
+                avgAmount
+            ));
             ordinal++;
         }
 
-        return dtoMapper.mapHistoricVehicleDataToHistoricDataDto(historicalMeasurements, duration.substring(duration.length() - 1));
+        return dtoMapper.mapHistoricVehicleDataToHistoricDataDto(historicMeasurements, duration.substring(duration.length() - 1));
     }
 
     @Override
     public boolean hasHistoricData(String id) {
         return measurementPointRepository.existsMeasurementPointById(id);
-    }
-
-
-    /**
-     * Aggregate data for a time period
-     *
-     * @param historicalData     a list of historical measurements
-     * @param measurementPointId the id of the measurement point to aggregate data for
-     * @param ordinal            the number indicating the order of the measurement in the period
-     * @return a historic measurement
-     */
-    private HistoricMeasurement aggregateVehicleDataForMeasurementPoint(List<Measurement> historicalData, String measurementPointId, int ordinal, LocalDateTime time) {
-
-        double speed = 0;
-        int amount = 0;
-
-        if (historicalData.size() < 1) {
-            return null;
-        }
-
-        for (Measurement m : historicalData) {
-            //speed += m.getSpeedData().parallelStream().filter(mp -> mp.getMeasurementPoint().getId().equals(measurementPointId)).mapToDouble(SpeedData::getAverageSpeed).average().orElse(Double.NaN);
-            //amount += m.getVehicleAmounts().parallelStream().filter(mp -> mp.getMeasurementPoint().getId().equals(measurementPointId)).mapToInt(VehicleAmount::getNumberOfVehicles).average().orElse(Double.NaN);
-            speed += m.getSpeedData().parallelStream().mapToDouble(SpeedData::getAverageSpeed).average().orElse(Double.NaN);
-            amount += m.getVehicleAmounts().parallelStream().mapToInt(VehicleAmount::getNumberOfVehicles).average().orElse(Double.NaN);
-        }
-
-        double avgSpeed = speed / historicalData.size();
-        int avgAmount = amount / historicalData.size();
-
-        return new HistoricMeasurement(ordinal, time, avgSpeed, avgAmount);
     }
 
 }
