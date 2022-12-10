@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 
 /**
@@ -142,8 +143,8 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         }
 
         for (Measurement m : historicalData) {
-            speed += m.getSpeedData().stream().filter(mp -> mp.getMeasurementPoint().getId().equals(measurementPointId)).mapToDouble(SpeedData::getAverageSpeed).average().orElse(Double.NaN);
-            amount += m.getVehicleAmounts().stream().filter(mp -> mp.getMeasurementPoint().getId().equals(measurementPointId)).mapToInt(VehicleAmount::getNumberOfVehicles).average().orElse(Double.NaN);
+            speed += m.getSpeedData().parallelStream().filter(mp -> mp.getMeasurementPoint().getId().equals(measurementPointId)).mapToDouble(SpeedData::getAverageSpeed).average().orElse(Double.NaN);
+            amount += m.getVehicleAmounts().parallelStream().filter(mp -> mp.getMeasurementPoint().getId().equals(measurementPointId)).mapToInt(VehicleAmount::getNumberOfVehicles).average().orElse(Double.NaN);
         }
 
         double avgSpeed = speed / historicalData.size();
