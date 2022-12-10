@@ -48,9 +48,9 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
 
     @Query(value = """
         SELECT * FROM measurement m
-        JOIN vehicle_amount v on m.id = v.measurement_id JOIN measurement_point mp1 ON v.measurement_point_id = mp1.id
-        JOIN speed_data s on m.id = s.measurement_id JOIN measurement_point mp2 ON s.measurement_point_id = mp2.id
-        WHERE mp1.id = :measurementPointId OR mp2.id = :measurementPointId
+        JOIN vehicle_amount v on m.id = v.measurement_id
+        JOIN speed_data s on m.id = s.measurement_id
+        WHERE v.measurement_point_id = :measurementPointId AND s.measurement_point_id = :measurementPointId
         AND time BETWEEN :start AND :end""", nativeQuery = true)
     List<Measurement> findAllByTimeBetweenAndMeasurementPointId(@Param("measurementPointId") String measurementPointId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
