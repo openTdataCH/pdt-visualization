@@ -95,7 +95,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 
         // gets data either hourly 24x or daily 7x
         for (Pair<LocalDateTime, LocalDateTime> ts : timeSpans) {
-            historicalData.add(measurementRepository.findAllByTimeBetween(ts.second(), ts.first()));
+            historicalData.add(measurementRepository.findAllByTimeBetweenAndMeasurementPointId(measurementPointId, ts.second(), ts.first()));
         }
         if (historicalData.isEmpty()) {
             return null;
@@ -142,8 +142,10 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         }
 
         for (Measurement m : historicalData) {
-            speed += m.getSpeedData().parallelStream().filter(mp -> mp.getMeasurementPoint().getId().equals(measurementPointId)).mapToDouble(SpeedData::getAverageSpeed).average().orElse(Double.NaN);
-            amount += m.getVehicleAmounts().parallelStream().filter(mp -> mp.getMeasurementPoint().getId().equals(measurementPointId)).mapToInt(VehicleAmount::getNumberOfVehicles).average().orElse(Double.NaN);
+            //speed += m.getSpeedData().parallelStream().filter(mp -> mp.getMeasurementPoint().getId().equals(measurementPointId)).mapToDouble(SpeedData::getAverageSpeed).average().orElse(Double.NaN);
+            //amount += m.getVehicleAmounts().parallelStream().filter(mp -> mp.getMeasurementPoint().getId().equals(measurementPointId)).mapToInt(VehicleAmount::getNumberOfVehicles).average().orElse(Double.NaN);
+            speed += m.getSpeedData().parallelStream().mapToDouble(SpeedData::getAverageSpeed).average().orElse(Double.NaN);
+            amount += m.getVehicleAmounts().parallelStream().mapToInt(VehicleAmount::getNumberOfVehicles).average().orElse(Double.NaN);
         }
 
         double avgSpeed = speed / historicalData.size();

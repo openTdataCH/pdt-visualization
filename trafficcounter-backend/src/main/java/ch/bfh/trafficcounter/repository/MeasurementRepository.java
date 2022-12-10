@@ -3,6 +3,7 @@ package ch.bfh.trafficcounter.repository;
 import ch.bfh.trafficcounter.model.entity.Measurement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -44,6 +45,14 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
      * @author Sven Trachsel
      */
     List<Measurement> findAllByTimeBetween(LocalDateTime start, LocalDateTime end);
+
+    @Query(value = """
+        SELECT * FROM measurement m
+        JOIN vehicle_amount v on m.id = v.measurement_id JOIN measurement_point mp1 ON v.measurement_point_id = mp1.id
+        JOIN speed_data s on m.id = s.measurement_id JOIN measurement_point mp2 ON s.measurement_point_id = mp2.id
+        WHERE mp1.id = :measurementPointId OR mp2.id = :measurementPointId
+        AND time BETWEEN :start AND :end""", nativeQuery = true)
+    List<Measurement> findAllByTimeBetweenAndMeasurementPointId(@Param("measurementPointId") String measurementPointId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
     /**
      * Counts the number of records between two dates
