@@ -15,6 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(indexes = @Index(columnList = "measurementPoint"))
 public class VehicleAmount {
 
     /**
