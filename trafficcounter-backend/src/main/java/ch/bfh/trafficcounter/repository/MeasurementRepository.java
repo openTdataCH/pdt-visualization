@@ -63,12 +63,12 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
     Integer findSumVehicleAmountByTimeBetweenAndMeasurementPointId(@Param("measurementPointId") String measurementPointId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
     @Query(value = """
-        SELECT SUM(s.average_speed) avgVehicleSpeed FROM measurement m
+        SELECT AVG(s.average_speed) avgVehicleSpeed FROM measurement m
         JOIN speed_data s on m.id = s.measurement_id
         WHERE s.measurement_point_id = :measurementPointId
         AND time BETWEEN :start AND :end
         GROUP BY s.measurement_point_id""", nativeQuery = true)
-    Double findSumVehicleSpeedByTimeBetweenAndMeasurementPointId(@Param("measurementPointId") String measurementPointId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+    Double findAverageVehicleSpeedByTimeBetweenAndMeasurementPointId(@Param("measurementPointId") String measurementPointId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
 
 

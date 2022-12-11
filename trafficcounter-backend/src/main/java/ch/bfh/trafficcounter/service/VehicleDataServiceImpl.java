@@ -79,7 +79,6 @@ public class VehicleDataServiceImpl implements VehicleDataService {
     public HistoricDataCollectionDto getHistoricalVehicleData(String measurementPointId, String duration) {
 
         LocalDateTime now = LocalDateTime.now();
-        ArrayList<List<Measurement>> historicalData = new ArrayList<>();
         ArrayList<Pair<LocalDateTime, LocalDateTime>> timeSpans = new ArrayList<>();
         ArrayList<HistoricMeasurement> historicMeasurements = new ArrayList<>();
         ArrayList<Triple<Future<Double>, Future<Integer>, LocalDateTime>> historicDataWithTime = new ArrayList<>();
@@ -116,13 +115,14 @@ public class VehicleDataServiceImpl implements VehicleDataService {
             try {
                 avgSpeed = tr.first().get();
                 avgAmount = tr.second().get();
-            } catch (CancellationException | ExecutionException | InterruptedException ca) {
+            } catch (CancellationException | ExecutionException | InterruptedException e) {
                 historicMeasurements.add(new HistoricMeasurement(
                     ordinal,
                     tr.third(),
                     0,
                     0
                 ));
+                System.out.println("Unable to get result from async task");
                 continue;
             }
 
@@ -152,8 +152,8 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 
     @Async
     public Future<Double> runSumSpeedQuery(String measurementPointId, LocalDateTime start, LocalDateTime end) {
-        Double sumSpeed = measurementRepository.findSumVehicleSpeedByTimeBetweenAndMeasurementPointId(measurementPointId, start, end);
-        return new AsyncResult<>(sumSpeed);
+        Double avgSpeed = measurementRepository.findAverageVehicleSpeedByTimeBetweenAndMeasurementPointId(measurementPointId, start, end);
+        return new AsyncResult<>(avgSpeed);
     }
 
     @Async
