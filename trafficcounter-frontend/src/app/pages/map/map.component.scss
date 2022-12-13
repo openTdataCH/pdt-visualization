@@ -3,6 +3,11 @@
   justify-content: space-between;
   flex-direction: row;
 
+  app-map-side-bar {
+    margin-inline: auto;
+    width: 30%;
+  }
+
   app-map-menu {
     flex-grow: 1;
   }
@@ -19,6 +24,19 @@
         flex-basis: 0;
         width: 0;
       }
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .map-page {
+
+    app-map-side-bar {
+      width: 100%;
+    }
+
+    #map-container:not(.full-width) {
+        display: none;
     }
   }
 }

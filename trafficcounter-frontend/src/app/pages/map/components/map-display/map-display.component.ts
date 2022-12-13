@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {LayerSpecification, Map, MapOptions} from 'maplibre-gl';
-import {Observable} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {GeoJsonFeatureCollectionDto} from "../../../../api/models/geo-json-feature-collection-dto";
 import {MapConfigService} from "../../services/map-config/map-config.service";
 import {MapMode} from "../../models/map-mode";
@@ -22,6 +22,7 @@ export class MapDisplayComponent implements OnInit {
    */
   @Input('measurement-points')
   measurementPoints$!: Observable<GeoJsonFeatureCollectionDto>;
+
   /**
    * Vehicle data to display on the map.
    */
@@ -82,7 +83,6 @@ export class MapDisplayComponent implements OnInit {
     'source': 'measurementPoints',
     'layout': {
       'icon-image': 'location-pin-thin',
-      //'text-field': ['get', 'id'],
       'text-offset': [0, 1.25],
       'text-anchor': 'top'
     }
@@ -155,29 +155,23 @@ export class MapDisplayComponent implements OnInit {
 
   private displayMeasurementPoints(measurementPoints: GeoJsonFeatureCollectionDto): void {
     this.updateLayer(this.measurementPointLayer, measurementPoints);
-
-    //TODO remove if not used
-    /*
-    this.map.on('mouseenter', this.measurementPointLayer.id, () => {
-      this.map.getCanvas().style.cursor = 'not-allowed';
-    });
-    this.map.on('mouseleave', this.measurementPointLayer.id, () => {
-      this.map.getCanvas().style.cursor = '';
-    });*/
   }
 
   private updateVehicleDataLayer(vehicleData: GeoJsonFeatureCollectionDto): void {
     this.updateLayer(this.vehicleDataLayer, vehicleData);
 
+    this.map.on('mouseenter', this.vehicleDataLayer.id, () => {
+      this.map.getCanvas().style.cursor = 'pointer';
+    });
+
+    this.map.on('mouseleave', this.vehicleDataLayer.id, () => {
+      this.map.getCanvas().style.cursor = '';
+    });
+
     this.map.on('click', this.vehicleDataLayer.id, (e: any) => {
       const coordinates = e.features[0].geometry['coordinates'].slice();
 
-      this.map.on('mouseenter', this.vehicleDataLayer.id, () => {
-        this.map.getCanvas().style.cursor = 'pointer';
-      });
-      this.map.on('mouseleave', this.vehicleDataLayer.id, () => {
-        this.map.getCanvas().style.cursor = '';
-      });
+      this.mapConfigService.showSidebar$ = new BehaviorSubject<boolean>(true);
 
       // Ensure that if the map is zoomed out such that multiple
       // copies of the feature are visible, the popup appears
@@ -209,6 +203,7 @@ export class MapDisplayComponent implements OnInit {
     if (layerExists) {
       this.map.removeLayer(layer.id);
     }
+
     const sourceExists = this.map.getSource(layer.id) !== undefined;
     if (sourceExists) {
       this.map.removeSource(layer.id);
@@ -216,7 +211,6 @@ export class MapDisplayComponent implements OnInit {
   }
 
   private updateLayer(layer: LayerSpecification, data: GeoJsonFeatureCollectionDto) {
-
     this.removeLayerIfExists(layer);
 
     this.map.addSource(layer.id, {
@@ -234,8 +228,4 @@ export class MapDisplayComponent implements OnInit {
   private clearSelectedPointInfo() {
     this.mapConfigService.selectedPointInfo$.next(null);
   }
-
 }
-
-
-

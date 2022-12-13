@@ -14,14 +14,12 @@ export class MapConfigService {
   /**
    * State of the menu display.
    */
-  showSidebar$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  showSidebar$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(window.innerWidth > 600);
 
   /**
    * Mode of the map.
    */
   mapMode$: BehaviorSubject<MapMode> = new BehaviorSubject<MapMode>(MapMode.MeasurementPoints);
-  selectedPointInfo$: BehaviorSubject<GeoJsonPropertiesDto | null> = new BehaviorSubject<GeoJsonPropertiesDto | null>(null);
 
-  constructor() {
-  }
+  selectedPointInfo$: BehaviorSubject<GeoJsonPropertiesDto | null> = new BehaviorSubject<GeoJsonPropertiesDto | null>(null);
 }
