@@ -4,7 +4,6 @@ import {FormControl} from "@angular/forms";
 import {MapMode} from "../../models/map-mode";
 import {BehaviorSubject, Observable} from "rxjs";
 import {GeoJsonPropertiesDto} from "../../../../api/models/geo-json-properties-dto";
-import {HistogramType} from "../histogram/histogram-type";
 import {HistoricDataCollectionDto} from "../../../../api/models/historic-data-collection-dto";
 import {VehicleDataService} from "../../../../services/vehicle-data/vehicle-data.service";
 
@@ -22,8 +21,6 @@ export class MapSideBarComponent implements OnInit {
 
   selectedPointInfo$: Observable<GeoJsonPropertiesDto | null>;
 
-  //histogramType$: Observable<HistogramType | null>;
-
   histogramDuration$: Observable<string | null>;
 
   histogramData$: BehaviorSubject<HistoricDataCollectionDto | null> = new BehaviorSubject<HistoricDataCollectionDto | null>(null);
@@ -33,7 +30,6 @@ export class MapSideBarComponent implements OnInit {
     private readonly vehicleDataService: VehicleDataService
   ) {
     this.selectedPointInfo$ = this.mapConfigService.selectedPointInfo$;
-    //this.histogramType$ = this.mapConfigService.histogramType$;
     this.histogramDuration$ = this.mapConfigService.histogramDuration$;
   }
 

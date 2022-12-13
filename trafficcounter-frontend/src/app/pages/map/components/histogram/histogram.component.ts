@@ -1,9 +1,9 @@
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {Chart} from "chart.js/auto";
+import {Chart, UpdateMode} from "chart.js/auto";
 import {HistoricDataCollectionDto} from "../../../../api/models/historic-data-collection-dto";
-import {ChartData} from "chart.js";
-import {HistogramType} from './histogram-type';
 import {TranslateService} from "@ngx-translate/core";
+import {Observable} from "rxjs";
+import {ChartData} from "chart.js";
 
 @Component({
   selector: 'app-histogram',
@@ -15,21 +15,44 @@ export class HistogramComponent implements OnInit {
   @ViewChild('histogram', {static: true})
   chartElement!: ElementRef;
 
-  @Input('type')
-  type!: HistogramType
-
   @Input('duration')
-  duration!: string
+  duration$!: Observable<string | null>
 
   @Input('data')
-  data!: HistoricDataCollectionDto
+  data$!: Observable<HistoricDataCollectionDto | null>
 
   private chart!: Chart;
 
-  private get chartData(): ChartData {
-    const labels = this.data.measurements.map(measurement => measurement.ordinal);
-    const speedData = this.data.measurements.map(measurement => measurement.avgVehicleSpeed);
-    const vehicleAmount = this.data.measurements.map(measurement => measurement.avgVehicleAmount);
+  constructor(private readonly translateService: TranslateService) {
+  }
+
+  private createChart(): void {
+    this.chart = new Chart(this.chartElement.nativeElement,
+      {
+        type: 'bar',
+        data: {
+          labels: [],
+          datasets: []
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            title: {
+              display: true,
+              text: this.translateService.instant('map.histogram.title')
+            }
+          }
+        }
+      });
+  }
+
+  private createChartData(data: HistoricDataCollectionDto): ChartData {
+    const labels = data.measurements.map(measurement => measurement.ordinal);
+    const speedData = data.measurements.map(measurement => measurement.avgVehicleSpeed);
+    const vehicleAmount = data.measurements.map(measurement => measurement.avgVehicleAmount);
 
     return {
       labels: labels,
@@ -48,29 +71,22 @@ export class HistogramComponent implements OnInit {
     }
   }
 
-  constructor(private readonly translateService: TranslateService) {
-  }
-
   ngOnInit(): void {
 
-    this.chart = new Chart(this.chartElement.nativeElement,
-      {
-        type: 'bar',
-        data: this.chartData,
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: 'top',
-            },
-            title: {
-              display: true,
-              text: this.translateService.instant('map.histogram.title')
-            }
-          }
+    this.createChart();
+
+    this.duration$.subscribe(duration => {
+      this.data$.subscribe((data: HistoricDataCollectionDto | null) => {
+        if(data === null) {
+          return;
         }
-      }
-    );
+        const chartData = this.createChartData(data);
+        this.chart.data.labels = chartData.labels;
+        this.chart.data.datasets = chartData.datasets;
+        this.chart.update('show');
+      });
+    });
+
   }
 
 }

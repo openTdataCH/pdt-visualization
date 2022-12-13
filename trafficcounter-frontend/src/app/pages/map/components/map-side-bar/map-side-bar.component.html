@@ -14,13 +14,9 @@
 
   <app-histogram-menu></app-histogram-menu>
 
-  <div *ngIf="histogramDuration$ | async as histogramDuration">
-    <div *ngIf="histogramData$ | async as histogramData">
-    <app-histogram
-      *ngIf="histogramDuration !== null && histogramData !== null"
-      [duration]="histogramDuration"
-      [data]="this.histogramData"
-    ></app-histogram>
-  </div>
+  <app-histogram
+    [duration]="histogramDuration$"
+    [data]="histogramData$"
+  ></app-histogram>
 
 </div>

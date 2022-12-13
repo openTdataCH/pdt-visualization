@@ -23,7 +23,7 @@ export class MapConfigService {
 
   selectedPointInfo$: BehaviorSubject<GeoJsonPropertiesDto | null> = new BehaviorSubject<GeoJsonPropertiesDto | null>(null);
 
-  histogramDuration$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null)
+  histogramDuration$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>('24h')
 
   constructor() {
   }
