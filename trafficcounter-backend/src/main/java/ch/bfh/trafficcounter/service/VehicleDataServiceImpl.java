@@ -10,7 +10,6 @@ import ch.bfh.trafficcounter.repository.MeasurementRepository;
 import ch.bfh.trafficcounter.repository.SpeedDataRepository;
 import ch.bfh.trafficcounter.repository.VehicleAmountRepository;
 import org.glassfish.pfl.basic.contain.Pair;
-import org.glassfish.pfl.basic.contain.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -81,7 +79,6 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         LocalDateTime now = LocalDateTime.now();
         ArrayList<Pair<LocalDateTime, LocalDateTime>> timeSpans = new ArrayList<>();
         ArrayList<HistoricMeasurement> historicMeasurements = new ArrayList<>();
-        ArrayList<Triple<Future<Double>, Future<Integer>, LocalDateTime>> historicDataWithTime = new ArrayList<>();
 
         switch (duration) {
             case "24h":
@@ -98,27 +95,20 @@ public class VehicleDataServiceImpl implements VehicleDataService {
                 throw new IllegalArgumentException(String.format("Unsupported duration: %s", duration));
         }
 
-        for (Pair<LocalDateTime, LocalDateTime> ts : timeSpans) {
-            Future<Double> avgSpeed = runSumSpeedQuery(measurementPointId, ts.second(), ts.first());
-            Future<Integer> avgAmount = runSumAmountQuery(measurementPointId, ts.second(), ts.first());
-
-            historicDataWithTime.add(
-                new Triple<>(avgSpeed, avgAmount, ts.first())
-            );
-        }
-
         // gets data either hourly 24x or daily 7x
         int ordinal = 1;
-        for (Triple<Future<Double>, Future<Integer>, LocalDateTime> tr : historicDataWithTime) {
+        for (Pair<LocalDateTime, LocalDateTime> ts : timeSpans) {
+            Future<Double> avgSpeedFt = runSumSpeedQuery(measurementPointId, ts.second(), ts.first());
+            Future<Integer> avgAmountFt = runSumAmountQuery(measurementPointId, ts.second(), ts.first());
             Double avgSpeed;
             Integer avgAmount;
             try {
-                avgSpeed = tr.first().get();
-                avgAmount = tr.second().get();
+                avgSpeed = avgSpeedFt.get();
+                avgAmount = avgAmountFt.get();
             } catch (CancellationException | ExecutionException | InterruptedException e) {
                 historicMeasurements.add(new HistoricMeasurement(
                     ordinal,
-                    tr.third(),
+                    ts.first(),
                     0,
                     0
                 ));
@@ -135,7 +125,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 
             historicMeasurements.add(new HistoricMeasurement(
                 ordinal,
-                tr.third(),
+                ts.first(),
                 avgSpeed,
                 avgAmount
             ));
