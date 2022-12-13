@@ -1,6 +1,10 @@
 package ch.bfh.trafficcounter.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -8,6 +12,8 @@ import lombok.*;
 public class HistoricMeasurement {
 
     int ordinal;
+
+    LocalDateTime time;
 
     double avgVehicleSpeed;
 

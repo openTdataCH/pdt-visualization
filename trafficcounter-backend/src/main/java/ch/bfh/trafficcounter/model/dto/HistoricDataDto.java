@@ -1,6 +1,11 @@
 package ch.bfh.trafficcounter.model.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -9,6 +14,8 @@ import lombok.*;
 public class HistoricDataDto {
 
     private int ordinal;
+
+    private LocalDateTime time;
 
     private int avgVehicleAmount;
 

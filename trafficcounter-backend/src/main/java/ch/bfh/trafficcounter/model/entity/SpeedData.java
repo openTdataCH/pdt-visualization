@@ -15,6 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(indexes = @Index(columnList = "measurement_point_id"))
 public class SpeedData {
 
     /**

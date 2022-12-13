@@ -17,6 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(indexes = @Index(columnList = "time"))
 public class Measurement {
 
     /**

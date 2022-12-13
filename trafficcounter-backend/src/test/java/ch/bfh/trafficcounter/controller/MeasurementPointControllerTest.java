@@ -6,7 +6,6 @@ import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonGeometryDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonPropertiesDto;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
