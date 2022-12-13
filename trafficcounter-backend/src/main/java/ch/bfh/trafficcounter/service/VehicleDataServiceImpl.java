@@ -11,8 +11,6 @@ import ch.bfh.trafficcounter.repository.SpeedDataRepository;
 import ch.bfh.trafficcounter.repository.VehicleAmountRepository;
 import org.glassfish.pfl.basic.contain.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +18,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 
 /**
@@ -98,10 +93,12 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         // gets data either hourly 24x or daily 7x
         int ordinal = 1;
         for (Pair<LocalDateTime, LocalDateTime> ts : timeSpans) {
+            /*
             Future<Double> avgSpeedFt = runSumSpeedQuery(measurementPointId, ts.second(), ts.first());
             Future<Integer> avgAmountFt = runSumAmountQuery(measurementPointId, ts.second(), ts.first());
             Double avgSpeed;
             Integer avgAmount;
+
             try {
                 avgSpeed = avgSpeedFt.get();
                 avgAmount = avgAmountFt.get();
@@ -115,6 +112,10 @@ public class VehicleDataServiceImpl implements VehicleDataService {
                 System.out.println("Unable to get result from async task");
                 continue;
             }
+             */
+
+            Double avgSpeed = measurementRepository.findAverageVehicleSpeedByTimeBetweenAndMeasurementPointId(measurementPointId, ts.second(), ts.first());
+            Integer avgAmount = measurementRepository.findSumVehicleAmountByTimeBetweenAndMeasurementPointId(measurementPointId, ts.second(), ts.first());
 
             if (avgSpeed == null) {
                 avgSpeed = 0d;
@@ -140,6 +141,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         return measurementPointRepository.existsMeasurementPointById(id);
     }
 
+    /*
     @Async
     public Future<Double> runSumSpeedQuery(String measurementPointId, LocalDateTime start, LocalDateTime end) {
         Double avgSpeed = measurementRepository.findAverageVehicleSpeedByTimeBetweenAndMeasurementPointId(measurementPointId, start, end);
@@ -151,4 +153,5 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         Integer sumAmount = measurementRepository.findSumVehicleAmountByTimeBetweenAndMeasurementPointId(measurementPointId, start, end);
         return new AsyncResult<>(sumAmount);
     }
+     */
 }
