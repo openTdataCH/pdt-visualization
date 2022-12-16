@@ -49,10 +49,22 @@ export class HistogramComponent implements OnInit {
       });
   }
 
-  private createChartData(data: HistoricDataCollectionDto): ChartData {
-    const labels = data.measurements.map(measurement => measurement.ordinal);
-    const speedData = data.measurements.map(measurement => measurement.avgVehicleSpeed);
-    const vehicleAmount = data.measurements.map(measurement => measurement.avgVehicleAmount);
+  private createChartData(duration: string, data: HistoricDataCollectionDto): ChartData {
+    const labels = data.measurements.map(measurement => {
+      if (measurement.time instanceof Date) {
+        measurement.time.setMinutes(0);
+        measurement.time.setSeconds(0);
+        measurement.time.setMilliseconds(0);
+        if (duration === '7d') {
+          measurement.time.setHours(0);
+          return measurement.time.toLocaleDateString();
+        }
+        return measurement.time.toLocaleTimeString();
+      }
+      return '';
+    }).reverse();
+    const speedData = data.measurements.map(measurement => measurement.avgVehicleSpeed).reverse();
+    const vehicleAmount = data.measurements.map(measurement => measurement.avgVehicleAmount).reverse();
 
     return {
       labels: labels,
@@ -77,10 +89,10 @@ export class HistogramComponent implements OnInit {
 
     this.duration$.subscribe(duration => {
       this.data$.subscribe((data: HistoricDataCollectionDto | null) => {
-        if(data === null) {
+        if (data === null || duration === null) {
           return;
         }
-        const chartData = this.createChartData(data);
+        const chartData = this.createChartData(duration, data);
         this.chart.data.labels = chartData.labels;
         this.chart.data.datasets = chartData.datasets;
         this.chart.update('show');

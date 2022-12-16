@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {VehicleDataControllerService} from "../../api/services/vehicle-data-controller.service";
-import {Observable} from "rxjs";
+import {map, Observable} from "rxjs";
 import {GeoJsonFeatureCollectionDto} from "../../api/models/geo-json-feature-collection-dto";
 import {HistoricDataCollectionDto} from "../../api/models/historic-data-collection-dto";
 
@@ -32,6 +32,14 @@ export class VehicleDataService {
    * @param duration duration
    */
   public getHistoricalVehicleData(id: string, duration: string): Observable<HistoricDataCollectionDto> {
-    return this.vehicleDataControllerService.getHistoricalVehicleData(id, duration);
+    return this.vehicleDataControllerService.getHistoricalVehicleData(id, duration)
+      .pipe(map((historicalDataCollectionDto: HistoricDataCollectionDto) => {
+        historicalDataCollectionDto.measurements.forEach(measurement => {
+          if (typeof measurement.time === "string") {
+            measurement.time = new Date(Date.parse(measurement.time));
+          }
+        });
+        return historicalDataCollectionDto;
+      }));
   }
 }
