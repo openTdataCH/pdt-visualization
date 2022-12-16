@@ -9,6 +9,9 @@
       "vehicle-amount": "Anzahl Fahrzeuge",
       "vehicle-speed": "Geschwindigkeit der Fahrzeuge"
     },
+    "action": {
+      "clearSelectedPoint": "Auswahl zurücksetzen"
+    },
     "info-card": {
       "title": "Messdaten",
       "description": {
@@ -21,6 +24,17 @@
         "high": "Hohe Geschw.",
         "neutral": "Neutrale Geschw.",
         "low": "Tiefe Geschw."
+      }
+    },
+    "histogram": {
+      "title": "Histogramm",
+      "label": {
+        "speedData": "Geschwindigkeitsdaten",
+        "vehicleAmount": "Anzahl Fahrzeuge"
+      },
+      "menu": {
+        "24h": "24 Stunden",
+        "7d": "7 Tage"
       }
     }
   }
