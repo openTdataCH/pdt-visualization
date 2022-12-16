@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HistogramMenuComponent } from './histogram-menu.component';
+import {MaterialModule} from "../../../../material/material.module";
+import {TranslateModule} from "@ngx-translate/core";
 
 describe('HistogramMenuComponent', () => {
   let component: HistogramMenuComponent;
@@ -8,7 +10,11 @@ describe('HistogramMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HistogramMenuComponent ]
+      declarations: [ HistogramMenuComponent ],
+      imports: [
+        MaterialModule,
+        TranslateModule.forRoot()
+      ]
     })
     .compileComponents();
 
