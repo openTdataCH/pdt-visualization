@@ -51,4 +51,7 @@ export class MapSideBarComponent implements OnInit {
     this.mapConfigService.mapMode$.next(this.modeControl.value ?? MapMode.MeasurementPoints);
   }
 
+  clearSelectedPoint() {
+    this.mapConfigService.selectedPointInfo$.next(null);
+  }
 }

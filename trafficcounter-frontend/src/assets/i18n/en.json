@@ -9,6 +9,9 @@
       "vehicle-amount": "Amount of vehicles",
       "vehicle-speed": "Speed of vehicles"
     },
+    "action": {
+      "clearSelectedPoint": "Clear selected point"
+    },
     "info-card": {
       "title": "Measured data",
       "description": {

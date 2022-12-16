@@ -9,6 +9,9 @@
       "vehicle-amount": "Anzahl Fahrzeuge",
       "vehicle-speed": "Geschwindigkeit der Fahrzeuge"
     },
+    "action": {
+      "clearSelectedPoint": "Auswahl zurücksetzen"
+    },
     "info-card": {
       "title": "Messdaten",
       "description": {
