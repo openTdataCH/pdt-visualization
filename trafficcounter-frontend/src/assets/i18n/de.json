@@ -20,6 +20,7 @@
         "average-speed": "Durchschn. Geschw.",
         "number-of-vehicles": "Anzahl Fahrzeuge"
       },
+      "no-data": "keine Daten",
       "speed-display-class": {
         "high": "Hohe Geschw.",
         "neutral": "Neutrale Geschw.",
