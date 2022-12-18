@@ -2,6 +2,8 @@ package ch.bfh.trafficcounter.service;
 
 import ch.bfh.trafficcounter.mapper.DtoMapper;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
+import ch.bfh.trafficcounter.model.dto.geojson.VehicleAmountDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.model.entity.VehicleAmount;
@@ -76,16 +78,17 @@ public class VehicleAmountServiceImpl implements VehicleAmountService {
         vehicleAmountRepository.saveAll(vehicleAmounts);
     }
 
-    private Optional<Measurement> getLatestMeasurement() {
-        return measurementRepository.findLatest();
+    @Override
+    public List<GeoJsonFeatureDto> getVehicleAmount(final Measurement measurement) {
+        return measurement.getVehicleAmounts().stream()
+            .map(this::transformToGeoJsonFeatureDto)
+            .collect(Collectors.toList());
     }
 
-    @Override
-    public GeoJsonFeatureCollectionDto getCurrentVehicleAmount() {
-        return dtoMapper.mapVehicleAmountToGeoJsonFeatureCollectionDto(
-            getLatestMeasurement()
-                .map(Measurement::getVehicleAmounts)
-                .orElse(Collections.emptySet())
-        );
+    private GeoJsonFeatureDto transformToGeoJsonFeatureDto(final VehicleAmount vehicleAmount) {
+        final GeoJsonFeatureDto geoJsonFeatureDto = dtoMapper.mapMeasurementPointToGeoJsonFeatureDto(vehicleAmount.getMeasurementPoint());
+        final VehicleAmountDto vehicleAmountDto = new VehicleAmountDto(vehicleAmount.getNumberOfVehicles());
+        geoJsonFeatureDto.getProperties().setVehicleAmount(vehicleAmountDto);
+        return geoJsonFeatureDto;
     }
 }

@@ -62,14 +62,15 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
         JOIN vehicle_amount v on m.id = v.measurement_id
         WHERE time BETWEEN :start AND :end
         GROUP BY v.measurement_point_id""", nativeQuery = true)
-    ArrayList<Tuple> findSumVehicleAmountByTimeBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+    List<Tuple> findSumVehicleAmountByTimeBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
     @Query(value = """
         SELECT s.measurement_point_id, AVG(s.average_speed) avgVehicleSpeed FROM measurement m
         JOIN speed_data s on m.id = s.measurement_id
         WHERE time BETWEEN :start AND :end
         GROUP BY s.measurement_point_id""", nativeQuery = true)
-    ArrayList<Tuple> findAverageVehicleSpeedByTimeBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+    List<Tuple> findAverageVehicleSpeedByTimeBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
 
     /**
      * Counts the number of records between two dates

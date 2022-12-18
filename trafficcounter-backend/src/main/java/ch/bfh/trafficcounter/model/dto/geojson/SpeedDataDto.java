@@ -23,6 +23,11 @@ public class SpeedDataDto {
     private float averageSpeed;
 
     /**
+     * Estimated speed limit.
+     */
+    private Float estimatedSpeedLimit;
+
+    /**
      * Speed display class name.
      *
      * @see SpeedDisplayClass

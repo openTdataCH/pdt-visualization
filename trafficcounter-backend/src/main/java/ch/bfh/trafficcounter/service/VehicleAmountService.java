@@ -1,6 +1,8 @@
 package ch.bfh.trafficcounter.service;
 
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
+import ch.bfh.trafficcounter.model.entity.Measurement;
 import ch.opentdata.wsdl.SiteMeasurements;
 
 import java.time.LocalDateTime;
@@ -24,8 +26,9 @@ public interface VehicleAmountService {
     /**
      * Gets the amount of vehicles data as GeoJSON.
      *
+     * @param measurement measurement to get vehicle amount from
      * @return amount of vehicles
      */
-    GeoJsonFeatureCollectionDto getCurrentVehicleAmount();
+    List<GeoJsonFeatureDto> getVehicleAmount(Measurement measurement);
 
 }

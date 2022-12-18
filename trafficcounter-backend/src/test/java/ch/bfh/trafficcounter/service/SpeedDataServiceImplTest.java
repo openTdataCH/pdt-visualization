@@ -3,7 +3,7 @@ package ch.bfh.trafficcounter.service;
 import ch.bfh.trafficcounter.config.SpeedDisplayConfig;
 import ch.bfh.trafficcounter.mapper.DtoMapper;
 import ch.bfh.trafficcounter.mapper.DtoMapperImpl;
-import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.model.entity.SpeedData;
@@ -38,7 +38,7 @@ public class SpeedDataServiceImplTest {
     private final SpeedDisplayConfig speedDisplayConfig = new SpeedDisplayConfig();
 
     @Spy
-    private DtoMapper dtoMapper = new DtoMapperImpl(speedDisplayConfig);
+    private DtoMapper dtoMapper = new DtoMapperImpl();
 
     @Mock
     private MeasurementRepository measurementRepository;
@@ -64,7 +64,8 @@ public class SpeedDataServiceImplTest {
             measurementRepository,
             speedDataRepository,
             measurementPointRepository,
-            dtoMapper
+            dtoMapper,
+            speedDisplayConfig
         );
     }
 
@@ -163,9 +164,8 @@ public class SpeedDataServiceImplTest {
                     .measurementPoint(MeasurementPoint.builder().id("ABC").build())
                     .build()
             )).build();
-        when(measurementRepository.findLatest()).thenReturn(Optional.of(measurement));
-        final GeoJsonFeatureCollectionDto speedDataGeoJson = speedDataService.getCurrentSpeedData();
-        assertEquals(1, speedDataGeoJson.getFeatures().size());
-        assertEquals(10f, speedDataGeoJson.getFeatures().get(0).getProperties().getSpeedData().getAverageSpeed());
+        final List<GeoJsonFeatureDto> speedDataGeoJson = speedDataService.getSpeedData(measurement);
+        assertEquals(1, speedDataGeoJson.size());
+        assertEquals(10f, speedDataGeoJson.get(0).getProperties().getSpeedData().getAverageSpeed());
     }
 }

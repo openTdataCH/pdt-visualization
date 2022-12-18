@@ -23,10 +23,8 @@ import static org.mockito.Mockito.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MeasurementPointServiceTest {
 
-    private final SpeedDisplayConfig speedDisplayConfig = new SpeedDisplayConfig();
-
     @Spy
-    private DtoMapper dtoMapper = new DtoMapperImpl(speedDisplayConfig);
+    private DtoMapper dtoMapper = new DtoMapperImpl();
 
     @Mock
     private MeasurementPointRepository measurementPointRepository;
