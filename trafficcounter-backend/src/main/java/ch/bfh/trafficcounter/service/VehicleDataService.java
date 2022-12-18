@@ -34,4 +34,6 @@ public interface VehicleDataService {
      * @return true if data is available, false if not
      */
     boolean hasHistoricData(String id);
+
+    void initializeAggregatedData();
 }

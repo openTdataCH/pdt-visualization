@@ -33,4 +33,6 @@ public interface SpeedDataService {
 
     void updateEstimatedSpeedLimit();
 
+    boolean hasSpeedData();
+
 }

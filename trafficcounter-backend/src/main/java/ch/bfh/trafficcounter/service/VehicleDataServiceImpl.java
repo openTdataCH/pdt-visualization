@@ -124,32 +124,28 @@ public class VehicleDataServiceImpl implements VehicleDataService {
     /**
      * Aggregates a list of historic measurement for a given duration
      *
-     * @param duration duration to aggregate over (24h or 7d)
-     * @param now      the start time from where results are aggregated backwards
+     * @param now the start time from where results are aggregated backwards
      * @return a map where the key is the start time of the HistoricData and the value is a List of all aggregation for every MeasurementPoint in the database
      * has 24 entries for 24h and 7 entries for 7d
      */
-    public ArrayList<ArrayList<MeasurementStats>> getAllHistoricalVehicleData(String duration, LocalDateTime now) {
+    public ArrayList<ArrayList<MeasurementStats>> getAllHistoricalVehicleData(MeasurementStatsType type, LocalDateTime now) {
 
         ArrayList<Pair<LocalDateTime, LocalDateTime>> timeSpans = new ArrayList<>();
         ArrayList<ArrayList<MeasurementStats>> historicMeasurements = new ArrayList<>();
-        MeasurementStatsType type;
 
-        switch (duration) {
-            case "24h":
-                type = MeasurementStatsType.HOURLY;
+        switch (type) {
+            case HOURLY:
                 for (long i = 1L; i <= 24L; i++) {
                     timeSpans.add(new Pair<>(now.minusHours(i - 1), now.minusHours(i)));
                 }
                 break;
-            case "7d":
-                type = MeasurementStatsType.DAILY;
+            case DAILY:
                 for (long i = 1L; i <= 7L; i++) {
                     timeSpans.add(new Pair<>(now.minusDays(i - 1), now.minusDays(i)));
                 }
                 break;
             default:
-                throw new IllegalArgumentException(String.format("Unsupported duration: %s", duration));
+                throw new IllegalArgumentException(String.format("Unsupported duration: %s", type));
         }
 
         // gets data either hourly 24x or daily 7x
@@ -200,32 +196,38 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         return historicMeasurements;
     }
 
+    @Override
+    public void initializeAggregatedData() {
+        LocalDateTime startTime = LocalDateTime.now();
+        //LocalDateTime startTime = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
+        //aggregateVehicleDataHourly(startTime);
+        aggregateVehicleData(MeasurementStatsType.HOURLY, startTime);
+        //startTime = startTime.withHour(0);
+        //aggregateVehicleDataDaily(startTime);
+        aggregateVehicleData(MeasurementStatsType.DAILY, startTime);
+    }
+
     @Scheduled(
         cron = "${trafficcounter.schedules.hourly-aggregation.cron}",
-        zone = "${trafficcounter.schedules.hourly-aggregation.zone}"
-    )
-    public void aggregateVehicleDataHourly() {
-        System.out.println("-- Begin aggregating hourly data --");
-        MeasurementStatsType type = MeasurementStatsType.HOURLY;
-        markCurrentStatsDeprecated(type);
-        ArrayList<ArrayList<MeasurementStats>> hourlyHistoricData = getAllHistoricalVehicleData("24h", LocalDateTime.now());
-        hourlyHistoricData.forEach(measurementStatsRepository::saveAll);
-        measurementStatsRepository.deleteAllByTypeAndDeprecated(type, true);
-        System.out.println("-- Successfully aggregated and persisted hourly data --");
+        zone = "${trafficcounter.schedules.hourly-aggregation.zone}")
+    public void aggregateHourlyStats() {
+        aggregateVehicleData(MeasurementStatsType.HOURLY, LocalDateTime.now());
     }
 
     @Scheduled(
         cron = "${trafficcounter.schedules.daily-aggregation.cron}",
-        zone = "${trafficcounter.schedules.daily-aggregation.zone}"
-    )
-    public void aggregateVehicleDataDaily() {
-        System.out.println("-- Begin aggregating daily data --");
-        MeasurementStatsType type = MeasurementStatsType.DAILY;
+        zone = "${trafficcounter.schedules.daily-aggregation.zone}")
+    public void aggregateDailyStats() {
+        aggregateVehicleData(MeasurementStatsType.DAILY, LocalDateTime.now());
+    }
+
+    private void aggregateVehicleData(MeasurementStatsType type, LocalDateTime startTime) {
+        System.out.printf("-- Begin aggregating %s data --%n", type);
         markCurrentStatsDeprecated(type);
-        ArrayList<ArrayList<MeasurementStats>> dailyHistoricData = getAllHistoricalVehicleData("7d", LocalDateTime.now());
-        dailyHistoricData.forEach(measurementStatsRepository::saveAll);
+        ArrayList<ArrayList<MeasurementStats>> hourlyHistoricData = getAllHistoricalVehicleData(type, startTime);
+        hourlyHistoricData.forEach(measurementStatsRepository::saveAll);
         measurementStatsRepository.deleteAllByTypeAndDeprecated(type, true);
-        System.out.println("-- Successfully aggregated and persisted daily data --");
+        System.out.printf("-- Successfully aggregated and persisted %s data --%n", type);
     }
 
     private void markCurrentStatsDeprecated(MeasurementStatsType type) {
@@ -233,5 +235,4 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         measurementStats.forEach(s -> s.setDeprecated(true));
         measurementStatsRepository.saveAll(measurementStats);
     }
-
 }

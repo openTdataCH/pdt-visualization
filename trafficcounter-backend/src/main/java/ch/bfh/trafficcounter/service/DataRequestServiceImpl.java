@@ -31,6 +31,8 @@ public class DataRequestServiceImpl implements DataRequestService {
 
     private final VehicleAmountService vehicleAmountService;
 
+    private final VehicleDataService vehicleDataService;
+
     private final Sinks.Many<UpdateEvent> updateEvent;
 
     @Autowired
@@ -38,11 +40,13 @@ public class DataRequestServiceImpl implements DataRequestService {
         OpenTransportDataApiService api,
         MeasurementPointService measurementPointService,
         SpeedDataService speedDataService,
+        VehicleDataService vehicleDataService,
         VehicleAmountService vehicleAmountService, Sinks.Many<UpdateEvent> updateEvent) {
         this.api = api;
         this.measurementPointService = measurementPointService;
         this.speedDataService = speedDataService;
         this.vehicleAmountService = vehicleAmountService;
+        this.vehicleDataService = vehicleDataService;
         this.updateEvent = updateEvent;
     }
 
@@ -93,6 +97,8 @@ public class DataRequestServiceImpl implements DataRequestService {
 
         speedDataService.updateEstimatedSpeedLimit();
         System.out.println("-- Successfully recalculated estimated speed limit --");
+
+        vehicleDataService.initializeAggregatedData();
 
         updateEvent.tryEmitNext(UpdateEvent.ALL);
     }

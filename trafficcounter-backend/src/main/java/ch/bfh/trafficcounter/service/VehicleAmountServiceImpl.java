@@ -82,6 +82,11 @@ public class VehicleAmountServiceImpl implements VehicleAmountService {
             .collect(Collectors.toList());
     }
 
+    @Override
+    public boolean hasAmountData() {
+        return vehicleAmountRepository.existsByIdIsGreaterThan(0l);
+    }
+
     private GeoJsonFeatureDto transformToGeoJsonFeatureDto(final VehicleAmount vehicleAmount) {
         final GeoJsonFeatureDto geoJsonFeatureDto = dtoMapper.mapMeasurementPointToGeoJsonFeatureDto(vehicleAmount.getMeasurementPoint());
         final VehicleAmountDto vehicleAmountDto = new VehicleAmountDto(vehicleAmount.getNumberOfVehicles());

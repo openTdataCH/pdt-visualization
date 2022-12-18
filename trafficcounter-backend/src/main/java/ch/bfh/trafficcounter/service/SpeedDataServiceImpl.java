@@ -136,4 +136,9 @@ public class SpeedDataServiceImpl implements SpeedDataService {
         }
     }
 
+    @Override
+    public boolean hasSpeedData() {
+        return speedDataRepository.existsByIdIsGreaterThan(0l);
+    }
+
 }

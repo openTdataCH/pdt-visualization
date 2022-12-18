@@ -30,4 +30,6 @@ public interface VehicleAmountService {
      */
     List<GeoJsonFeatureDto> getVehicleAmount(Measurement measurement);
 
+    boolean hasAmountData();
+
 }
