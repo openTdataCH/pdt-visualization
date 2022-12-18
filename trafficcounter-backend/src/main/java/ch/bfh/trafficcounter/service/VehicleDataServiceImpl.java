@@ -162,7 +162,6 @@ public class VehicleDataServiceImpl implements VehicleDataService {
                 )
             );
         }
-
         return historicMeasurements;
     }
 
@@ -198,7 +197,6 @@ public class VehicleDataServiceImpl implements VehicleDataService {
                 )
             );
         }
-
         return historicMeasurements;
     }
 

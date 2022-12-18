@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.Tuple;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +54,6 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
         WHERE v.measurement_point_id = :measurementPointId AND s.measurement_point_id = :measurementPointId
         AND time BETWEEN :start AND :end""", nativeQuery = true)
     List<Measurement> findAllByTimeBetweenAndMeasurementPointId(@Param("measurementPointId") String measurementPointId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
-
 
     @Query(value = """
         SELECT v.measurement_point_id, SUM(v.number_of_vehicles) AS avgVehicleAmount FROM measurement m

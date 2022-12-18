@@ -1,6 +1,5 @@
 package ch.bfh.trafficcounter.service;
 
-import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
 import ch.opentdata.wsdl.SiteMeasurements;

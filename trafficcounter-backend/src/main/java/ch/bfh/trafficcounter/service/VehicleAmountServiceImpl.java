@@ -1,7 +1,6 @@
 package ch.bfh.trafficcounter.service;
 
 import ch.bfh.trafficcounter.mapper.DtoMapper;
-import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
 import ch.bfh.trafficcounter.model.dto.geojson.VehicleAmountDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
@@ -17,10 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
