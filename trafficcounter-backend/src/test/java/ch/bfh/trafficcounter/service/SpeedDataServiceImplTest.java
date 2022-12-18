@@ -3,7 +3,6 @@ package ch.bfh.trafficcounter.service;
 import ch.bfh.trafficcounter.config.SpeedDisplayConfig;
 import ch.bfh.trafficcounter.mapper.DtoMapper;
 import ch.bfh.trafficcounter.mapper.DtoMapperImpl;
-import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
@@ -39,7 +38,7 @@ public class SpeedDataServiceImplTest {
     private final SpeedDisplayConfig speedDisplayConfig = new SpeedDisplayConfig();
 
     @Spy
-    private DtoMapper dtoMapper = new DtoMapperImpl(speedDisplayConfig);
+    private DtoMapper dtoMapper = new DtoMapperImpl();
 
     @Mock
     private MeasurementRepository measurementRepository;
@@ -66,7 +65,8 @@ public class SpeedDataServiceImplTest {
             speedDataRepository,
             measurementPointRepository,
             dtoMapper,
-            speedDisplayConfig);
+            speedDisplayConfig
+        );
     }
 
     private SiteMeasurements generateSiteMeasurements(final String measurementPointId, final List<Pair<Integer, Float>> speedDataValues) {
