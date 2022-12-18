@@ -13,6 +13,10 @@ public interface MeasurementStatsRepository extends JpaRepository<MeasurementSta
 
     ArrayList<MeasurementStats> findMeasurementStatsByMeasurementPointIdAndTypeAndTimeBetween(String measurementPointId, MeasurementStatsType type, LocalDateTime start, LocalDateTime end);
 
-    Boolean existsMeasurementStatsByMeasurementPointId(String measurementPointId);
+    ArrayList<MeasurementStats> findAllByType(MeasurementStatsType type);
+
+    Boolean existsMeasurementStatsByMeasurementPointIdAndDeprecated(String measurementPointId, boolean deprecated);
+
+    void deleteAllByTypeAndDeprecated(MeasurementStatsType type, boolean deprecated);
 
 }

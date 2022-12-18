@@ -168,7 +168,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 
     @Override
     public boolean hasHistoricData(String id) {
-        return measurementStatsRepository.existsMeasurementStatsByMeasurementPointId(id);
+        return measurementStatsRepository.existsMeasurementStatsByMeasurementPointIdAndDeprecated(id, false);
     }
 
     /**
@@ -208,8 +208,11 @@ public class VehicleDataServiceImpl implements VehicleDataService {
     )
     public void aggregateVehicleDataHourly() {
         System.out.println("-- Begin aggregating hourly data --");
+        MeasurementStatsType type = MeasurementStatsType.HOURLY;
+        markCurrentStatsDeprecated(type);
         ArrayList<ArrayList<MeasurementStats>> hourlyHistoricData = getAllHistoricalVehicleData("24h", LocalDateTime.now());
         hourlyHistoricData.forEach(measurementStatsRepository::saveAll);
+        measurementStatsRepository.deleteAllByTypeAndDeprecated(type, true);
         System.out.println("-- Successfully aggregated and persisted hourly data --");
     }
 
@@ -219,9 +222,18 @@ public class VehicleDataServiceImpl implements VehicleDataService {
     )
     public void aggregateVehicleDataDaily() {
         System.out.println("-- Begin aggregating daily data --");
+        MeasurementStatsType type = MeasurementStatsType.DAILY;
+        markCurrentStatsDeprecated(type);
         ArrayList<ArrayList<MeasurementStats>> dailyHistoricData = getAllHistoricalVehicleData("7d", LocalDateTime.now());
         dailyHistoricData.forEach(measurementStatsRepository::saveAll);
+        measurementStatsRepository.deleteAllByTypeAndDeprecated(type, true);
         System.out.println("-- Successfully aggregated and persisted daily data --");
+    }
+
+    private void markCurrentStatsDeprecated(MeasurementStatsType type) {
+        ArrayList<MeasurementStats> measurementStats = measurementStatsRepository.findAllByType(type);
+        measurementStats.forEach(s -> s.setDeprecated(true));
+        measurementStatsRepository.saveAll(measurementStats);
     }
 
 }

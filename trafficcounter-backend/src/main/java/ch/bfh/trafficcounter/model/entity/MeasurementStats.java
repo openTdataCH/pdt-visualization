@@ -31,6 +31,8 @@ public class MeasurementStats {
 
     private MeasurementStatsType type;
 
+    private boolean deprecated;
+
     public MeasurementStats(String measurementPointId, LocalDateTime time, double avgVehicleSpeed, int avgVehicleAmount, MeasurementStatsType type) {
         this.measurementPointId = measurementPointId;
         this.time = time;
