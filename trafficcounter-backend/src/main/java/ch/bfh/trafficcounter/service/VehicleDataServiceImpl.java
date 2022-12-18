@@ -1,11 +1,11 @@
 package ch.bfh.trafficcounter.service;
 
-import ch.bfh.trafficcounter.mapper.DtoMapper;
-import ch.bfh.trafficcounter.model.HistoricMeasurement;
 import ch.bfh.trafficcounter.model.dto.HistoricDataCollectionDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
+import ch.bfh.trafficcounter.model.entity.MeasurementStats;
+import ch.bfh.trafficcounter.model.entity.MeasurementStatsType;
 import ch.bfh.trafficcounter.repository.MeasurementPointRepository;
 import ch.bfh.trafficcounter.repository.MeasurementRepository;
 import org.glassfish.pfl.basic.contain.Pair;
@@ -36,8 +36,6 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 
     private final MeasurementPointRepository measurementPointRepository;
 
-    private final DtoMapper dtoMapper;
-
     private final VehicleAmountService vehicleAmountService;
 
     private final SpeedDataService speedDataService;
@@ -46,13 +44,11 @@ public class VehicleDataServiceImpl implements VehicleDataService {
     public VehicleDataServiceImpl(
         MeasurementRepository measurementRepository,
         MeasurementPointRepository measurementPointRepository,
-        DtoMapper dtoMapper,
         VehicleAmountService vehicleAmountService,
         SpeedDataService speedDataService
     ) {
         this.measurementRepository = measurementRepository;
         this.measurementPointRepository = measurementPointRepository;
-        this.dtoMapper = dtoMapper;
         this.vehicleAmountService = vehicleAmountService;
         this.speedDataService = speedDataService;
     }
@@ -93,8 +89,8 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         /*
         LocalDateTime now = LocalDateTime.now();
         ArrayList<Pair<LocalDateTime, LocalDateTime>> timeSpans = new ArrayList<>();
-        ArrayList<HistoricMeasurement> historicMeasurements = new ArrayList<>();
-        ArrayList<Future<HistoricMeasurement>> futureHistoricMeasurements = new ArrayList<>();
+        ArrayList<MeasurementStats> historicMeasurements = new ArrayList<>();
+        ArrayList<Future<MeasurementStats>> futureHistoricMeasurements = new ArrayList<>();
 
 
         switch (duration) {
@@ -115,7 +111,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         // gets data either hourly 24x or daily 7x
         int ordinal = 1;
         for (Pair<LocalDateTime, LocalDateTime> ts : timeSpans) {
-            futureHistoricMeasurements.add(buildHistoricMeasurementPart(
+            futureMeasurementStatss.add(buildHistoricMeasurementPart(
                 ts.second(),
                 ts.first(),
                 ordinal,
@@ -124,11 +120,11 @@ public class VehicleDataServiceImpl implements VehicleDataService {
             ordinal++;
         }
 
-        for (Future<HistoricMeasurement> fhm : futureHistoricMeasurements) {
+        for (Future<MeasurementStats> fhm : futureHistoricMeasurements) {
             try {
                 historicMeasurements.add(fhm.get());
             } catch (CancellationException | InterruptedException | ExecutionException e) {
-                historicMeasurements.add(new HistoricMeasurement("", 0, LocalDateTime.now(), 0, 0));
+                historicMeasurements.add(new MeasurementStats("", 0, LocalDateTime.now(), 0, 0));
             }
         }
 
@@ -145,11 +141,11 @@ public class VehicleDataServiceImpl implements VehicleDataService {
      * @return a map where the key is the start time of the HistoricData and the value is a List of all aggregation for every MeasurementPoint in the database
      * has 24 entries for 24h and 7 entries for 7d
      */
-    public HashMap<LocalDateTime, ArrayList<HistoricMeasurement>> getAllHistoricalVehicleData(String duration, LocalDateTime now) {
+    public HashMap<LocalDateTime, ArrayList<MeasurementStats>> getAllHistoricalVehicleData(String duration, LocalDateTime now) {
 
         ArrayList<Pair<LocalDateTime, LocalDateTime>> timeSpans = new ArrayList<>();
-        HashMap<LocalDateTime, ArrayList<HistoricMeasurement>> historicMeasurements = new HashMap<>();
-        ArrayList<Future<HistoricMeasurement>> futureHistoricMeasurements = new ArrayList<>();
+        HashMap<LocalDateTime, ArrayList<MeasurementStats>> historicMeasurements = new HashMap<>();
+        ArrayList<Future<MeasurementStats>> futureHistoricMeasurements = new ArrayList<>();
 
         switch (duration) {
             case "24h":
@@ -169,7 +165,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         // gets data either hourly 24x or daily 7x
         for (Pair<LocalDateTime, LocalDateTime> ts : timeSpans) {
             historicMeasurements.put(ts.second(),
-                buildHistoricMeasurementPart(
+                buildMeasurementStatsPart(
                     ts.second(),
                     ts.first()
                 )
@@ -189,11 +185,11 @@ public class VehicleDataServiceImpl implements VehicleDataService {
      *
      * @param start start time for query
      * @param end   end time for query
-     * @return List of HistoricMeasurement for every MeasurementPoint in the database in the requested timespan
+     * @return List of MeasurementStats for every MeasurementPoint in the database in the requested timespan
      */
-    public ArrayList<HistoricMeasurement> buildHistoricMeasurementPart(LocalDateTime start, LocalDateTime end) {
+    public ArrayList<MeasurementStats> buildMeasurementStatsPart(LocalDateTime start, LocalDateTime end) {
 
-        ArrayList<HistoricMeasurement> historicMeasurements = new ArrayList<>();
+        ArrayList<MeasurementStats> historicMeasurements = new ArrayList<>();
 
         List<Tuple> avgSpeedList = measurementRepository.findAverageVehicleSpeedByTimeBetween(start, end);
         List<Tuple> avgAmountList = measurementRepository.findSumVehicleAmountByTimeBetween(start, end);
@@ -206,8 +202,8 @@ public class VehicleDataServiceImpl implements VehicleDataService {
             Double speed = optionalSpeedTuple.isPresent() ? (Double) optionalSpeedTuple.get().get(1) : 0d;
 
             historicMeasurements.add(
-                new HistoricMeasurement(
-                    taId, start, speed, amount
+                new MeasurementStats(
+                    taId, start, speed, amount, MeasurementStatsType.DAILY //TODO adjust type
                 )
             );
         }
@@ -217,7 +213,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 
     //TODO, Schedule houry, best at exact hour XX:00
     private void aggregateVehicleDataHourly() {
-        HashMap<LocalDateTime, ArrayList<HistoricMeasurement>> hourlyHistoricData = getAllHistoricalVehicleData("24h", LocalDateTime.now());
+        HashMap<LocalDateTime, ArrayList<MeasurementStats>> hourlyHistoricData = getAllHistoricalVehicleData("24h", LocalDateTime.now());
 
         //TODO, persist data
 
@@ -225,7 +221,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 
     //TODO, Schedule daily, best at begin of day 00:00
     private void aggregateVehicleDataDaily() {
-        HashMap<LocalDateTime, ArrayList<HistoricMeasurement>> dailyHistoricData = getAllHistoricalVehicleData("7d", LocalDateTime.now());
+        HashMap<LocalDateTime, ArrayList<MeasurementStats>> dailyHistoricData = getAllHistoricalVehicleData("7d", LocalDateTime.now());
 
         //TODO, persist data
     }

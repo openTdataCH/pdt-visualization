@@ -1,6 +1,5 @@
 package ch.bfh.trafficcounter.mapper;
 
-import ch.bfh.trafficcounter.model.HistoricMeasurement;
 import ch.bfh.trafficcounter.model.dto.HistoricDataCollectionDto;
 import ch.bfh.trafficcounter.model.dto.HistoricDataDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
@@ -8,6 +7,7 @@ import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonGeometryDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonPropertiesDto;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
+import ch.bfh.trafficcounter.model.entity.MeasurementStats;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class DtoMapperImpl implements DtoMapper {
     }
 
     @Override
-    public HistoricDataCollectionDto mapHistoricVehicleDataToHistoricDataDto(List<HistoricMeasurement> measurements, String resolution) {
+    public HistoricDataCollectionDto mapHistoricVehicleDataToHistoricDataDto(List<MeasurementStats> measurements, String resolution) {
 
         if (measurements.size() == 0) {
             return null;
@@ -46,7 +46,7 @@ public class DtoMapperImpl implements DtoMapper {
         HistoricDataDto[] measurementsArray = new HistoricDataDto[measurements.size()];
 
         int cnt = 0;
-        for (HistoricMeasurement h : measurements) {
+        for (MeasurementStats h : measurements) {
             HistoricDataDto historicDataDto = new HistoricDataDto(h.getTime(), h.getAvgVehicleAmount(), h.getAvgVehicleSpeed());
             measurementsArray[cnt] = historicDataDto;
             cnt++;
