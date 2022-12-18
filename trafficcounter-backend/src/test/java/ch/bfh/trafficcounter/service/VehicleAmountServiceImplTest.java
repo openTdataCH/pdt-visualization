@@ -4,6 +4,7 @@ import ch.bfh.trafficcounter.config.SpeedDisplayConfig;
 import ch.bfh.trafficcounter.mapper.DtoMapper;
 import ch.bfh.trafficcounter.mapper.DtoMapperImpl;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.model.entity.VehicleAmount;
@@ -159,10 +160,9 @@ public class VehicleAmountServiceImplTest {
                     .measurementPoint(MeasurementPoint.builder().id("ABC").build())
                     .build()
             )).build();
-        when(measurementRepository.findLatest()).thenReturn(Optional.of(measurement));
-        final GeoJsonFeatureCollectionDto vehicleAmountGeoJson = vehicleAmountService.getCurrentVehicleAmount();
-        assertEquals(1, vehicleAmountGeoJson.getFeatures().size());
-        assertEquals(3, vehicleAmountGeoJson.getFeatures().get(0).getProperties().getVehicleAmount().getNumberOfVehicles());
+        final List<GeoJsonFeatureDto> vehicleAmountGeoJson = vehicleAmountService.getVehicleAmount(measurement);
+        assertEquals(1, vehicleAmountGeoJson.size());
+        assertEquals(3, vehicleAmountGeoJson.get(0).getProperties().getVehicleAmount().getNumberOfVehicles());
     }
 
 }

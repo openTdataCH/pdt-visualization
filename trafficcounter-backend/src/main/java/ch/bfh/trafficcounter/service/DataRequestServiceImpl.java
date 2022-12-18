@@ -91,6 +91,9 @@ public class DataRequestServiceImpl implements DataRequestService {
         vehicleAmountService.processAndPersistVehicleAmount(time, siteMeasurements);
         System.out.println("-- Successfully requested and persisted amount of vehicles --");
 
+        speedDataService.updateEstimatedSpeedLimit();
+        System.out.println("-- Successfully recalculated estimated speed limit --");
+
         updateEvent.tryEmitNext(UpdateEvent.ALL);
     }
 

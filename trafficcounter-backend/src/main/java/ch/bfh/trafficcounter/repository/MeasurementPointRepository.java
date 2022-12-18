@@ -2,8 +2,13 @@ package ch.bfh.trafficcounter.repository;
 
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -38,4 +43,10 @@ public interface MeasurementPointRepository extends JpaRepository<MeasurementPoi
      * @return true if found, false if not
      */
     Boolean existsMeasurementPointById(String id);
+
+    @Query("UPDATE MeasurementPoint mp " +
+        "SET mp.estimatedSpeedLimit = (SELECT ROUND(AVG(sd.averageSpeed) / 10, 0) * 10 FROM SpeedData sd WHERE sd.measurementPoint.id = mp.id AND sd.measurement.time > :endTime)")
+    @Modifying
+    void updateEstimatedSpeedLimit(@Param("endTime") LocalDateTime endTime);
+
 }

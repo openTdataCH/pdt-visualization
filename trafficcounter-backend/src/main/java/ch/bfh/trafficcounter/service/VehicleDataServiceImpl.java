@@ -4,11 +4,12 @@ import ch.bfh.trafficcounter.mapper.DtoMapper;
 import ch.bfh.trafficcounter.model.HistoricMeasurement;
 import ch.bfh.trafficcounter.model.dto.HistoricDataCollectionDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
+import ch.bfh.trafficcounter.model.entity.SpeedData;
+import ch.bfh.trafficcounter.model.entity.VehicleAmount;
 import ch.bfh.trafficcounter.repository.MeasurementPointRepository;
 import ch.bfh.trafficcounter.repository.MeasurementRepository;
-import ch.bfh.trafficcounter.repository.SpeedDataRepository;
-import ch.bfh.trafficcounter.repository.VehicleAmountRepository;
 import org.glassfish.pfl.basic.contain.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -17,12 +18,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -37,22 +39,29 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 
     private final MeasurementRepository measurementRepository;
 
-    private final VehicleAmountRepository vehicleAmountRepository;
-
-    private final SpeedDataRepository speedDataRepository;
-
     private final MeasurementPointRepository measurementPointRepository;
 
     private final DtoMapper dtoMapper;
 
+    private final VehicleAmountService vehicleAmountService;
+
+    private final SpeedDataService speedDataService;
+
     @Autowired
-    public VehicleDataServiceImpl(MeasurementRepository measurementRepository, VehicleAmountRepository vehicleAmountRepository, SpeedDataRepository speedDataRepository, MeasurementPointRepository measurementPointRepository, DtoMapper dtoMapper) {
+    public VehicleDataServiceImpl(
+        MeasurementRepository measurementRepository,
+        MeasurementPointRepository measurementPointRepository,
+        DtoMapper dtoMapper,
+        VehicleAmountService vehicleAmountService,
+        SpeedDataService speedDataService
+    ) {
         this.measurementRepository = measurementRepository;
-        this.vehicleAmountRepository = vehicleAmountRepository;
-        this.speedDataRepository = speedDataRepository;
         this.measurementPointRepository = measurementPointRepository;
         this.dtoMapper = dtoMapper;
+        this.vehicleAmountService = vehicleAmountService;
+        this.speedDataService = speedDataService;
     }
+
 
     private Optional<Measurement> getLatestMeasurement() {
         return measurementRepository.findLatest()
@@ -63,14 +72,22 @@ public class VehicleDataServiceImpl implements VehicleDataService {
     public GeoJsonFeatureCollectionDto getCurrentVehicleData() {
         Optional<Measurement> latestMeasurement = getLatestMeasurement();
 
-        return dtoMapper.mapVehicleDataToGeoJsonFeatureCollectionDto(
-            latestMeasurement
-                .map(Measurement::getVehicleAmounts)
-                .orElse(Collections.emptySet()),
-            latestMeasurement
-                .map(Measurement::getSpeedData)
-                .orElse(Collections.emptySet())
-        );
+        final List<GeoJsonFeatureDto> geoJsonFeatureDtos = latestMeasurement.map(measurement -> Stream.concat(
+                speedDataService.getSpeedData(measurement).stream(),
+                vehicleAmountService.getVehicleAmount(measurement).stream()
+            ).collect(Collectors.toMap(feature -> feature.getProperties().getId(), Function.identity(), (feature1, feature2) -> {
+                    if (feature1.getProperties().getSpeedData() == null) {
+                        feature1.getProperties().setSpeedData(feature2.getProperties().getSpeedData());
+                    }
+                    if (feature1.getProperties().getVehicleAmount() == null) {
+                        feature1.getProperties().setVehicleAmount(feature2.getProperties().getVehicleAmount());
+                    }
+                    return feature1;
+                })
+            ).values().stream().toList())
+            .orElse(Collections.emptyList());
+
+        return new GeoJsonFeatureCollectionDto(geoJsonFeatureDtos);
     }
 
     @Override

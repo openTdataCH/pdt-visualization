@@ -71,7 +71,6 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
     Double findAverageVehicleSpeedByTimeBetweenAndMeasurementPointId(@Param("measurementPointId") String measurementPointId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
 
-
     /**
      * Counts the number of records between two dates
      *
