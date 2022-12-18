@@ -11,17 +11,15 @@ import ch.bfh.trafficcounter.repository.SpeedDataRepository;
 import ch.bfh.trafficcounter.repository.VehicleAmountRepository;
 import org.glassfish.pfl.basic.contain.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Tuple;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Optional;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 
@@ -73,9 +71,12 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         );
     }
 
+
     @Override
     public HistoricDataCollectionDto getHistoricalVehicleData(String measurementPointId, String duration) {
-
+        getAllHistoricalVehicleData(duration, LocalDateTime.now());
+        //TODO, get data from cache table
+        /*
         LocalDateTime now = LocalDateTime.now();
         ArrayList<Pair<LocalDateTime, LocalDateTime>> timeSpans = new ArrayList<>();
         ArrayList<HistoricMeasurement> historicMeasurements = new ArrayList<>();
@@ -113,11 +114,55 @@ public class VehicleDataServiceImpl implements VehicleDataService {
             try {
                 historicMeasurements.add(fhm.get());
             } catch (CancellationException | InterruptedException | ExecutionException e) {
-                historicMeasurements.add(new HistoricMeasurement(0, LocalDateTime.now(), 0, 0));
+                historicMeasurements.add(new HistoricMeasurement("", 0, LocalDateTime.now(), 0, 0));
             }
         }
 
-        return dtoMapper.mapHistoricVehicleDataToHistoricDataDto(historicMeasurements, duration.substring(duration.length() - 1));
+        return historicMeasurements;
+         */
+        //return dtoMapper.mapHistoricVehicleDataToHistoricDataDto(historicMeasurements, duration.substring(duration.length() - 1));
+        return null;
+    }
+
+    /**
+     * Aggregates a list of historic measurement for a given duration
+     * @param duration duration to aggregate over (24h or 7d)
+     * @param now the start time from where results are aggregated backwards
+     * @return a map where the key is the start time of the HistoricData and the value is a List of all aggregation for every MeasurementPoint in the database
+     * has 24 entries for 24h and 7 entries for 7d
+     */
+    public HashMap<LocalDateTime, ArrayList<HistoricMeasurement>> getAllHistoricalVehicleData(String duration, LocalDateTime now) {
+
+        ArrayList<Pair<LocalDateTime, LocalDateTime>> timeSpans = new ArrayList<>();
+        HashMap<LocalDateTime, ArrayList<HistoricMeasurement>> historicMeasurements = new HashMap<>();
+        ArrayList<Future<HistoricMeasurement>> futureHistoricMeasurements = new ArrayList<>();
+
+        switch (duration) {
+            case "24h":
+                for (long i = 1L; i <= 24L; i++) {
+                    timeSpans.add(new Pair<>(now.minusHours(i - 1), now.minusHours(i)));
+                }
+                break;
+            case "7d":
+                for (long i = 1L; i <= 7L; i++) {
+                    timeSpans.add(new Pair<>(now.minusDays(i - 1), now.minusDays(i)));
+                }
+                break;
+            default:
+                throw new IllegalArgumentException(String.format("Unsupported duration: %s", duration));
+        }
+
+        // gets data either hourly 24x or daily 7x
+        for (Pair<LocalDateTime, LocalDateTime> ts : timeSpans) {
+            historicMeasurements.put(ts.second(),
+                buildHistoricMeasurementPart(
+                    ts.second(),
+                    ts.first()
+                )
+            );
+        }
+
+        return historicMeasurements;
     }
 
     @Override
@@ -125,39 +170,50 @@ public class VehicleDataServiceImpl implements VehicleDataService {
         return measurementPointRepository.existsMeasurementPointById(id);
     }
 
-    @Async
-    public Future<HistoricMeasurement> buildHistoricMeasurementPart(LocalDateTime start, LocalDateTime end, int ordinal, String measurementPointId) {
-        Double avgSpeed = measurementRepository.findAverageVehicleSpeedByTimeBetweenAndMeasurementPointId(measurementPointId, start, end);
-        Integer avgAmount = measurementRepository.findSumVehicleAmountByTimeBetweenAndMeasurementPointId(measurementPointId, start, end);
-
-        if (avgSpeed == null) {
-            avgSpeed = 0d;
-        }
-        if (avgAmount == null) {
-            avgAmount = 0;
-        }
-
-        return new AsyncResult<>(
-            new HistoricMeasurement(
-                ordinal,
-                end,
-                avgSpeed,
-                avgAmount
-            ));
-    }
-
-
-    /*
-    @Async
-    public Future<Double> runSumSpeedQuery(String measurementPointId, LocalDateTime start, LocalDateTime end) {
-        Double avgSpeed = measurementRepository.findAverageVehicleSpeedByTimeBetweenAndMeasurementPointId(measurementPointId, start, end);
-        return new AsyncResult<>(avgSpeed);
-    }
-
-    @Async
-    public Future<Integer> runSumAmountQuery(String measurementPointId, LocalDateTime start, LocalDateTime end) {
-        Integer sumAmount = measurementRepository.findSumVehicleAmountByTimeBetweenAndMeasurementPointId(measurementPointId, start, end);
-        return new AsyncResult<>(sumAmount);
-    }
+    /**
+     * Builds a list of all historic measurements in a given timespan. reads avg speed an amount data
+     *
+     * @param start start time for query
+     * @param end   end time for query
+     * @return List of HistoricMeasurement for every MeasurementPoint in the database in the requested timespan
      */
+    public ArrayList<HistoricMeasurement> buildHistoricMeasurementPart(LocalDateTime start, LocalDateTime end) {
+
+        ArrayList<HistoricMeasurement> historicMeasurements = new ArrayList<>();
+
+        ArrayList<Tuple> avgSpeedList = measurementRepository.findAverageVehicleSpeedByTimeBetween(start, end);
+        ArrayList<Tuple> avgAmountList = measurementRepository.findSumVehicleAmountByTimeBetween(start, end);
+
+        for (Tuple ta : avgAmountList) {
+            String taId = (String) ta.get(0);
+            Integer amount = (Integer) ta.get(1);
+
+            Optional<Tuple> optionalSpeedTuple = avgSpeedList.stream().filter(s -> s.get(0).equals(taId)).findFirst();
+            Double speed = optionalSpeedTuple.isPresent() ? (Double) optionalSpeedTuple.get().get(1) : 0d;
+
+            historicMeasurements.add(
+                new HistoricMeasurement(
+                    taId, start, speed, amount
+                )
+            );
+        }
+
+        return historicMeasurements;
+    }
+
+    //TODO, Schedule houry, best at exact hour XX:00
+    private void aggregateVehicleDataHourly() {
+        HashMap<LocalDateTime, ArrayList<HistoricMeasurement>> hourlyHistoricData = getAllHistoricalVehicleData("24h", LocalDateTime.now());
+
+        //TODO, persist data
+
+    }
+
+    //TODO, Schedule daily, best at begin of day 00:00
+    private void aggregateVehicleDataDaily() {
+        HashMap<LocalDateTime, ArrayList<HistoricMeasurement>> dailyHistoricData = getAllHistoricalVehicleData("7d", LocalDateTime.now());
+
+        //TODO, persist data
+    }
+
 }

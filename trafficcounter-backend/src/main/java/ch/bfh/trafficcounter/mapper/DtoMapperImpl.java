@@ -141,7 +141,7 @@ public class DtoMapperImpl implements DtoMapper {
 
         int cnt = 0;
         for (HistoricMeasurement h : measurements) {
-            HistoricDataDto historicDataDto = new HistoricDataDto(h.getOrdinal(), h.getTime(), h.getAvgVehicleAmount(), h.getAvgVehicleSpeed());
+            HistoricDataDto historicDataDto = new HistoricDataDto(h.getTime(), h.getAvgVehicleAmount(), h.getAvgVehicleSpeed());
             measurementsArray[cnt] = historicDataDto;
             cnt++;
         }

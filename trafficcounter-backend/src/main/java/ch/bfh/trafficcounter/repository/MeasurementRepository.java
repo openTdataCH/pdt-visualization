@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.Tuple;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +56,32 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
         AND time BETWEEN :start AND :end""", nativeQuery = true)
     List<Measurement> findAllByTimeBetweenAndMeasurementPointId(@Param("measurementPointId") String measurementPointId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
+
+    @Query(value = """
+        SELECT v.measurement_point_id, SUM(v.number_of_vehicles) AS avgVehicleAmount FROM measurement m
+        JOIN vehicle_amount v on m.id = v.measurement_id
+        WHERE time BETWEEN :start AND :end
+        GROUP BY v.measurement_point_id""", nativeQuery = true)
+    ArrayList<Tuple> findSumVehicleAmountByTimeBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query(value = """
+        SELECT s.measurement_point_id, AVG(s.average_speed) avgVehicleSpeed FROM measurement m
+        JOIN speed_data s on m.id = s.measurement_id
+        WHERE time BETWEEN :start AND :end
+        GROUP BY s.measurement_point_id""", nativeQuery = true)
+    ArrayList<Tuple> findAverageVehicleSpeedByTimeBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    /**
+     * Counts the number of records between two dates
+     *
+     * @param start start time for search
+     * @param end   end time for search
+     * @return number of records found
+     * @author Sven Trachsel
+     */
+    Integer countAllByTimeIsBetween(LocalDateTime start, LocalDateTime end);
+
+    // do not use, slow
     @Query(value = """
         SELECT SUM(v.number_of_vehicles) AS avgVehicleAmount FROM measurement m
         JOIN vehicle_amount v on m.id = v.measurement_id
@@ -69,16 +97,4 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
         AND time BETWEEN :start AND :end
         GROUP BY s.measurement_point_id""", nativeQuery = true)
     Double findAverageVehicleSpeedByTimeBetweenAndMeasurementPointId(@Param("measurementPointId") String measurementPointId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
-
-
-
-    /**
-     * Counts the number of records between two dates
-     *
-     * @param start start time for search
-     * @param end   end time for search
-     * @return number of records found
-     * @author Sven Trachsel
-     */
-    Integer countAllByTimeIsBetween(LocalDateTime start, LocalDateTime end);
 }

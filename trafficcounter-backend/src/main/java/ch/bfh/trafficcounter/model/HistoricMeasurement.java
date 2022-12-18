@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class HistoricMeasurement {
 
-    int ordinal;
+    String measurementPointId;
 
     LocalDateTime time;
 

@@ -13,8 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class HistoricDataDto {
 
-    private int ordinal;
-
     private LocalDateTime time;
 
     private int avgVehicleAmount;
