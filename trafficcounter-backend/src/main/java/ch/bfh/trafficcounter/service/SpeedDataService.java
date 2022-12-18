@@ -25,6 +25,7 @@ public interface SpeedDataService {
     /**
      * Gets the current speed data as GeoJSON.
      *
+     * @param measurement measurement to get speed data from
      * @return current speed data
      */
     List<GeoJsonFeatureDto> getSpeedData(Measurement measurement);

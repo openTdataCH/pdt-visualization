@@ -26,6 +26,7 @@ public interface VehicleAmountService {
     /**
      * Gets the amount of vehicles data as GeoJSON.
      *
+     * @param measurement measurement to get vehicle amount from
      * @return amount of vehicles
      */
     List<GeoJsonFeatureDto> getVehicleAmount(Measurement measurement);
