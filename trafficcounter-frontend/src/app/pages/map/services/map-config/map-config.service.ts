@@ -14,7 +14,7 @@ export class MapConfigService {
   /**
    * State of the menu display.
    */
-  showSidebar$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  showSidebar$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(window.innerWidth > 600);
 
   /**
    * Mode of the map.

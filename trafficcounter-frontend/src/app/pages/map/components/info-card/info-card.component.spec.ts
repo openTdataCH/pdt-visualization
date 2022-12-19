@@ -24,6 +24,7 @@ describe('InfoCardComponent', () => {
       id: '1',
       speedData: {
         averageSpeed: 100,
+        estimatedSpeedLimit: 80,
         speedDisplayClass: 'high'
       },
       vehicleAmount: {

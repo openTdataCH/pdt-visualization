@@ -50,4 +50,9 @@ public class MeasurementPoint {
     @Column(nullable = false, updatable = false)
     private boolean active;
 
+    /**
+     * Estimated speed limit.
+     */
+    @Column
+    private Float estimatedSpeedLimit;
 }

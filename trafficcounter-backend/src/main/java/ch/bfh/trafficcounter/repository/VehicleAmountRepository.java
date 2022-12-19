@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface VehicleAmountRepository extends JpaRepository<VehicleAmount, Long> {
+    boolean existsByIdIsGreaterThan(Long id);
 }
