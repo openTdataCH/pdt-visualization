@@ -27,17 +27,17 @@ public class MeasurementStats {
 
     private double avgVehicleSpeed;
 
-    private int avgVehicleAmount;
+    private int sumVehicleAmount;
 
     private MeasurementStatsType type;
 
     private boolean deprecated;
 
-    public MeasurementStats(String measurementPointId, LocalDateTime time, double avgVehicleSpeed, int avgVehicleAmount, MeasurementStatsType type) {
+    public MeasurementStats(String measurementPointId, LocalDateTime time, double avgVehicleSpeed, int sumVehicleAmount, MeasurementStatsType type) {
         this.measurementPointId = measurementPointId;
         this.time = time;
         this.avgVehicleSpeed = avgVehicleSpeed;
-        this.avgVehicleAmount = avgVehicleAmount;
+        this.sumVehicleAmount = sumVehicleAmount;
         this.type = type;
     }
 }

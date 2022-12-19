@@ -10,13 +10,14 @@ import ch.bfh.trafficcounter.model.entity.MeasurementStatsType;
 import ch.bfh.trafficcounter.repository.MeasurementPointRepository;
 import ch.bfh.trafficcounter.repository.MeasurementRepository;
 import ch.bfh.trafficcounter.repository.MeasurementStatsRepository;
+import ch.bfh.trafficcounter.repository.result.SpeedDataAggregationResult;
+import ch.bfh.trafficcounter.repository.result.VehicleAmountAggregationResult;
 import org.glassfish.pfl.basic.contain.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Tuple;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -116,7 +117,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
             default -> throw new IllegalArgumentException(String.format("Unsupported duration: %s", duration));
         }
 
-        ArrayList<MeasurementStats> historicMeasurements = measurementStatsRepository.findMeasurementStatsByMeasurementPointIdAndTypeAndTimeBetween(measurementPointId, type, start, now);
+        final List<MeasurementStats> historicMeasurements = measurementStatsRepository.findMeasurementStatsByMeasurementPointIdAndTypeAndTimeBetween(measurementPointId, type, start, now);
 
         return dtoMapper.mapHistoricVehicleDataToHistoricDataDto(historicMeasurements, type.toString());
     }
@@ -128,10 +129,10 @@ public class VehicleDataServiceImpl implements VehicleDataService {
      * @return a map where the key is the start time of the HistoricData and the value is a List of all aggregation for every MeasurementPoint in the database
      * has 24 entries for 24h and 7 entries for 7d
      */
-    public ArrayList<ArrayList<MeasurementStats>> getAllHistoricalVehicleData(MeasurementStatsType type, LocalDateTime now) {
+    public List<List<MeasurementStats>> getAllHistoricalVehicleData(MeasurementStatsType type, LocalDateTime now) {
 
-        ArrayList<Pair<LocalDateTime, LocalDateTime>> timeSpans = new ArrayList<>();
-        ArrayList<ArrayList<MeasurementStats>> historicMeasurements = new ArrayList<>();
+        final List<Pair<LocalDateTime, LocalDateTime>> timeSpans = new ArrayList<>();
+        final List<List<MeasurementStats>> historicMeasurements = new ArrayList<>();
 
         switch (type) {
             case HOURLY:
@@ -173,27 +174,37 @@ public class VehicleDataServiceImpl implements VehicleDataService {
      * @param end   end time for query
      * @return List of MeasurementStats for every MeasurementPoint in the database in the requested timespan
      */
-    public ArrayList<MeasurementStats> buildMeasurementStatsPart(LocalDateTime start, LocalDateTime end, MeasurementStatsType type) {
+    public List<MeasurementStats> buildMeasurementStatsPart(LocalDateTime start, LocalDateTime end, MeasurementStatsType type) {
 
-        ArrayList<MeasurementStats> historicMeasurements = new ArrayList<>();
+        final List<SpeedDataAggregationResult> averageSpeedData = measurementRepository.findAverageVehicleSpeedByTimeBetween(start, end);
+        final List<VehicleAmountAggregationResult> sumVehicleAmounts = measurementRepository.findSumVehicleAmountByTimeBetween(start, end);
 
-        List<Tuple> avgSpeedList = measurementRepository.findAverageVehicleSpeedByTimeBetween(start, end);
-        List<Tuple> avgAmountList = measurementRepository.findSumVehicleAmountByTimeBetween(start, end);
+        return Stream.concat(
+            averageSpeedData.stream(),
+            sumVehicleAmounts.stream()
+        ).map(result -> {
+            final MeasurementStats stats = new MeasurementStats();
+            stats.setMeasurementPointId(result.getMeasurementPointId());
+            stats.setType(type);
+            stats.setTime(start);
+            if(result instanceof SpeedDataAggregationResult) {
+                stats.setAvgVehicleSpeed(((SpeedDataAggregationResult) result).getAverageVehicleSpeed());
+            }
+            if(result instanceof VehicleAmountAggregationResult) {
+                stats.setSumVehicleAmount(((VehicleAmountAggregationResult) result).getSumVehicleAmount());
+            }
+            return stats;
+        }).collect(Collectors.toMap(MeasurementStats::getMeasurementPointId, Function.identity(), (stats1, stats2) -> {
 
-        for (Tuple ta : avgAmountList) {
-            String taId = ta.get(0, String.class);
-            Integer amount = ta.get(1, Integer.class);
-
-            Optional<Tuple> optionalSpeedTuple = avgSpeedList.stream().filter(s -> s.get(0).equals(taId)).findFirst();
-            Double speed = optionalSpeedTuple.isPresent() ? optionalSpeedTuple.get().get(1, Double.class) : 0d;
-
-            historicMeasurements.add(
-                new MeasurementStats(
-                    taId, start, speed, amount, type
-                )
-            );
-        }
-        return historicMeasurements;
+                    if (stats1.getAvgVehicleSpeed() == 0) {
+                        stats1.setAvgVehicleSpeed(stats2.getAvgVehicleSpeed());
+                    }
+                    if (stats1.getSumVehicleAmount() == 0) {
+                        stats1.setSumVehicleAmount(stats2.getSumVehicleAmount());
+                    }
+                    return stats1;
+                })
+            ).values().stream().toList();
     }
 
     @Override
@@ -224,7 +235,7 @@ public class VehicleDataServiceImpl implements VehicleDataService {
     private void aggregateVehicleData(MeasurementStatsType type, LocalDateTime startTime) {
         System.out.printf("-- Begin aggregating %s data --%n", type);
         markCurrentStatsDeprecated(type);
-        ArrayList<ArrayList<MeasurementStats>> hourlyHistoricData = getAllHistoricalVehicleData(type, startTime);
+        List<List<MeasurementStats>> hourlyHistoricData = getAllHistoricalVehicleData(type, startTime);
         hourlyHistoricData.forEach(measurementStatsRepository::saveAll);
         measurementStatsRepository.deleteAllByTypeAndDeprecated(type, true);
         System.out.printf("-- Successfully aggregated and persisted %s data --%n", type);

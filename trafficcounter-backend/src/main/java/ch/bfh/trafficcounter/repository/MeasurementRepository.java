@@ -1,6 +1,8 @@
 package ch.bfh.trafficcounter.repository;
 
 import ch.bfh.trafficcounter.model.entity.Measurement;
+import ch.bfh.trafficcounter.repository.result.SpeedDataAggregationResult;
+import ch.bfh.trafficcounter.repository.result.VehicleAmountAggregationResult;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -56,18 +58,18 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
     List<Measurement> findAllByTimeBetweenAndMeasurementPointId(@Param("measurementPointId") String measurementPointId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
     @Query(value = """
-        SELECT v.measurement_point_id, SUM(v.number_of_vehicles) AS avgVehicleAmount FROM measurement m
+        SELECT v.measurement_point_id AS measurementPointId, SUM(v.number_of_vehicles) AS sumVehicleAmount FROM measurement m
         JOIN vehicle_amount v on m.id = v.measurement_id
         WHERE time BETWEEN :start AND :end
         GROUP BY v.measurement_point_id""", nativeQuery = true)
-    List<Tuple> findSumVehicleAmountByTimeBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+    List<VehicleAmountAggregationResult> findSumVehicleAmountByTimeBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
     @Query(value = """
-        SELECT s.measurement_point_id, AVG(s.average_speed) avgVehicleSpeed FROM measurement m
+        SELECT s.measurement_point_id AS measurementPointId, AVG(s.average_speed) AS averageVehicleSpeed FROM measurement m
         JOIN speed_data s on m.id = s.measurement_id
         WHERE time BETWEEN :start AND :end
         GROUP BY s.measurement_point_id""", nativeQuery = true)
-    List<Tuple> findAverageVehicleSpeedByTimeBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+    List<SpeedDataAggregationResult> findAverageVehicleSpeedByTimeBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
 
     /**
