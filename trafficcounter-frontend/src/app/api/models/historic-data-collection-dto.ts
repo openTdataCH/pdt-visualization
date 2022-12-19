@@ -1,6 +1,7 @@
 import { HistoricDataDto } from './historic-data-dto';
+import {MeasurementStatsType} from "./measurement-stats-type";
 
 export interface HistoricDataCollectionDto {
-    resolution: string;
+    resolution: MeasurementStatsType;
     measurements: Array<HistoricDataDto>;
 }
