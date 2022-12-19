@@ -52,11 +52,11 @@ export class HistogramComponent implements OnInit {
   private createChartData(duration: string, data: HistoricDataCollectionDto): ChartData {
     const labels = data.measurements.map(measurement => {
       if (measurement.time instanceof Date) {
+        console.log(measurement.time);
         measurement.time.setMinutes(0);
         measurement.time.setSeconds(0);
         measurement.time.setMilliseconds(0);
         if (duration === '7d') {
-          measurement.time.setHours(0);
           return measurement.time.toLocaleDateString();
         }
         return measurement.time.toLocaleTimeString();
