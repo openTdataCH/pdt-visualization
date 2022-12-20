@@ -28,7 +28,10 @@
       }
     },
     "histogram": {
-      "title": "Histogram",
+      "title": {
+        "speedData": "Histogram speed data",
+        "vehicleAmount": "Histogram amount of vehicles"
+      },
       "label": {
         "speedData": "Speed data",
         "vehicleAmount": "Vehicle amount"

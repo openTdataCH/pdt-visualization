@@ -29,6 +29,7 @@ export class MapDisplayComponent implements OnInit {
   @Input('vehicle-data')
   vehicleData$!: Observable<GeoJsonFeatureCollectionDto>;
   private map!: Map;
+
   private readonly icons: Array<string> = [
     'location-pin-thin',
     'location-pin-high',
@@ -122,24 +123,26 @@ export class MapDisplayComponent implements OnInit {
       this.measurementPoints$.subscribe(measurementPoints => {
         this.displayMeasurementPoints(measurementPoints);
       });
-    });
-    this.vehicleData$.subscribe(vehicleData => {
 
-      this.mapConfigService.mapMode$.subscribe(mapMode => {
+      this.vehicleData$.subscribe(vehicleData => {
 
-        if (mapMode === MapMode.VehicleAmount) {
-          this.displayVehicleAmount(vehicleData);
-        } else {
-          this.removeLayerIfExists(this.vehicleAmountLayer);
-        }
-        if (mapMode == MapMode.VehicleSpeed) {
-          this.displayVehicleSpeed(vehicleData);
-        } else {
-          this.removeLayerIfExists(this.vehicleSpeedLayer);
-        }
+        this.mapConfigService.mapMode$.subscribe(mapMode => {
+
+          if (mapMode === MapMode.VehicleAmount) {
+            this.displayVehicleAmount(vehicleData);
+          } else {
+            this.removeLayerIfExists(this.vehicleAmountLayer);
+          }
+          if (mapMode == MapMode.VehicleSpeed) {
+            this.displayVehicleSpeed(vehicleData);
+          } else {
+            this.removeLayerIfExists(this.vehicleSpeedLayer);
+          }
+        });
+        this.updateVehicleDataLayer(vehicleData);
       });
-      this.updateVehicleDataLayer(vehicleData);
     });
+
   }
 
   private loadIcon(id: string) {

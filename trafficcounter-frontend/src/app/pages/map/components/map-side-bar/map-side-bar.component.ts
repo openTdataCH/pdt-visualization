@@ -17,7 +17,6 @@ import {VehicleDataService} from "../../../../services/vehicle-data/vehicle-data
 })
 export class MapSideBarComponent implements OnInit {
 
-  modeControl = new FormControl(MapMode.MeasurementPoints);
 
   selectedPointInfo$: Observable<GeoJsonPropertiesDto | null>;
 
@@ -56,9 +55,6 @@ export class MapSideBarComponent implements OnInit {
     });
   }
 
-  updateMode(): void {
-    this.mapConfigService.mapMode$.next(this.modeControl.value ?? MapMode.MeasurementPoints);
-  }
 
   clearSelectedPoint() {
     this.mapConfigService.selectedPointInfo$.next(null);

@@ -12,8 +12,11 @@ import {ChartData} from "chart.js";
 })
 export class HistogramComponent implements OnInit {
 
-  @ViewChild('histogram', {static: true})
-  chartElement!: ElementRef;
+  @ViewChild('speedDataHistogram', {static: true})
+  speedDataChartElement!: ElementRef;
+
+  @ViewChild('vehicleAmountHistogram', {static: true})
+  vehicleAmountChartElement!: ElementRef;
 
   @Input('duration')
   duration$!: Observable<string | null>
@@ -21,14 +24,15 @@ export class HistogramComponent implements OnInit {
   @Input('data')
   data$!: Observable<HistoricDataCollectionDto | null>
 
-  private chart!: Chart;
+  private speedDataChart!: Chart;
+  private vehicleAmountChart!: Chart;
 
   constructor(private readonly translateService: TranslateService) {
   }
 
-  private createChart(): void {
-    this.chart = new Chart(this.chartElement.nativeElement,
-      {
+  private createCharts(): void {
+    const defaultConfig = () => {
+      return {
         type: 'bar',
         data: {
           labels: [],
@@ -39,20 +43,36 @@ export class HistogramComponent implements OnInit {
           plugins: {
             legend: {
               position: 'top',
-            },
-            title: {
-              display: true,
-              text: this.translateService.instant('map.histogram.title')
             }
           }
         }
-      });
+      };
+    }
+    this.speedDataChart = new Chart(this.speedDataChartElement.nativeElement, Object.assign(defaultConfig(), {
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: this.translateService.instant('map.histogram.title.speedData')
+          }
+        }
+      }
+    }));
+    this.vehicleAmountChart = new Chart(this.vehicleAmountChartElement.nativeElement, Object.assign(defaultConfig(), {
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: this.translateService.instant('map.histogram.title.vehicleAmount')
+          }
+        }
+      }
+    }));
   }
 
   private createChartData(duration: string, data: HistoricDataCollectionDto): ChartData {
     const labels = data.measurements.map(measurement => {
       if (measurement.time instanceof Date) {
-        console.log(measurement.time);
         measurement.time.setMinutes(0);
         measurement.time.setSeconds(0);
         measurement.time.setMilliseconds(0);
@@ -85,7 +105,7 @@ export class HistogramComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.createChart();
+    this.createCharts();
 
     this.duration$.subscribe(duration => {
       this.data$.subscribe((data: HistoricDataCollectionDto | null) => {
@@ -93,9 +113,12 @@ export class HistogramComponent implements OnInit {
           return;
         }
         const chartData = this.createChartData(duration, data);
-        this.chart.data.labels = chartData.labels;
-        this.chart.data.datasets = chartData.datasets;
-        this.chart.update('show');
+        this.speedDataChart.data.labels = chartData.labels;
+        this.speedDataChart.data.datasets = [chartData.datasets[0]];
+        this.speedDataChart.update('show');
+        this.vehicleAmountChart.data.labels = chartData.labels;
+        this.vehicleAmountChart.data.datasets = [chartData.datasets[1]];
+        this.vehicleAmountChart.update('show');
       });
     });
 
