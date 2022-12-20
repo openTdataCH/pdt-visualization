@@ -29,7 +29,10 @@
       }
     },
     "histogram": {
-      "title": "Histogramm",
+      "title": {
+        "speedData": "Histogramm Geschw.",
+        "vehicleAmount": "Histogram Anzahl Fahrzeuge"
+      },
       "label": {
         "speedData": "Geschwindigkeitsdaten",
         "vehicleAmount": "Anzahl Fahrzeuge"

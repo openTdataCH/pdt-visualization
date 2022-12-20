@@ -3,4 +3,10 @@
   position: -webkit-sticky; /* Safari */
   top: 0;
   z-index: 1000;
+
+ .map-options mat-button-toggle {
+   font-size: 12pt;
+   font-weight: normal;
+ }
+
 }

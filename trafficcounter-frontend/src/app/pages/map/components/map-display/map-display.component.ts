@@ -29,6 +29,7 @@ export class MapDisplayComponent implements OnInit {
   @Input('vehicle-data')
   vehicleData$!: Observable<GeoJsonFeatureCollectionDto>;
   private map!: Map;
+
   private readonly icons: Array<string> = [
     'location-pin-thin',
     'location-pin-high',
@@ -93,7 +94,7 @@ export class MapDisplayComponent implements OnInit {
     'type': 'circle',
     'source': 'vehicleAmount',
     'paint': {
-      'circle-radius': ["*", 0.5, ['get', 'numberOfVehicles', ['get', 'vehicleAmount']]],
+      'circle-radius': ["*", 0.75, ['get', 'numberOfVehicles', ['get', 'vehicleAmount']]],
       'circle-color': '#d22525',
       'circle-opacity': 0.2
     }
@@ -122,32 +123,37 @@ export class MapDisplayComponent implements OnInit {
       this.measurementPoints$.subscribe(measurementPoints => {
         this.displayMeasurementPoints(measurementPoints);
       });
-    });
-    this.vehicleData$.subscribe(vehicleData => {
 
-      this.mapConfigService.mapMode$.subscribe(mapMode => {
+      this.vehicleData$.subscribe(vehicleData => {
 
-        if (mapMode === MapMode.VehicleAmount) {
-          this.displayVehicleAmount(vehicleData);
-        } else {
-          this.removeLayerIfExists(this.vehicleAmountLayer);
-        }
-        if (mapMode == MapMode.VehicleSpeed) {
-          this.displayVehicleSpeed(vehicleData);
-        } else {
-          this.removeLayerIfExists(this.vehicleSpeedLayer);
-        }
+        this.mapConfigService.mapMode$.subscribe(mapMode => {
+
+          if (mapMode === MapMode.VehicleAmount) {
+            this.displayVehicleAmount(vehicleData);
+          } else {
+            this.removeLayerIfExists(this.vehicleAmountLayer);
+          }
+          if (mapMode == MapMode.VehicleSpeed) {
+            this.displayVehicleSpeed(vehicleData);
+          } else {
+            this.removeLayerIfExists(this.vehicleSpeedLayer);
+          }
+        });
+        this.updateVehicleDataLayer(vehicleData);
       });
+
+      this.measurementPoints$.pipe(
+        combineLatestWith(this.vehicleData$)
+      ).subscribe(([measurementPoints, vehicleData]) => {
+        const mergedVehicleData: GeoJsonFeatureCollectionDto = {
+          type: measurementPoints.type,
+          features: measurementPoints.features.concat(vehicleData.features)
+        }
+        this.updateVehicleDataLayer(mergedVehicleData);
+      });
+
     });
-    this.measurementPoints$.pipe(
-      combineLatestWith(this.vehicleData$)
-    ).subscribe(([measurementPoints, vehicleData]) => {
-      const mergedVehicleData: GeoJsonFeatureCollectionDto = {
-        type: measurementPoints.type,
-        features: measurementPoints.features.concat(vehicleData.features)
-      }
-      this.updateVehicleDataLayer(mergedVehicleData);
-    })
+
   }
 
   private loadIcon(id: string) {
@@ -233,7 +239,4 @@ export class MapDisplayComponent implements OnInit {
     this.mapConfigService.selectedPointInfo$.next(selectedPointInfo);
   }
 
-  private clearSelectedPointInfo() {
-    this.mapConfigService.selectedPointInfo$.next(null);
-  }
 }
