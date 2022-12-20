@@ -3,6 +3,7 @@ package ch.bfh.trafficcounter.controller;
 import ch.bfh.trafficcounter.event.UpdateEvent;
 import ch.bfh.trafficcounter.model.dto.HistoricDataCollectionDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
+import ch.bfh.trafficcounter.model.entity.MeasurementStatsType;
 import ch.bfh.trafficcounter.service.VehicleDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 import reactor.core.scheduler.Schedulers;
+
+import java.util.Optional;
 
 /**
  * Controller for combined vehicle data
@@ -73,13 +76,14 @@ public class VehicleDataController {
      */
     @GetMapping("/history/{id}")
     public ResponseEntity<HistoricDataCollectionDto> getHistoricalVehicleData(@PathVariable String id, @RequestParam("duration") String duration) {
-        if (!duration.equals("24h") && !duration.equals("7d")) {
+        final Optional<MeasurementStatsType> type = MeasurementStatsType.fromDuration(duration);
+        if (type.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("duration %s not allowed", duration));
         }
         if (!vehicleDataService.hasHistoricData(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("no historic data for %s found", id));
         }
-        return ResponseEntity.ok(vehicleDataService.getHistoricalVehicleData(id, duration));
+        return ResponseEntity.ok(vehicleDataService.getHistoricalVehicleData(id, type.get()));
     }
 }
 

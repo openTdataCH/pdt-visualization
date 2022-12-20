@@ -2,6 +2,7 @@ package ch.bfh.trafficcounter.service;
 
 import ch.bfh.trafficcounter.model.dto.HistoricDataCollectionDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
+import ch.bfh.trafficcounter.model.entity.MeasurementStatsType;
 
 /**
  * Service for vehicle data and operations.
@@ -25,7 +26,7 @@ public interface VehicleDataService {
      * @return vehicle data in the past duration
      * @throws IllegalArgumentException when an unsupported duration is entered
      */
-    HistoricDataCollectionDto getHistoricalVehicleData(String measurementPointId, String duration) throws IllegalArgumentException;
+    HistoricDataCollectionDto getHistoricalVehicleData(String measurementPointId, MeasurementStatsType duration) throws IllegalArgumentException;
 
     /**
      * Checks whether historic data for the measurement point is available

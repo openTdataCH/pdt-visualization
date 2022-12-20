@@ -97,29 +97,25 @@ public class VehicleDataServiceImpl implements VehicleDataService {
 
 
     @Override
-    public HistoricDataCollectionDto getHistoricalVehicleData(String measurementPointId, String duration) {
+    public HistoricDataCollectionDto getHistoricalVehicleData(String measurementPointId, MeasurementStatsType type) {
 
         LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
-        MeasurementStatsType type;
         LocalDateTime start;
 
-
-        switch (duration) {
-            case "24h" -> {
-                type = MeasurementStatsType.HOURLY;
+        switch (type) {
+            case HOURLY -> {
                 start = now.minusHours(24);
             }
-            case "7d" -> {
-                type = MeasurementStatsType.DAILY;
+            case DAILY -> {
                 now = now.withHour(0); // set to midnight for daily
                 start = now.minusDays(7);
             }
-            default -> throw new IllegalArgumentException(String.format("Unsupported duration: %s", duration));
+            default -> throw new IllegalArgumentException(String.format("Unsupported duration: %s", type));
         }
 
         final List<MeasurementStats> historicMeasurements = measurementStatsRepository.findMeasurementStatsByMeasurementPointIdAndTypeAndTimeBetween(measurementPointId, type, start, now);
 
-        return dtoMapper.mapHistoricVehicleDataToHistoricDataDto(historicMeasurements, type.toString());
+        return dtoMapper.mapHistoricVehicleDataToHistoricDataDto(historicMeasurements, type);
     }
 
     /**
