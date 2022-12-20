@@ -26,11 +26,11 @@ public enum MeasurementStatsType {
         this.duration = duration;
     }
 
-    public String getDuration() {
-        return duration;
-    }
-
     public static Optional<MeasurementStatsType> fromDuration(final String duration) {
         return Arrays.stream(values()).filter(type -> type.getDuration().equals(duration)).findFirst();
+    }
+
+    public String getDuration() {
+        return duration;
     }
 }

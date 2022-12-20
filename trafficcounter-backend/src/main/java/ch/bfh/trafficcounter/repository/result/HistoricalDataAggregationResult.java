@@ -9,6 +9,7 @@ public interface HistoricalDataAggregationResult {
 
     /**
      * Gets the measurement point ID.
+     *
      * @return measurement point ID
      */
     String getMeasurementPointId();
