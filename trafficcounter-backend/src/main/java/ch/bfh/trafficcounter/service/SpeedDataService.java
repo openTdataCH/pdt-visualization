@@ -37,6 +37,7 @@ public interface SpeedDataService {
 
     /**
      * Checks whether SpeedData is present
+     *
      * @return true if speed data is present, false if not
      */
     boolean hasSpeedData();

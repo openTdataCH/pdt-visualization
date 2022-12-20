@@ -19,16 +19,18 @@ public interface MeasurementStatsRepository extends JpaRepository<MeasurementSta
 
     /**
      * Finds a List of MeasurementStats
+     *
      * @param measurementPointId the id of the measurement point
-     * @param type the type
-     * @param start the start time for the search
-     * @param end the end tiem for the search
+     * @param type               the type
+     * @param start              the start time for the search
+     * @param end                the end tiem for the search
      * @return a list of MeasurementStats
      */
     ArrayList<MeasurementStats> findMeasurementStatsByMeasurementPointIdAndTypeAndTimeBetween(String measurementPointId, MeasurementStatsType type, LocalDateTime start, LocalDateTime end);
 
     /**
      * Finds all MeasurementStats of a type
+     *
      * @param type the type to search for
      * @return a list of all found MeasurementStats
      */
@@ -36,15 +38,17 @@ public interface MeasurementStatsRepository extends JpaRepository<MeasurementSta
 
     /**
      * Checks whether measurement stats for a measurementpoint exist
+     *
      * @param measurementPointId the id of the measurementpoint
-     * @param deprecated whether the stats are deprecated or not
+     * @param deprecated         whether the stats are deprecated or not
      * @return if a record matching the search-criteria is found
      */
     Boolean existsMeasurementStatsByMeasurementPointIdAndDeprecated(String measurementPointId, boolean deprecated);
 
     /**
      * Deletes all MeasurementType-Records by type and the field deprecated
-     * @param type the type to search for
+     *
+     * @param type       the type to search for
      * @param deprecated the deprecated-status to search for
      */
     void deleteAllByTypeAndDeprecated(MeasurementStatsType type, boolean deprecated);

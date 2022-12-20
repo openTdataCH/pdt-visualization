@@ -36,6 +36,7 @@ public interface DtoMapper {
 
     /**
      * Wraps single measuremeptPoint into GeoJSON
+     *
      * @param measurementPoint measurementPoint to map
      * @return a DTO object which can easily be serialized to GeoJSON
      */
