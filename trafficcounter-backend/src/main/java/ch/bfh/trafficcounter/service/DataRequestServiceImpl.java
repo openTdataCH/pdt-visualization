@@ -55,6 +55,9 @@ public class DataRequestServiceImpl implements DataRequestService {
 
         // load initial data on startup
         requestAndPersistStaticData();
+        requestAndPersistDynamicData();
+
+        vehicleDataService.initializeAggregatedData();
     }
 
 
@@ -97,8 +100,6 @@ public class DataRequestServiceImpl implements DataRequestService {
 
         speedDataService.updateEstimatedSpeedLimit();
         System.out.println("-- Successfully recalculated estimated speed limit --");
-
-        vehicleDataService.initializeAggregatedData();
 
         updateEvent.tryEmitNext(UpdateEvent.ALL);
     }

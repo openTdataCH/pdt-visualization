@@ -28,8 +28,8 @@ trafficcounter:
     dynamic-data:
       rate: 60_000
     hourly-aggregation:
-      cron: '0 * * * * ?'
+      cron: '0 0 * * * ?'
       zone: Europe/Zurich
     daily-aggregation:
-      cron: '0 0 * * * ?'
+      cron: '0 0 0 * * ?'
       zone: Europe/Zurich
