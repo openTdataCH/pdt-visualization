@@ -31,6 +31,8 @@ public class DataRequestServiceImpl implements DataRequestService {
 
     private final VehicleAmountService vehicleAmountService;
 
+    private final VehicleDataService vehicleDataService;
+
     private final Sinks.Many<UpdateEvent> updateEvent;
 
     @Autowired
@@ -38,19 +40,28 @@ public class DataRequestServiceImpl implements DataRequestService {
         OpenTransportDataApiService api,
         MeasurementPointService measurementPointService,
         SpeedDataService speedDataService,
+        VehicleDataService vehicleDataService,
         VehicleAmountService vehicleAmountService, Sinks.Many<UpdateEvent> updateEvent) {
         this.api = api;
         this.measurementPointService = measurementPointService;
         this.speedDataService = speedDataService;
         this.vehicleAmountService = vehicleAmountService;
+        this.vehicleDataService = vehicleDataService;
         this.updateEvent = updateEvent;
     }
 
+    /**
+     * initialization of first static and then dynamic data
+     * fills the measurementStats for the first time after data is requested
+     */
     @PostConstruct
     public void loadInitialData() {
 
         // load initial data on startup
         requestAndPersistStaticData();
+        requestAndPersistDynamicData();
+
+        vehicleDataService.initializeAggregatedData();
     }
 
 
@@ -72,6 +83,10 @@ public class DataRequestServiceImpl implements DataRequestService {
         System.out.println("-- Successfully requested and persisted static data --");
     }
 
+    /**
+     * implementation of dynamic data requests and persistence
+     * runs once a minute
+     */
     @Scheduled(fixedRateString = "${trafficcounter.schedules.dynamic-data.rate}")
     public void requestAndPersistDynamicData() {
         final D2LogicalModel measuredData = api.pullMeasuredData();

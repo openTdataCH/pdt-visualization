@@ -122,6 +122,11 @@ public class SpeedDataServiceImpl implements SpeedDataService {
         measurementPointRepository.updateEstimatedSpeedLimit(endTime);
     }
 
+    @Override
+    public boolean hasSpeedData() {
+        return speedDataRepository.existsByIdIsGreaterThan(0L);
+    }
+
     private record TrafficSpeedAggregation(int numberOfInputValuesUsed, float speedProduct) {
 
         public TrafficSpeedAggregation sum(final TrafficSpeedAggregation other) {

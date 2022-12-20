@@ -1,5 +1,6 @@
 package ch.bfh.trafficcounter.controller;
 
+import ch.bfh.trafficcounter.model.entity.MeasurementStatsType;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 
@@ -27,8 +28,7 @@ public class VehicleDataControllerTest extends AbstractApiTest {
             .get("/api/vehicledata/history/CH-TEST?duration=24h")
             .then()
             .assertThat()
-            .body("resolution", equalTo("h"))
-            .body("measurements[0].ordinal", equalTo(1))
+            .body("resolution", equalTo(MeasurementStatsType.HOURLY.getDuration()))
             .body("measurements[0].avgVehicleAmount", equalTo(1))
             .body("measurements[0].avgVehicleSpeed", equalTo(10f))
             .statusCode(HttpStatus.SC_OK);
@@ -40,8 +40,7 @@ public class VehicleDataControllerTest extends AbstractApiTest {
             .get("/api/vehicledata/history/CH-TEST?duration=7d")
             .then()
             .assertThat()
-            .body("resolution", equalTo("d"))
-            .body("measurements[0].ordinal", equalTo(1))
+            .body("resolution", equalTo(MeasurementStatsType.DAILY.getDuration()))
             .body("measurements[0].avgVehicleAmount", equalTo(1))
             .body("measurements[0].avgVehicleSpeed", equalTo(10f))
             .statusCode(HttpStatus.SC_OK);
