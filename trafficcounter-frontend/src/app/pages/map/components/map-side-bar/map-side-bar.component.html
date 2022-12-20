@@ -5,11 +5,23 @@
     <mat-button-toggle value="vehicleSpeed">{{ 'map.menu.vehicle-speed' | translate }}</mat-button-toggle>
   </mat-button-toggle-group>
 
-  <div *ngIf="selectedPointInfo$ | async as selectedPointInfo">
-    <app-info-card
-      *ngIf="selectedPointInfo !== null"
-      [info]="selectedPointInfo"
-    ></app-info-card>
+  <div *ngIf="selectedPointInfo$ | async as selectedPointInfo" class="selected-point-info">
+
+    <button mat-stroked-button (click)="clearSelectedPoint()">{{ 'map.action.clearSelectedPoint' | translate }}</button>
+
+    <div class="info-card-wrapper">
+      <app-info-card
+        *ngIf="selectedPointInfo !== null"
+        [info]="selectedPointInfo"
+      ></app-info-card>
+    </div>
+
+    <app-histogram-menu *ngIf="selectedPointInfo !== null"></app-histogram-menu>
+
+    <app-histogram
+      [duration]="histogramDuration$"
+      [data]="histogramData$"
+    ></app-histogram>
   </div>
 
 </div>

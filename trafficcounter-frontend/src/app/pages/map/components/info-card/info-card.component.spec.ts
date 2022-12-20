@@ -21,7 +21,7 @@ describe('InfoCardComponent', () => {
     fixture = TestBed.createComponent(InfoCardComponent);
     component = fixture.componentInstance;
     component.info = {
-      id: 1,
+      id: '1',
       speedData: {
         averageSpeed: 100,
         estimatedSpeedLimit: 80,
