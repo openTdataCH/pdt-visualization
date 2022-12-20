@@ -1,7 +1,9 @@
 package ch.bfh.trafficcounter.service;
 
+import ch.bfh.trafficcounter.config.SpeedDisplayConfig;
 import ch.bfh.trafficcounter.mapper.DtoMapper;
-import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
+import ch.bfh.trafficcounter.model.dto.geojson.SpeedDataDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.model.entity.SpeedData;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,17 +38,21 @@ public class SpeedDataServiceImpl implements SpeedDataService {
 
     private final DtoMapper dtoMapper;
 
+    private final SpeedDisplayConfig speedDisplayConfig;
+
     @Autowired
     public SpeedDataServiceImpl(
         MeasurementRepository measurementRepository,
         SpeedDataRepository speedDataRepository,
         MeasurementPointRepository measurementPointRepository,
-        DtoMapper dtoMapper
+        DtoMapper dtoMapper,
+        SpeedDisplayConfig speedDisplayConfig
     ) {
         this.measurementRepository = measurementRepository;
         this.speedDataRepository = speedDataRepository;
         this.measurementPointRepository = measurementPointRepository;
         this.dtoMapper = dtoMapper;
+        this.speedDisplayConfig = speedDisplayConfig;
     }
 
     public SpeedData processMeasurement(final Measurement measurement, final SiteMeasurements siteMeasurements) {
@@ -89,12 +94,32 @@ public class SpeedDataServiceImpl implements SpeedDataService {
     }
 
     @Override
-    public GeoJsonFeatureCollectionDto getCurrentSpeedData() {
-        return dtoMapper.mapSpeedDataToGeoJsonFeatureCollectionDto(
-            getLatestMeasurement()
-                .map(Measurement::getSpeedData)
-                .orElse(Collections.emptySet())
+    public List<GeoJsonFeatureDto> getSpeedData(final Measurement measurement) {
+        return measurement.getSpeedData().stream()
+            .map(this::transformToGeoJsonFeatureDto)
+            .collect(Collectors.toList());
+    }
+
+    private GeoJsonFeatureDto transformToGeoJsonFeatureDto(final SpeedData speedData) {
+        final Float estimatedSpeedLimit = speedData.getMeasurementPoint().getEstimatedSpeedLimit();
+        final SpeedDataDto speedDataDto = new SpeedDataDto(
+            speedData.getAverageSpeed(),
+            estimatedSpeedLimit,
+            speedDisplayConfig.getSpeedDisplayClass(
+                estimatedSpeedLimit != null
+                    ? speedData.getAverageSpeed() / estimatedSpeedLimit
+                    : 0
+            )
         );
+        final GeoJsonFeatureDto geoJsonFeatureDto = dtoMapper.mapMeasurementPointToGeoJsonFeatureDto(speedData.getMeasurementPoint());
+        geoJsonFeatureDto.getProperties().setSpeedData(speedDataDto);
+        return geoJsonFeatureDto;
+    }
+
+    @Override
+    public void updateEstimatedSpeedLimit() {
+        final LocalDateTime endTime = LocalDateTime.now().minusHours(24);
+        measurementPointRepository.updateEstimatedSpeedLimit(endTime);
     }
 
     private record TrafficSpeedAggregation(int numberOfInputValuesUsed, float speedProduct) {
