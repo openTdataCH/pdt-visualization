@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {LayerSpecification, Map, MapOptions} from 'maplibre-gl';
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, combineLatestWith, Observable} from "rxjs";
 import {GeoJsonFeatureCollectionDto} from "../../../../api/models/geo-json-feature-collection-dto";
 import {MapConfigService} from "../../services/map-config/map-config.service";
 import {MapMode} from "../../models/map-mode";
@@ -74,7 +74,7 @@ export class MapDisplayComponent implements OnInit {
     'paint': {
       'circle-color': 'blue',
       'circle-opacity': 0,
-      'circle-radius': 5
+      'circle-radius': 8
     }
   }
 
@@ -141,6 +141,17 @@ export class MapDisplayComponent implements OnInit {
         });
         this.updateVehicleDataLayer(vehicleData);
       });
+
+      this.measurementPoints$.pipe(
+        combineLatestWith(this.vehicleData$)
+      ).subscribe(([measurementPoints, vehicleData]) => {
+        const mergedVehicleData: GeoJsonFeatureCollectionDto = {
+          type: measurementPoints.type,
+          features: measurementPoints.features.concat(vehicleData.features)
+        }
+        this.updateVehicleDataLayer(mergedVehicleData);
+      });
+
     });
 
   }
@@ -186,8 +197,8 @@ export class MapDisplayComponent implements OnInit {
       const rawProperties = e.features[0].properties;
       const properties: GeoJsonPropertiesDto = {
         id: rawProperties.id,
-        speedData: JSON.parse(rawProperties.speedData),
-        vehicleAmount: JSON.parse(rawProperties.vehicleAmount)
+        speedData: rawProperties.speedData !== undefined ? JSON.parse(rawProperties.speedData) : null,
+        vehicleAmount: rawProperties.vehicleAmount !== undefined ? JSON.parse(rawProperties.vehicleAmount) : null
       }
       this.setSelectedPointInfo(properties as GeoJsonPropertiesDto);
     });

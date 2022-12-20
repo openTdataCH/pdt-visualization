@@ -36,5 +36,9 @@ public interface VehicleDataService {
      */
     boolean hasHistoricData(String id);
 
+    /**
+     * Initializes aggregated data for 24h and 7d
+     * needed to load data after startup
+     */
     void initializeAggregatedData();
 }

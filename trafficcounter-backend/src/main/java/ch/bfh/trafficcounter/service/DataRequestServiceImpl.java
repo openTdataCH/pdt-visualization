@@ -50,11 +50,18 @@ public class DataRequestServiceImpl implements DataRequestService {
         this.updateEvent = updateEvent;
     }
 
+    /**
+     * initialization of first static and then dynamic data
+     * fills the measurementStats for the first time after data is requested
+     */
     @PostConstruct
     public void loadInitialData() {
 
         // load initial data on startup
         requestAndPersistStaticData();
+        requestAndPersistDynamicData();
+
+        vehicleDataService.initializeAggregatedData();
     }
 
 
@@ -76,6 +83,10 @@ public class DataRequestServiceImpl implements DataRequestService {
         System.out.println("-- Successfully requested and persisted static data --");
     }
 
+    /**
+     * implementation of dynamic data requests and persistence
+     * runs once a minute
+     */
     @Scheduled(fixedRateString = "${trafficcounter.schedules.dynamic-data.rate}")
     public void requestAndPersistDynamicData() {
         final D2LogicalModel measuredData = api.pullMeasuredData();
@@ -97,8 +108,6 @@ public class DataRequestServiceImpl implements DataRequestService {
 
         speedDataService.updateEstimatedSpeedLimit();
         System.out.println("-- Successfully recalculated estimated speed limit --");
-
-        vehicleDataService.initializeAggregatedData();
 
         updateEvent.tryEmitNext(UpdateEvent.ALL);
     }

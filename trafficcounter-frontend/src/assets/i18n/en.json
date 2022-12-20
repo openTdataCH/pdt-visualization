@@ -21,6 +21,7 @@
         "estimated-speed-limit": "Estimated speed limit",
         "number-of-vehicles": "Number of vehicles"
       },
+      "no-data": "No data",
       "speed-display-class": {
         "high": "High speed",
         "neutral": "Neutral speed",

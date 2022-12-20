@@ -9,6 +9,7 @@ public interface VehicleAmountAggregationResult extends HistoricalDataAggregatio
 
     /**
      * Gets the sum of the vehicle amounts.
+     *
      * @return sum of vehicle amounts
      */
     Integer getSumVehicleAmount();

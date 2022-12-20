@@ -84,7 +84,7 @@ public class VehicleAmountServiceImpl implements VehicleAmountService {
 
     @Override
     public boolean hasAmountData() {
-        return vehicleAmountRepository.existsByIdIsGreaterThan(0l);
+        return vehicleAmountRepository.existsByIdIsGreaterThan(0L);
     }
 
     private GeoJsonFeatureDto transformToGeoJsonFeatureDto(final VehicleAmount vehicleAmount) {

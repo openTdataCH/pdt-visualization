@@ -9,6 +9,7 @@ public interface SpeedDataAggregationResult extends HistoricalDataAggregationRes
 
     /**
      * Gets the average vehicle speed.
+     *
      * @return average vehicle speed
      */
     Float getAverageVehicleSpeed();

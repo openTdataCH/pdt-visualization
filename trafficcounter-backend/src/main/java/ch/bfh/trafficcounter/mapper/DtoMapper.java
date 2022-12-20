@@ -26,13 +26,19 @@ public interface DtoMapper {
     GeoJsonFeatureCollectionDto mapMeasurementPointsToGeoJsonFeatureCollectionDto(List<MeasurementPoint> measurementPoints);
 
     /**
-     * Wraps historic measurements into a JSON
+     * Wraps historic measurements into JSON
      *
      * @param measurements List of historic measurements for each measurement time implied by resolution
-     * @param type   given resolution type, implies amount of measurements (daily -> 7, hourly -> 24)
+     * @param type         given resolution type, implies amount of measurements (daily -> 7, hourly -> 24)
      * @return a DTO object for transmitting historic data
      */
     HistoricDataCollectionDto mapHistoricVehicleDataToHistoricDataDto(List<MeasurementStats> measurements, MeasurementStatsType type);
 
+    /**
+     * Wraps single measuremeptPoint into GeoJSON
+     *
+     * @param measurementPoint measurementPoint to map
+     * @return a DTO object which can easily be serialized to GeoJSON
+     */
     GeoJsonFeatureDto mapMeasurementPointToGeoJsonFeatureDto(MeasurementPoint measurementPoint);
 }

@@ -21,6 +21,7 @@
         "estimated-speed-limit": "Geschätzte Geschw.-Begrenzung",
         "number-of-vehicles": "Anzahl Fahrzeuge"
       },
+      "no-data": "keine Daten",
       "speed-display-class": {
         "high": "Hohe Geschw.",
         "neutral": "Neutrale Geschw.",
