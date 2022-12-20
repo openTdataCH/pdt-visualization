@@ -3,7 +3,7 @@
     <mat-icon>menu</mat-icon>
   </button>
 
-  <mat-button-toggle-group (change)="updateMode()" [formControl]="modeControl" name="mode">
+  <mat-button-toggle-group class="map-options" (change)="updateMode()" [formControl]="modeControl" name="mode">
     <mat-button-toggle value="measurementPoints">{{ 'map.menu.measurement-points' | translate }}</mat-button-toggle>
     <mat-button-toggle value="vehicleAmount">{{ 'map.menu.vehicle-amount' | translate }}</mat-button-toggle>
     <mat-button-toggle value="vehicleSpeed">{{ 'map.menu.vehicle-speed' | translate }}</mat-button-toggle>

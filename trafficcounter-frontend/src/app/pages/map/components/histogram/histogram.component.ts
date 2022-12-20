@@ -18,6 +18,16 @@ export class HistogramComponent implements OnInit {
   @ViewChild('vehicleAmountHistogram', {static: true})
   vehicleAmountChartElement!: ElementRef;
 
+  @ViewChild('primary', {static: true})
+  primaryElement!: ElementRef;
+
+  @ViewChild('accent', {static: true})
+  accentElement!: ElementRef;
+
+  private primaryColor!: string;
+
+  private accentColor!: string;
+
   @Input('duration')
   duration$!: Observable<string | null>
 
@@ -91,12 +101,12 @@ export class HistogramComponent implements OnInit {
       datasets: [
         {
           label: this.translateService.instant('map.histogram.label.speedData'),
-          backgroundColor: 'red',
+          backgroundColor: this.primaryColor,
           data: speedData
         },
         {
           label: this.translateService.instant('map.histogram.label.vehicleAmount'),
-          backgroundColor: 'blue',
+          backgroundColor: this.accentColor,
           data: vehicleAmount
         }
       ]
@@ -104,6 +114,9 @@ export class HistogramComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.primaryColor = getComputedStyle(this.primaryElement.nativeElement).color;
+    this.accentColor = getComputedStyle(this.accentElement.nativeElement).color;
 
     this.createCharts();
 

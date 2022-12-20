@@ -57,6 +57,7 @@ export class MapSideBarComponent implements OnInit {
 
 
   clearSelectedPoint() {
+    this.mapConfigService.showSidebar$.next(false);
     this.mapConfigService.selectedPointInfo$.next(null);
   }
 }

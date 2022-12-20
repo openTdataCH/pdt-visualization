@@ -1,5 +1,6 @@
 .map-sidebar {
-  padding: 2vh 2vw;
+  padding: 2% 4vw;
+  height: 96%;
 
   mat-button-toggle-group {
     display: flex;
@@ -16,8 +17,13 @@
     }
 
     & > * {
-      margin: 2vh 0;
+      margin: 2% 0;
+    }
+
+    .spacer {
+      height: 20%;
     }
 
   }
+
 }

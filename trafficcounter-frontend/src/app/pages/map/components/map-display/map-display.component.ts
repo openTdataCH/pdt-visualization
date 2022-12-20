@@ -94,7 +94,7 @@ export class MapDisplayComponent implements OnInit {
     'type': 'circle',
     'source': 'vehicleAmount',
     'paint': {
-      'circle-radius': ["*", 0.5, ['get', 'numberOfVehicles', ['get', 'vehicleAmount']]],
+      'circle-radius': ["*", 0.75, ['get', 'numberOfVehicles', ['get', 'vehicleAmount']]],
       'circle-color': '#d22525',
       'circle-opacity': 0.2
     }
@@ -239,7 +239,4 @@ export class MapDisplayComponent implements OnInit {
     this.mapConfigService.selectedPointInfo$.next(selectedPointInfo);
   }
 
-  private clearSelectedPointInfo() {
-    this.mapConfigService.selectedPointInfo$.next(null);
-  }
 }
