@@ -8,6 +8,7 @@ import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonGeometryDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonPropertiesDto;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.model.entity.MeasurementStats;
+import ch.bfh.trafficcounter.model.entity.MeasurementStatsType;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class DtoMapperImpl implements DtoMapper {
     }
 
     @Override
-    public HistoricDataCollectionDto mapHistoricVehicleDataToHistoricDataDto(List<MeasurementStats> measurements, String resolution) {
+    public HistoricDataCollectionDto mapHistoricVehicleDataToHistoricDataDto(List<MeasurementStats> measurements, MeasurementStatsType type) {
 
         if (measurements.size() == 0) {
             return null;
@@ -52,7 +53,7 @@ public class DtoMapperImpl implements DtoMapper {
             cnt++;
         }
 
-        return new HistoricDataCollectionDto(resolution, measurementsArray);
+        return new HistoricDataCollectionDto(type.getDuration(), measurementsArray);
     }
 
     @Override

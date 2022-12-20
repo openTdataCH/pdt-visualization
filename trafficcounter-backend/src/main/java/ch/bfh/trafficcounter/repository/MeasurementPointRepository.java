@@ -43,8 +43,13 @@ public interface MeasurementPointRepository extends JpaRepository<MeasurementPoi
      */
     Boolean existsMeasurementPointById(String id);
 
-    @Query("UPDATE MeasurementPoint mp " +
-        "SET mp.estimatedSpeedLimit = (SELECT ROUND(AVG(sd.averageSpeed) / 10, 0) * 10 FROM SpeedData sd WHERE sd.measurementPoint.id = mp.id AND sd.measurement.time > :endTime)")
+    @Query(value = "UPDATE measurement_point mp " +
+        "SET mp.estimated_speed_limit = (SELECT ROUND(AVG(sd.average_speed) / 10, 0) * 10 FROM speed_data sd " +
+        "JOIN measurement_point mp ON mp.id = sd.measurement_point_id " +
+        "JOIN measurement m ON sd.measurement_id = m.id " +
+        "WHERE m.time > :endTime)",
+        nativeQuery = true
+    )
     @Modifying
     void updateEstimatedSpeedLimit(@Param("endTime") LocalDateTime endTime);
 

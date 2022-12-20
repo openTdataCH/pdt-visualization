@@ -5,6 +5,7 @@ import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
 import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.model.entity.MeasurementStats;
+import ch.bfh.trafficcounter.model.entity.MeasurementStatsType;
 
 import java.util.List;
 
@@ -28,10 +29,10 @@ public interface DtoMapper {
      * Wraps historic measurements into a JSON
      *
      * @param measurements List of historic measurements for each measurement time implied by resolution
-     * @param resolution   given resolution, implies amount of measurements (daily -> 7, hourly -> 24)
+     * @param type   given resolution type, implies amount of measurements (daily -> 7, hourly -> 24)
      * @return a DTO object for transmitting historic data
      */
-    HistoricDataCollectionDto mapHistoricVehicleDataToHistoricDataDto(List<MeasurementStats> measurements, String resolution);
+    HistoricDataCollectionDto mapHistoricVehicleDataToHistoricDataDto(List<MeasurementStats> measurements, MeasurementStatsType type);
 
     GeoJsonFeatureDto mapMeasurementPointToGeoJsonFeatureDto(MeasurementPoint measurementPoint);
 }
