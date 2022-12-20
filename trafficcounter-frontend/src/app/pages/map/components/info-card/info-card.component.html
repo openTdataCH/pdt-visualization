@@ -10,11 +10,11 @@
       </tr>
       <tr>
         <th>{{ 'map.info-card.description.speed-rating' | translate }}:</th>
-        <td>{{ 'map.info-card.speed-display-class.' + info.speedData?.speedDisplayClass | translate }}</td>
+        <td>{{ info.speedData !== null ? ('map.info-card.speed-display-class.' + info.speedData?.speedDisplayClass | translate) : ('map.info-card.no-data' | translate) }}</td>
       </tr>
       <tr>
         <th>{{ 'map.info-card.description.average-speed' | translate }}:</th>
-        <td>{{ info.speedData?.averageSpeed }} km/h</td>
+        <td>{{ info.speedData?.averageSpeed }} {{ info.speedData !== null ? 'km/h' : 'map.info-card.no-data' | translate }}</td>
       </tr>
       <tr>
         <th>{{ 'map.info-card.description.estimated-speed-limit' | translate }}:</th>
@@ -22,7 +22,7 @@
       </tr>
       <tr>
         <th>{{ 'map.info-card.description.number-of-vehicles' | translate }}:</th>
-        <td>{{ info.vehicleAmount?.numberOfVehicles }}</td>
+        <td>{{ info.vehicleAmount !== null ? info.vehicleAmount?.numberOfVehicles : 'map.info-card.no-data' | translate }}</td>
       </tr>
     </table>
   </mat-card-content>
