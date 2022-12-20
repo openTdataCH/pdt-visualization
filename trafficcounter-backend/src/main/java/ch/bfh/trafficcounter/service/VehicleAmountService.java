@@ -30,6 +30,10 @@ public interface VehicleAmountService {
      */
     List<GeoJsonFeatureDto> getVehicleAmount(Measurement measurement);
 
+    /**
+     * Checks whether AmountData is present
+     * @return true if amount data is present, false if not
+     */
     boolean hasAmountData();
 
 }

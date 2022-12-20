@@ -183,24 +183,24 @@ public class VehicleDataServiceImpl implements VehicleDataService {
             stats.setMeasurementPointId(result.getMeasurementPointId());
             stats.setType(type);
             stats.setTime(start);
-            if (result instanceof SpeedDataAggregationResult) {
+            if(result instanceof SpeedDataAggregationResult) {
                 stats.setAvgVehicleSpeed(((SpeedDataAggregationResult) result).getAverageVehicleSpeed());
             }
-            if (result instanceof VehicleAmountAggregationResult) {
+            if(result instanceof VehicleAmountAggregationResult) {
                 stats.setSumVehicleAmount(((VehicleAmountAggregationResult) result).getSumVehicleAmount());
             }
             return stats;
         }).collect(Collectors.toMap(MeasurementStats::getMeasurementPointId, Function.identity(), (stats1, stats2) -> {
 
-                if (stats1.getAvgVehicleSpeed() == 0) {
-                    stats1.setAvgVehicleSpeed(stats2.getAvgVehicleSpeed());
-                }
-                if (stats1.getSumVehicleAmount() == 0) {
-                    stats1.setSumVehicleAmount(stats2.getSumVehicleAmount());
-                }
-                return stats1;
-            })
-        ).values().stream().toList();
+                    if (stats1.getAvgVehicleSpeed() == 0) {
+                        stats1.setAvgVehicleSpeed(stats2.getAvgVehicleSpeed());
+                    }
+                    if (stats1.getSumVehicleAmount() == 0) {
+                        stats1.setSumVehicleAmount(stats2.getSumVehicleAmount());
+                    }
+                    return stats1;
+                })
+            ).values().stream().toList();
     }
 
     @Override

@@ -30,9 +30,15 @@ public interface SpeedDataService {
      */
     List<GeoJsonFeatureDto> getSpeedData(Measurement measurement);
 
-
+    /**
+     * Updates the estimated speed limit
+     */
     void updateEstimatedSpeedLimit();
 
+    /**
+     * Checks whether SpeedData is present
+     * @return true if speed data is present, false if not
+     */
     boolean hasSpeedData();
 
 }
