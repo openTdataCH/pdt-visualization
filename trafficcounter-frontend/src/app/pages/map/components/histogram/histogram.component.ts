@@ -97,7 +97,7 @@ export class HistogramComponent implements OnInit {
           console.log(duration);
           return measurement.time.toLocaleDateString();
         }
-        return measurement.time.toLocaleString();
+        return measurement.time.toLocaleTimeString();
       }
       return '';
     });
