@@ -83,7 +83,7 @@ export class HistogramComponent implements OnInit {
   private createChartData(duration: string, data: HistoricDataCollectionDto): ChartData {
     const measurements = data.measurements.sort((m1, m2) => {
       if(m1.time instanceof Date && m2.time instanceof Date) {
-        return m1.time == m2.time ? 0 : (m1.time < m2.time ? 1 : -1);
+        return m1.time == m2.time ? 0 : (m1.time < m2.time ? -1 : 1);
       }
       return 0;
     });
@@ -93,9 +93,11 @@ export class HistogramComponent implements OnInit {
         measurement.time.setSeconds(0);
         measurement.time.setMilliseconds(0);
         if (duration === '7d') {
+          console.log('duration:');
+          console.log(duration);
           return measurement.time.toLocaleDateString();
         }
-        return measurement.time.toLocaleTimeString();
+        return measurement.time.toLocaleString();
       }
       return '';
     });
