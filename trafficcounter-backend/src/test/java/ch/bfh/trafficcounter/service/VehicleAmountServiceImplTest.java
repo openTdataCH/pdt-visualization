@@ -1,9 +1,8 @@
 package ch.bfh.trafficcounter.service;
 
-import ch.bfh.trafficcounter.config.SpeedDisplayConfig;
 import ch.bfh.trafficcounter.mapper.DtoMapper;
 import ch.bfh.trafficcounter.mapper.DtoMapperImpl;
-import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.model.entity.VehicleAmount;
@@ -18,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 
 import java.math.BigInteger;
@@ -36,134 +34,126 @@ import static org.mockito.Mockito.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class VehicleAmountServiceImplTest {
 
-	private final SpeedDisplayConfig speedDisplayConfig = new SpeedDisplayConfig();
+    @Spy
+    private DtoMapper dtoMapper = new DtoMapperImpl();
 
-	@Spy
-	private DtoMapper dtoMapper = new DtoMapperImpl(speedDisplayConfig);
+    @Mock
+    private MeasurementRepository measurementRepository;
 
-	@Mock
-	private MeasurementRepository measurementRepository;
+    @Mock
+    private MeasurementPointRepository measurementPointRepository;
 
-	@Mock
-	private MeasurementPointRepository measurementPointRepository;
+    @Mock
+    private VehicleAmountRepository vehicleAmountRepository;
 
-	@Mock
-	private VehicleAmountRepository vehicleAmountRepository;
-
-	private VehicleAmountServiceImpl vehicleAmountService;
+    private VehicleAmountServiceImpl vehicleAmountService;
 
 
-	@BeforeEach
-	void init() {
-		final SpeedDisplayConfig.SpeedDisplayThresholds thresholds = new SpeedDisplayConfig.SpeedDisplayThresholds();
-		thresholds.setHigh(0.9f);
-		thresholds.setNeutral(0.65f);
-		thresholds.setLow(0.0f);
-		speedDisplayConfig.setThresholds(thresholds);
-		this.vehicleAmountService = new VehicleAmountServiceImpl(
-				measurementRepository,
-				vehicleAmountRepository,
-				measurementPointRepository,
-				dtoMapper
-		);
-	}
+    @BeforeEach
+    void init() {
+        this.vehicleAmountService = new VehicleAmountServiceImpl(
+            measurementRepository,
+            vehicleAmountRepository,
+            measurementPointRepository,
+            dtoMapper
+        );
+    }
 
-	private SiteMeasurements generateSiteMeasurements(final String measurementPointId, final List<Pair<Integer, Float>> speedDataValues) {
-		return new SiteMeasurements() {{
-			measurementSiteReference = new MeasurementSiteRecordVersionedReference();
-			measurementSiteReference.setId(measurementPointId);
-			measuredValue = speedDataValues.stream().map(speedDataValue -> {
-				final SiteMeasurementsIndexMeasuredValue siteMeasurementsIndexMeasuredValue = new SiteMeasurementsIndexMeasuredValue();
-				siteMeasurementsIndexMeasuredValue.setIndex(1);
-				final MeasuredValue value = new MeasuredValue();
-				final TrafficSpeed trafficSpeed = new TrafficSpeed();
-				final SpeedValue speedValue = new SpeedValue();
-				speedValue.setNumberOfInputValuesUsed(BigInteger.valueOf(speedDataValue.getFirst()));
-				speedValue.setSpeed(speedDataValue.getSecond());
-				trafficSpeed.setAverageVehicleSpeed(speedValue);
-				value.setBasicData(trafficSpeed);
-				siteMeasurementsIndexMeasuredValue.setMeasuredValue(value);
-				return siteMeasurementsIndexMeasuredValue;
-			}).collect(Collectors.toList());
-		}};
-	}
+    private SiteMeasurements generateSiteMeasurements(final String measurementPointId, final List<Pair<Integer, Float>> speedDataValues) {
+        return new SiteMeasurements() {{
+            measurementSiteReference = new MeasurementSiteRecordVersionedReference();
+            measurementSiteReference.setId(measurementPointId);
+            measuredValue = speedDataValues.stream().map(speedDataValue -> {
+                final SiteMeasurementsIndexMeasuredValue siteMeasurementsIndexMeasuredValue = new SiteMeasurementsIndexMeasuredValue();
+                siteMeasurementsIndexMeasuredValue.setIndex(1);
+                final MeasuredValue value = new MeasuredValue();
+                final TrafficSpeed trafficSpeed = new TrafficSpeed();
+                final SpeedValue speedValue = new SpeedValue();
+                speedValue.setNumberOfInputValuesUsed(BigInteger.valueOf(speedDataValue.getFirst()));
+                speedValue.setSpeed(speedDataValue.getSecond());
+                trafficSpeed.setAverageVehicleSpeed(speedValue);
+                value.setBasicData(trafficSpeed);
+                siteMeasurementsIndexMeasuredValue.setMeasuredValue(value);
+                return siteMeasurementsIndexMeasuredValue;
+            }).collect(Collectors.toList());
+        }};
+    }
 
-	@Test
-	void testProcessMeasurement() {
-		final Measurement measurement = Measurement.builder()
-				.id(1L)
-				.time(LocalDateTime.of(2022, 11, 11, 1, 1, 0, 0))
-				.build();
-		final Pair<Integer, Float> firstSpeed = Pair.of(2, 50f);
-		final Pair<Integer, Float> secondSpeed = Pair.of(1, 100f);
-		final String measurementPointId = "ABC";
-		final SiteMeasurements siteMeasurements = generateSiteMeasurements(measurementPointId, List.of(firstSpeed, secondSpeed));
+    @Test
+    void testProcessMeasurement() {
+        final Measurement measurement = Measurement.builder()
+            .id(1L)
+            .time(LocalDateTime.of(2022, 11, 11, 1, 1, 0, 0))
+            .build();
+        final Pair<Integer, Float> firstSpeed = Pair.of(2, 50f);
+        final Pair<Integer, Float> secondSpeed = Pair.of(1, 100f);
+        final String measurementPointId = "ABC";
+        final SiteMeasurements siteMeasurements = generateSiteMeasurements(measurementPointId, List.of(firstSpeed, secondSpeed));
 
-		when(measurementPointRepository.findById(measurementPointId))
-				.thenReturn(Optional.of(MeasurementPoint.builder().id(measurementPointId).build()));
+        when(measurementPointRepository.findById(measurementPointId))
+            .thenReturn(Optional.of(MeasurementPoint.builder().id(measurementPointId).build()));
 
-		final Integer expectedAmountOfVehicles = firstSpeed.getFirst() + secondSpeed.getFirst();
+        final Integer expectedAmountOfVehicles = firstSpeed.getFirst() + secondSpeed.getFirst();
 
-		final VehicleAmount vehicleAmount = vehicleAmountService.processMeasurement(measurement, siteMeasurements);
+        final VehicleAmount vehicleAmount = vehicleAmountService.processMeasurement(measurement, siteMeasurements);
 
-		assertEquals(measurementPointId, vehicleAmount.getMeasurementPoint().getId());
-		assertEquals(expectedAmountOfVehicles, vehicleAmount.getNumberOfVehicles());
-	}
+        assertEquals(measurementPointId, vehicleAmount.getMeasurementPoint().getId());
+        assertEquals(expectedAmountOfVehicles, vehicleAmount.getNumberOfVehicles());
+    }
 
-	@Test
-	void testProcessAndPersistVehicleAmount_existingMeasurement() {
-		final LocalDateTime time = LocalDateTime.of(2022, 11, 11, 1, 1, 0, 0);
-		final Measurement measurement = Measurement.builder()
-				.id(1L)
-				.time(time)
-				.build();
-		final String measurementPointId = "ABC";
-		final SiteMeasurements siteMeasurements = generateSiteMeasurements(measurementPointId, List.of(Pair.of(2, 50f)));
+    @Test
+    void testProcessAndPersistVehicleAmount_existingMeasurement() {
+        final LocalDateTime time = LocalDateTime.of(2022, 11, 11, 1, 1, 0, 0);
+        final Measurement measurement = Measurement.builder()
+            .id(1L)
+            .time(time)
+            .build();
+        final String measurementPointId = "ABC";
+        final SiteMeasurements siteMeasurements = generateSiteMeasurements(measurementPointId, List.of(Pair.of(2, 50f)));
 
-		when(measurementPointRepository.findById(measurementPointId))
-				.thenReturn(Optional.of(MeasurementPoint.builder().id(measurementPointId).build()));
+        when(measurementPointRepository.findById(measurementPointId))
+            .thenReturn(Optional.of(MeasurementPoint.builder().id(measurementPointId).build()));
 
-		when(measurementRepository.findByTime(time)).thenReturn(Optional.of(measurement));
+        when(measurementRepository.findByTime(time)).thenReturn(Optional.of(measurement));
 
-		vehicleAmountService.processAndPersistVehicleAmount(time, List.of(siteMeasurements));
+        vehicleAmountService.processAndPersistVehicleAmount(time, List.of(siteMeasurements));
 
-		verify(vehicleAmountRepository, times(1)).saveAll(any());
-	}
+        verify(vehicleAmountRepository, times(1)).saveAll(any());
+    }
 
-	@Test
-	void testProcessAndPersistVehicleAmount_newMeasurement() {
-		final LocalDateTime time = LocalDateTime.of(2022, 11, 11, 1, 1, 0, 0);
-		final String measurementPointId = "ABC";
-		final SiteMeasurements siteMeasurements = generateSiteMeasurements(measurementPointId, List.of(Pair.of(2, 50f)));
+    @Test
+    void testProcessAndPersistVehicleAmount_newMeasurement() {
+        final LocalDateTime time = LocalDateTime.of(2022, 11, 11, 1, 1, 0, 0);
+        final String measurementPointId = "ABC";
+        final SiteMeasurements siteMeasurements = generateSiteMeasurements(measurementPointId, List.of(Pair.of(2, 50f)));
 
-		when(measurementPointRepository.findById(measurementPointId))
-				.thenReturn(Optional.of(MeasurementPoint.builder().id(measurementPointId).build()));
+        when(measurementPointRepository.findById(measurementPointId))
+            .thenReturn(Optional.of(MeasurementPoint.builder().id(measurementPointId).build()));
 
-		when(measurementRepository.findByTime(time)).thenReturn(Optional.empty());
+        when(measurementRepository.findByTime(time)).thenReturn(Optional.empty());
 
-		vehicleAmountService.processAndPersistVehicleAmount(time, List.of(siteMeasurements));
+        vehicleAmountService.processAndPersistVehicleAmount(time, List.of(siteMeasurements));
 
-		verify(measurementRepository, times(1)).save(any());
-		verify(vehicleAmountRepository, times(1)).saveAll(any());
-	}
+        verify(measurementRepository, times(1)).save(any());
+        verify(vehicleAmountRepository, times(1)).saveAll(any());
+    }
 
-	@Test
-	void testGetCurrentVehicleAmount() {
-		final LocalDateTime time = LocalDateTime.of(2022, 11, 11, 1, 1, 0, 0);
-		final Measurement measurement = Measurement.builder()
-				.id(1L)
-				.time(time)
-				.vehicleAmounts(Set.of(
-						VehicleAmount.builder()
-								.id(1L)
-								.numberOfVehicles(3)
-								.measurementPoint(MeasurementPoint.builder().id("ABC").build())
-								.build()
-				)).build();
-		when(measurementRepository.findLatest()).thenReturn(Optional.of(measurement));
-		final GeoJsonFeatureCollectionDto vehicleAmountGeoJson = vehicleAmountService.getCurrentVehicleAmount();
-		assertEquals(1, vehicleAmountGeoJson.getFeatures().size());
-		assertEquals(3, vehicleAmountGeoJson.getFeatures().get(0).getProperties().getVehicleAmount().getNumberOfVehicles());
-	}
+    @Test
+    void testGetCurrentVehicleAmount() {
+        final LocalDateTime time = LocalDateTime.of(2022, 11, 11, 1, 1, 0, 0);
+        final Measurement measurement = Measurement.builder()
+            .id(1L)
+            .time(time)
+            .vehicleAmounts(Set.of(
+                VehicleAmount.builder()
+                    .id(1L)
+                    .numberOfVehicles(3)
+                    .measurementPoint(MeasurementPoint.builder().id("ABC").build())
+                    .build()
+            )).build();
+        final List<GeoJsonFeatureDto> vehicleAmountGeoJson = vehicleAmountService.getVehicleAmount(measurement);
+        assertEquals(1, vehicleAmountGeoJson.size());
+        assertEquals(3, vehicleAmountGeoJson.get(0).getProperties().getVehicleAmount().getNumberOfVehicles());
+    }
 
 }

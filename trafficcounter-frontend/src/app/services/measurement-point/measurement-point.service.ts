@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable, of} from "rxjs";
+import {Observable} from "rxjs";
 import {GeoJsonFeatureCollectionDto} from "../../api/models/geo-json-feature-collection-dto";
 import {MeasurementPointControllerService} from "../../api/services/measurement-point-controller.service";
 
@@ -11,7 +11,8 @@ import {MeasurementPointControllerService} from "../../api/services/measurement-
 })
 export class MeasurementPointService {
 
-  constructor(private readonly measurementPointControllerService: MeasurementPointControllerService) { }
+  constructor(private readonly measurementPointControllerService: MeasurementPointControllerService) {
+  }
 
   /**
    * Gets all measurement points from the API as GeoJSON.

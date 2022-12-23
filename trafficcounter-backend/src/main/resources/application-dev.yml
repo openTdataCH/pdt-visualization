@@ -2,9 +2,7 @@ server:
   port: 8080
 spring:
   datasource:
-    hikari:
-      maximum-pool-size: 100
-      idle-timeout: 30000
-      max-lifetime: 1000000
-      connection-timeout: 30000
-      minimum-idle: 10
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:db;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: password

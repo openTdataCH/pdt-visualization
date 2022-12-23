@@ -5,8 +5,8 @@ import {AppModule} from "../app.module";
 
 describe('ErrorInterceptor', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    providers: [ ErrorInterceptor ],
-    imports: [ AppModule ]
+    providers: [ErrorInterceptor],
+    imports: [AppModule]
   }));
 
   it('should be created', () => {

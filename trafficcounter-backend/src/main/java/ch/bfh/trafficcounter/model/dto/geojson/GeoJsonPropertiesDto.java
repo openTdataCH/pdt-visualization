@@ -16,14 +16,14 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GeoJsonPropertiesDto {
 
-	private String id;
+    private String id;
 
-	private SpeedDataDto speedData;
+    private SpeedDataDto speedData;
 
-	private VehicleAmountDto vehicleAmount;
+    private VehicleAmountDto vehicleAmount;
 
-	public GeoJsonPropertiesDto(String id) {
-		this.id = id;
-	}
+    public GeoJsonPropertiesDto(String id) {
+        this.id = id;
+    }
 
 }

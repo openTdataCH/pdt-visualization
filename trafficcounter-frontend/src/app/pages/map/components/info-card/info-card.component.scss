@@ -1,0 +1,13 @@
+.info-card {
+  display: flex;
+  flex-direction: column;
+  table {
+    width: 100%;
+    tr {
+      th {
+        text-align: left;
+      }
+    }
+  }
+}
+

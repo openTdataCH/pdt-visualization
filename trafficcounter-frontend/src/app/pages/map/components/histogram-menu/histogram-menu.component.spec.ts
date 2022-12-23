@@ -1,21 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MapMenuComponent } from './map-menu.component';
+import { HistogramMenuComponent } from './histogram-menu.component';
 import {MaterialModule} from "../../../../material/material.module";
 import {TranslateModule} from "@ngx-translate/core";
 
-describe('MapMenuComponent', () => {
-  let component: MapMenuComponent;
-  let fixture: ComponentFixture<MapMenuComponent>;
+describe('HistogramMenuComponent', () => {
+  let component: HistogramMenuComponent;
+  let fixture: ComponentFixture<HistogramMenuComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MapMenuComponent ],
-      imports: [ MaterialModule, TranslateModule.forRoot() ]
+      declarations: [ HistogramMenuComponent ],
+      imports: [
+        MaterialModule,
+        TranslateModule.forRoot()
+      ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MapMenuComponent);
+    fixture = TestBed.createComponent(HistogramMenuComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

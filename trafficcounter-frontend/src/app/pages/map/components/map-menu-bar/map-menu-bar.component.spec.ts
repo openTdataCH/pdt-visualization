@@ -2,6 +2,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {MapMenuBarComponent} from './map-menu-bar.component';
 import {MaterialModule} from "../../../../material/material.module";
+import {TranslateModule} from "@ngx-translate/core";
 
 describe('MapMenuBarComponent', () => {
   let component: MapMenuBarComponent;
@@ -9,10 +10,13 @@ describe('MapMenuBarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MapMenuBarComponent ],
-      imports: [ MaterialModule ]
+      declarations: [MapMenuBarComponent],
+      imports: [
+        MaterialModule,
+        TranslateModule.forRoot()
+      ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(MapMenuBarComponent);
     component = fixture.componentInstance;

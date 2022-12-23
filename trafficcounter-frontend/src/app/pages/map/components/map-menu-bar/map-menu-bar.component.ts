@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MapConfigService} from "../../services/map-config/map-config.service";
+import {Observable} from "rxjs";
 
 /**
  * Menu bar on top of the map content.
@@ -11,7 +12,11 @@ import {MapConfigService} from "../../services/map-config/map-config.service";
 })
 export class MapMenuBarComponent implements OnInit {
 
-  constructor(private readonly mapConfigService: MapConfigService) { }
+  isMobile$!: Observable<boolean>
+
+  constructor(private readonly mapConfigService: MapConfigService) {
+    this.isMobile$ = mapConfigService.isMobile$;
+  }
 
   ngOnInit(): void {
   }
@@ -19,8 +24,10 @@ export class MapMenuBarComponent implements OnInit {
   /**
    * Toggles the menu display.
    */
-  toggleShowMenu() {
-    this.mapConfigService.showMenu$.next(!this.mapConfigService.showMenu$.value);
+  toggleShowSidebar() {
+    this.mapConfigService.showSidebar$.next(!this.mapConfigService.showSidebar$.value);
   }
+
+
 
 }

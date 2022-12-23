@@ -1,4 +1,4 @@
-import {Observable, Subscriber} from "rxjs";
+import {Observable} from "rxjs";
 import {NgZone} from "@angular/core";
 
 /**
@@ -28,9 +28,7 @@ export abstract class ReactiveSseService {
       };
       eventSource.onerror = error => {
         this.zone.run(() => {
-          //TODO handle error
-          //console.log(error);
-          //observer.error(error);
+          observer.error(error);
         });
       };
     });

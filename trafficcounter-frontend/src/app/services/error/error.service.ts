@@ -8,16 +8,17 @@ import {HttpErrorResponse} from "@angular/common/http";
 @Injectable()
 export class ErrorService {
 
-  private readonly errorSubject$: BehaviorSubject<HttpErrorResponse|null> = new BehaviorSubject<HttpErrorResponse|null>(null)
+  private readonly errorSubject$: BehaviorSubject<HttpErrorResponse | null> = new BehaviorSubject<HttpErrorResponse | null>(null)
+
+  constructor() {
+  }
 
   /**
    * The most recent error or null.
    */
-  public get error$(): Observable<HttpErrorResponse|null> {
+  public get error$(): Observable<HttpErrorResponse | null> {
     return this.errorSubject$;
   }
-
-  constructor() { }
 
   /**
    * Sets a new error.

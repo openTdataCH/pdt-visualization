@@ -3,7 +3,7 @@ package ch.bfh.trafficcounter.service;
 import ch.bfh.trafficcounter.config.SpeedDisplayConfig;
 import ch.bfh.trafficcounter.mapper.DtoMapper;
 import ch.bfh.trafficcounter.mapper.DtoMapperImpl;
-import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
 import ch.bfh.trafficcounter.model.entity.Measurement;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
 import ch.bfh.trafficcounter.model.entity.SpeedData;
@@ -18,7 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 
 import java.math.BigInteger;
@@ -39,7 +38,7 @@ public class SpeedDataServiceImplTest {
     private final SpeedDisplayConfig speedDisplayConfig = new SpeedDisplayConfig();
 
     @Spy
-    private DtoMapper dtoMapper = new DtoMapperImpl(speedDisplayConfig);
+    private DtoMapper dtoMapper = new DtoMapperImpl();
 
     @Mock
     private MeasurementRepository measurementRepository;
@@ -62,10 +61,11 @@ public class SpeedDataServiceImplTest {
         thresholds.setLow(0.0f);
         speedDisplayConfig.setThresholds(thresholds);
         this.speedDataService = new SpeedDataServiceImpl(
-                measurementRepository,
-                speedDataRepository,
-                measurementPointRepository,
-                dtoMapper
+            measurementRepository,
+            speedDataRepository,
+            measurementPointRepository,
+            dtoMapper,
+            speedDisplayConfig
         );
     }
 
@@ -92,23 +92,23 @@ public class SpeedDataServiceImplTest {
     @Test
     void testProcessMeasurement() {
         final Measurement measurement = Measurement.builder()
-                .id(1L)
-                .time(LocalDateTime.of(2022, 11, 11, 1, 1, 0, 0))
-                .build();
+            .id(1L)
+            .time(LocalDateTime.of(2022, 11, 11, 1, 1, 0, 0))
+            .build();
         final Pair<Integer, Float> firstSpeed = Pair.of(2, 50f);
         final Pair<Integer, Float> secondSpeed = Pair.of(1, 100f);
         final String measurementPointId = "ABC";
         final SiteMeasurements siteMeasurements = generateSiteMeasurements(measurementPointId, List.of(firstSpeed, secondSpeed));
 
         when(measurementPointRepository.findById(measurementPointId))
-                .thenReturn(Optional.of(MeasurementPoint.builder().id(measurementPointId).build()));
+            .thenReturn(Optional.of(MeasurementPoint.builder().id(measurementPointId).build()));
 
         final SpeedData speedData = speedDataService.processMeasurement(measurement, siteMeasurements);
 
         final float expectedAverageSpeed = (
-                firstSpeed.getFirst() * firstSpeed.getSecond()
-                        + secondSpeed.getFirst() * secondSpeed.getSecond()
-                ) / (firstSpeed.getFirst() + secondSpeed.getFirst());
+            firstSpeed.getFirst() * firstSpeed.getSecond()
+                + secondSpeed.getFirst() * secondSpeed.getSecond()
+        ) / (firstSpeed.getFirst() + secondSpeed.getFirst());
 
         assertEquals(measurementPointId, speedData.getMeasurementPoint().getId());
         assertEquals(expectedAverageSpeed, speedData.getAverageSpeed());
@@ -118,14 +118,14 @@ public class SpeedDataServiceImplTest {
     void testProcessAndPersistSpeedData_existingMeasurement() {
         final LocalDateTime time = LocalDateTime.of(2022, 11, 11, 1, 1, 0, 0);
         final Measurement measurement = Measurement.builder()
-                .id(1L)
-                .time(time)
-                .build();
+            .id(1L)
+            .time(time)
+            .build();
         final String measurementPointId = "ABC";
         final SiteMeasurements siteMeasurements = generateSiteMeasurements(measurementPointId, List.of(Pair.of(2, 50f)));
 
         when(measurementPointRepository.findById(measurementPointId))
-                .thenReturn(Optional.of(MeasurementPoint.builder().id(measurementPointId).build()));
+            .thenReturn(Optional.of(MeasurementPoint.builder().id(measurementPointId).build()));
 
         when(measurementRepository.findByTime(time)).thenReturn(Optional.of(measurement));
 
@@ -141,7 +141,7 @@ public class SpeedDataServiceImplTest {
         final SiteMeasurements siteMeasurements = generateSiteMeasurements(measurementPointId, List.of(Pair.of(2, 50f)));
 
         when(measurementPointRepository.findById(measurementPointId))
-                .thenReturn(Optional.of(MeasurementPoint.builder().id(measurementPointId).build()));
+            .thenReturn(Optional.of(MeasurementPoint.builder().id(measurementPointId).build()));
 
         when(measurementRepository.findByTime(time)).thenReturn(Optional.empty());
 
@@ -158,15 +158,14 @@ public class SpeedDataServiceImplTest {
             .id(1L)
             .time(time)
             .speedData(Set.of(
-                    SpeedData.builder()
-                            .id(1L)
-                            .averageSpeed(10f)
-                            .measurementPoint(MeasurementPoint.builder().id("ABC").build())
-                            .build()
+                SpeedData.builder()
+                    .id(1L)
+                    .averageSpeed(10f)
+                    .measurementPoint(MeasurementPoint.builder().id("ABC").build())
+                    .build()
             )).build();
-        when(measurementRepository.findLatest()).thenReturn(Optional.of(measurement));
-        final GeoJsonFeatureCollectionDto speedDataGeoJson = speedDataService.getCurrentSpeedData();
-        assertEquals(1, speedDataGeoJson.getFeatures().size());
-        assertEquals(10f, speedDataGeoJson.getFeatures().get(0).getProperties().getSpeedData().getAverageSpeed());
+        final List<GeoJsonFeatureDto> speedDataGeoJson = speedDataService.getSpeedData(measurement);
+        assertEquals(1, speedDataGeoJson.size());
+        assertEquals(10f, speedDataGeoJson.get(0).getProperties().getSpeedData().getAverageSpeed());
     }
 }

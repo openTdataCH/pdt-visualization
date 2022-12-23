@@ -13,7 +13,8 @@ import {ErrorService} from "../services/error/error.service";
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
-  constructor(private readonly errorService: ErrorService) {}
+  constructor(private readonly errorService: ErrorService) {
+  }
 
   /**
    * Handles an error thrown during a request.

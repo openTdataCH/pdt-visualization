@@ -1,0 +1,29 @@
+.map-sidebar {
+  padding: 2% 4vw;
+  height: 96%;
+
+  mat-button-toggle-group {
+    display: flex;
+  }
+
+  .selected-point-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .info-card-wrapper {
+      display: flex;
+      justify-content: center;
+    }
+
+    & > * {
+      margin: 2% 0;
+    }
+
+    .spacer {
+      height: 20%;
+    }
+
+  }
+
+}

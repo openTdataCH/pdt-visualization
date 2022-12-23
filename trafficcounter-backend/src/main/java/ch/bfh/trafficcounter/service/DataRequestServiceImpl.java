@@ -4,7 +4,6 @@ import ch.bfh.trafficcounter.event.UpdateEvent;
 import ch.bfh.trafficcounter.service.api.OpenTransportDataApiService;
 import ch.opentdata.wsdl.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,76 +23,93 @@ import java.util.List;
 @Transactional
 public class DataRequestServiceImpl implements DataRequestService {
 
-	private final OpenTransportDataApiService api;
+    private final OpenTransportDataApiService api;
 
-	private final MeasurementPointService measurementPointService;
+    private final MeasurementPointService measurementPointService;
 
-	private final SpeedDataService speedDataService;
+    private final SpeedDataService speedDataService;
 
-	private final VehicleAmountService vehicleAmountService;
+    private final VehicleAmountService vehicleAmountService;
 
-	private final Sinks.Many<UpdateEvent> updateEvent;
+    private final VehicleDataService vehicleDataService;
 
-	@Autowired
-	public DataRequestServiceImpl(
-			OpenTransportDataApiService api,
-			MeasurementPointService measurementPointService,
-			SpeedDataService speedDataService,
-			VehicleAmountService vehicleAmountService, Sinks.Many<UpdateEvent> updateEvent) {
-		this.api = api;
-		this.measurementPointService = measurementPointService;
-		this.speedDataService = speedDataService;
-		this.vehicleAmountService = vehicleAmountService;
-		this.updateEvent = updateEvent;
-	}
+    private final Sinks.Many<UpdateEvent> updateEvent;
 
-	@PostConstruct
-	public void loadInitialData() {
+    @Autowired
+    public DataRequestServiceImpl(
+        OpenTransportDataApiService api,
+        MeasurementPointService measurementPointService,
+        SpeedDataService speedDataService,
+        VehicleDataService vehicleDataService,
+        VehicleAmountService vehicleAmountService, Sinks.Many<UpdateEvent> updateEvent) {
+        this.api = api;
+        this.measurementPointService = measurementPointService;
+        this.speedDataService = speedDataService;
+        this.vehicleAmountService = vehicleAmountService;
+        this.vehicleDataService = vehicleDataService;
+        this.updateEvent = updateEvent;
+    }
 
-		// load initial data on startup
-		requestAndPersistStaticData();
-	}
+    /**
+     * initialization of first static and then dynamic data
+     * fills the measurementStats for the first time after data is requested
+     */
+    @PostConstruct
+    public void loadInitialData() {
+
+        // load initial data on startup
+        requestAndPersistStaticData();
+        requestAndPersistDynamicData();
+
+        vehicleDataService.initializeAggregatedData();
+    }
 
 
-	/**
-	 * implementation of static data request and persistence
-	 * only enables valid measurement points (with coordinates)
-	 *
-	 */
-	@Scheduled(
-		cron = "${trafficcounter.schedules.static-data.cron}",
-		zone = "${trafficcounter.schedules.static-data.zone}"
-	)
-	public void requestAndPersistStaticData() {
-		final D2LogicalModel staticData = api.pullMeasurementSiteTable();
-		final PayloadPublication payloadPublication = staticData.getPayloadPublication();
-		if (!(payloadPublication instanceof final MeasurementSiteTablePublication mSTP)) {
-			throw new ClassCastException("Expected MeasurementSiteTablePublication, but was not");
-		}
-		measurementPointService.processAndPersistMeasurementPoints(mSTP.getMeasurementSiteTable().get(0).getMeasurementSiteRecord());
-		System.out.println("-- Successfully requested and persisted static data --");
-	}
+    /**
+     * implementation of static data request and persistence
+     * only enables valid measurement points (with coordinates)
+     */
+    @Scheduled(
+        cron = "${trafficcounter.schedules.static-data.cron}",
+        zone = "${trafficcounter.schedules.static-data.zone}"
+    )
+    public void requestAndPersistStaticData() {
+        final D2LogicalModel staticData = api.pullMeasurementSiteTable();
+        final PayloadPublication payloadPublication = staticData.getPayloadPublication();
+        if (!(payloadPublication instanceof final MeasurementSiteTablePublication mSTP)) {
+            throw new ClassCastException("Expected MeasurementSiteTablePublication, but was not");
+        }
+        measurementPointService.processAndPersistMeasurementPoints(mSTP.getMeasurementSiteTable().get(0).getMeasurementSiteRecord());
+        System.out.println("-- Successfully requested and persisted static data --");
+    }
 
-	@Scheduled(fixedRateString = "${trafficcounter.schedules.dynamic-data.rate}")
-	public void requestAndPersistDynamicData() {
-		final D2LogicalModel measuredData = api.pullMeasuredData();
+    /**
+     * implementation of dynamic data requests and persistence
+     * runs once a minute
+     */
+    @Scheduled(fixedRateString = "${trafficcounter.schedules.dynamic-data.rate}")
+    public void requestAndPersistDynamicData() {
+        final D2LogicalModel measuredData = api.pullMeasuredData();
 
-		final PayloadPublication payloadPublication = measuredData.getPayloadPublication();
-		if (!(payloadPublication instanceof final MeasuredDataPublication measuredDataPublication)) {
-			throw new ClassCastException("Expected MeasuredDataPublication, but was not");
-		}
+        final PayloadPublication payloadPublication = measuredData.getPayloadPublication();
+        if (!(payloadPublication instanceof final MeasuredDataPublication measuredDataPublication)) {
+            throw new ClassCastException("Expected MeasuredDataPublication, but was not");
+        }
 
-		final LocalDateTime time = measuredDataPublication.getPublicationTime().toGregorianCalendar().toZonedDateTime().toLocalDateTime();
+        final LocalDateTime time = measuredDataPublication.getPublicationTime().toGregorianCalendar().toZonedDateTime().toLocalDateTime();
 
-		final List<SiteMeasurements> siteMeasurements = measuredDataPublication.getSiteMeasurements();
+        final List<SiteMeasurements> siteMeasurements = measuredDataPublication.getSiteMeasurements();
 
-		speedDataService.processAndPersistSpeedData(time, siteMeasurements);
-		updateEvent.tryEmitNext(UpdateEvent.SPEED_DATA);
-		System.out.println("-- Successfully requested and persisted speed data --");
+        speedDataService.processAndPersistSpeedData(time, siteMeasurements);
+        System.out.println("-- Successfully requested and persisted speed data --");
 
-		vehicleAmountService.processAndPersistVehicleAmount(time, siteMeasurements);
-		updateEvent.tryEmitNext(UpdateEvent.VEHICLE_AMOUNT);
-		System.out.println("-- Successfully requested and persisted amount of vehicles --");
-	}
+        vehicleAmountService.processAndPersistVehicleAmount(time, siteMeasurements);
+        System.out.println("-- Successfully requested and persisted amount of vehicles --");
+
+        speedDataService.updateEstimatedSpeedLimit();
+        System.out.println("-- Successfully recalculated estimated speed limit --");
+
+        updateEvent.tryEmitNext(UpdateEvent.ALL);
+    }
 
 }

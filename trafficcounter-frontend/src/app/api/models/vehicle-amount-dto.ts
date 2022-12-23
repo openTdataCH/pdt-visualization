@@ -1,3 +1,3 @@
 export interface VehicleAmountDto {
-    numberOfVehicles: number;
+  numberOfVehicles: number;
 }

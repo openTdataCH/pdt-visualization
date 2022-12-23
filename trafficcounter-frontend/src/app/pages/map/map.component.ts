@@ -3,8 +3,7 @@ import {MeasurementPointService} from "../../services/measurement-point/measurem
 import {Observable} from "rxjs";
 import {GeoJsonFeatureCollectionDto} from "../../api/models/geo-json-feature-collection-dto";
 import {MapConfigService} from "./services/map-config/map-config.service";
-import {VehicleAmountServiceService} from "../../services/vehicle-amount-service/vehicle-amount-service.service";
-import { VehicleSpeedService } from 'src/app/services/vehicle-speed-service/vehicle-speed-service.service';
+import {VehicleDataService} from "../../services/vehicle-data/vehicle-data.service";
 
 /**
  * The page component for the map.
@@ -22,28 +21,21 @@ export class MapComponent implements OnInit {
   measurementPoints$: Observable<GeoJsonFeatureCollectionDto>;
 
   /**
-   * The amount of vehicles as GeoJSON.
+   * The vehicle data as GeoJSON.
    */
-  vehicleAmount$: Observable<GeoJsonFeatureCollectionDto>;
-
-  /**
-   * The speed of vehicles as GeoJSON.
-   */
-  vehicleSpeed$: Observable<GeoJsonFeatureCollectionDto>;
-
-  get showMenu(): Observable<boolean> {
-    return this.mapConfigService.showMenu$;
-  }
+  vehicleData$: Observable<GeoJsonFeatureCollectionDto>;
 
   constructor(
     private readonly mapConfigService: MapConfigService,
     private readonly measurementPointService: MeasurementPointService,
-    private readonly vehicleAmountService: VehicleAmountServiceService,
-    private readonly vehicleSpeedService: VehicleSpeedService
+    private readonly vehicleDataService: VehicleDataService
   ) {
     this.measurementPoints$ = this.measurementPointService.getAllMeasurementPoints();
-    this.vehicleAmount$ = this.vehicleAmountService.getVehicleAmountReactive();
-    this.vehicleSpeed$ = this.vehicleSpeedService.getSpeedDataReactive();
+    this.vehicleData$ = this.vehicleDataService.getVehicleDataReactive();
+  }
+
+  get showSidebar$(): Observable<boolean> {
+    return this.mapConfigService.showSidebar$;
   }
 
   ngOnInit(): void {

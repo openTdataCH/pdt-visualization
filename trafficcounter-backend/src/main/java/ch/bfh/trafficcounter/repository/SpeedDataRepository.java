@@ -6,10 +6,11 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Repository for speed data.
- * @see SpeedData
  *
  * @author Manuel Riesen
+ * @see SpeedData
  */
 @Repository
 public interface SpeedDataRepository extends JpaRepository<SpeedData, Long> {
+    boolean existsByIdIsGreaterThan(Long id);
 }

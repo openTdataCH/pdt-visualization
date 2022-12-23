@@ -1,18 +1,18 @@
 package ch.bfh.trafficcounter.mapper;
 
-import ch.bfh.trafficcounter.config.SpeedDisplayConfig;
-import ch.bfh.trafficcounter.model.dto.geojson.*;
+import ch.bfh.trafficcounter.model.dto.HistoricDataCollectionDto;
+import ch.bfh.trafficcounter.model.dto.HistoricDataDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonGeometryDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonPropertiesDto;
 import ch.bfh.trafficcounter.model.entity.MeasurementPoint;
-import ch.bfh.trafficcounter.model.entity.SpeedData;
-import ch.bfh.trafficcounter.model.entity.VehicleAmount;
-import org.springframework.beans.factory.annotation.Autowired;
+import ch.bfh.trafficcounter.model.entity.MeasurementStats;
+import ch.bfh.trafficcounter.model.entity.MeasurementStatsType;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link DtoMapper}
@@ -21,58 +21,6 @@ import java.util.stream.Collectors;
  */
 @Component
 public class DtoMapperImpl implements DtoMapper {
-
-    private final SpeedDisplayConfig speedDisplayConfig;
-
-    @Autowired
-    public DtoMapperImpl(SpeedDisplayConfig speedDisplayConfig) {
-        this.speedDisplayConfig = speedDisplayConfig;
-    }
-
-    @Override
-    public GeoJsonFeatureCollectionDto mapSpeedDataToGeoJsonFeatureCollectionDto(final Collection<SpeedData> speedData) {
-
-        // check for empty array
-        if (speedData == null || speedData.size() == 0) {
-            return null;
-        }
-
-        final float maxSpeed = speedData.stream().max(Comparator.comparing(SpeedData::getAverageSpeed))
-                .map(SpeedData::getAverageSpeed).orElse(0f);
-
-        return new GeoJsonFeatureCollectionDto(speedData.stream()
-                .map(data -> {
-                    final GeoJsonFeatureDto geoJsonFeatureDto = mapMeasurementPointToGeoJsonFeatureDto(data.getMeasurementPoint());
-                    final SpeedDataDto speedDataDto = new SpeedDataDto(
-                            data.getAverageSpeed(),
-                            speedDisplayConfig.getSpeedDisplayClass(maxSpeed > 0 ? data.getAverageSpeed() / maxSpeed : 0)
-                    );
-                    geoJsonFeatureDto.getProperties().setSpeedData(speedDataDto);
-                    return geoJsonFeatureDto;
-                })
-                .collect(Collectors.toList()));
-    }
-
-    @Override
-    public GeoJsonFeatureCollectionDto mapVehicleAmountToGeoJsonFeatureCollectionDto(Collection<VehicleAmount> vehicleAmounts) {
-
-        // check for empty array
-        if (vehicleAmounts == null || vehicleAmounts.size() == 0) {
-            return null;
-        }
-
-        final float maxSpeed = vehicleAmounts.stream().max(Comparator.comparing(VehicleAmount::getNumberOfVehicles))
-                .map(VehicleAmount::getNumberOfVehicles).orElse(0);
-
-        return new GeoJsonFeatureCollectionDto(vehicleAmounts.stream()
-                .map(data -> {
-                    final GeoJsonFeatureDto geoJsonFeatureDto = mapMeasurementPointToGeoJsonFeatureDto(data.getMeasurementPoint());
-                    final VehicleAmountDto vehicleAmountDto = new VehicleAmountDto(data.getNumberOfVehicles());
-                    geoJsonFeatureDto.getProperties().setVehicleAmount(vehicleAmountDto);
-                    return geoJsonFeatureDto;
-                })
-                .collect(Collectors.toList()));
-    }
 
     @Override
     public GeoJsonFeatureCollectionDto mapMeasurementPointsToGeoJsonFeatureCollectionDto(List<MeasurementPoint> measurementPoints) {
@@ -89,11 +37,31 @@ public class DtoMapperImpl implements DtoMapper {
         return new GeoJsonFeatureCollectionDto(featureDtos);
     }
 
-    // following methos are not used from outside and are therefore not part of interface. private for cleanliness
-    private GeoJsonFeatureDto mapMeasurementPointToGeoJsonFeatureDto(MeasurementPoint mp) {
+    @Override
+    public HistoricDataCollectionDto mapHistoricVehicleDataToHistoricDataDto(List<MeasurementStats> measurements, MeasurementStatsType type) {
+
+        if (measurements.size() == 0) {
+            return null;
+        }
+
+        HistoricDataDto[] measurementsArray = new HistoricDataDto[measurements.size()];
+
+        int cnt = 0;
+        for (MeasurementStats h : measurements) {
+            HistoricDataDto historicDataDto = new HistoricDataDto(h.getTime(), h.getSumVehicleAmount(), h.getAvgVehicleSpeed());
+            measurementsArray[cnt] = historicDataDto;
+            cnt++;
+        }
+
+        return new HistoricDataCollectionDto(type.getDuration(), measurementsArray);
+    }
+
+    @Override
+    public GeoJsonFeatureDto mapMeasurementPointToGeoJsonFeatureDto(MeasurementPoint mp) {
         return new GeoJsonFeatureDto(mapMeasurementPointToGeoJsonGeometryDto(mp), mapMeasurementPointToGeoJsonPropertiesDto(mp));
     }
 
+    // following methods are not used from outside and are therefore not part of interface. private for cleanliness
     private GeoJsonGeometryDto mapMeasurementPointToGeoJsonGeometryDto(MeasurementPoint mp) {
         return new GeoJsonGeometryDto(new double[]{mp.getLongtitude(), mp.getLatitude()});
     }

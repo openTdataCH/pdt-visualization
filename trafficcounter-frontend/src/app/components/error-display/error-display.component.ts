@@ -16,11 +16,12 @@ export class ErrorDisplayComponent implements OnInit {
   constructor(
     private readonly errorService: ErrorService,
     private readonly toastr: ToastrService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.errorService.error$.subscribe(error => {
-      if(error != null) {
+      if (error != null) {
         this.toastr.error(error.message, 'An error occurred');
       }
     });

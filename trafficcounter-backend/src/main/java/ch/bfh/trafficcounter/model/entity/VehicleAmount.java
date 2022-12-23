@@ -15,30 +15,31 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(indexes = @Index(columnList = "measurement_point_id"))
 public class VehicleAmount {
 
-     /**
-      * Technical ID of vehicle amount.
-      */
-     @Id
-     @GeneratedValue
-     private Long id;
+    /**
+     * Technical ID of vehicle amount.
+     */
+    @Id
+    @GeneratedValue
+    private Long id;
 
-     /**
-      * Measurement point of vehicle amount.
-      */
-     @ManyToOne
-     private MeasurementPoint measurementPoint;
+    /**
+     * Measurement point of vehicle amount.
+     */
+    @ManyToOne
+    private MeasurementPoint measurementPoint;
 
-     /**
-      * Measurement.
-      */
-     @ManyToOne
-     private Measurement measurement;
+    /**
+     * Measurement.
+     */
+    @ManyToOne
+    private Measurement measurement;
 
-     /**
-      * Vehicle amount measured.
-      */
-     @Column(nullable = false, updatable = false)
-     private Integer numberOfVehicles;
+    /**
+     * Vehicle amount measured.
+     */
+    @Column(nullable = false, updatable = false)
+    private Integer numberOfVehicles;
 }

@@ -1,4 +1,4 @@
 export interface GeoJsonGeometryDto {
-    coordinates: Array<number>;
-    type: string;
+  coordinates: Array<number>;
+  type: string;
 }

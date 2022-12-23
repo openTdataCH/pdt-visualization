@@ -1,6 +1,7 @@
 package ch.bfh.trafficcounter.service;
 
-import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureCollectionDto;
+import ch.bfh.trafficcounter.model.dto.geojson.GeoJsonFeatureDto;
+import ch.bfh.trafficcounter.model.entity.Measurement;
 import ch.opentdata.wsdl.SiteMeasurements;
 
 import java.time.LocalDateTime;
@@ -15,15 +16,30 @@ public interface SpeedDataService {
 
     /**
      * Processes and persists all speed data
-     * @param time measurement time
+     *
+     * @param time             measurement time
      * @param siteMeasurements site measurements
      */
     void processAndPersistSpeedData(LocalDateTime time, List<SiteMeasurements> siteMeasurements);
 
     /**
      * Gets the current speed data as GeoJSON.
+     *
+     * @param measurement measurement to get speed data from
      * @return current speed data
      */
-    GeoJsonFeatureCollectionDto getCurrentSpeedData();
+    List<GeoJsonFeatureDto> getSpeedData(Measurement measurement);
+
+    /**
+     * Updates the estimated speed limit
+     */
+    void updateEstimatedSpeedLimit();
+
+    /**
+     * Checks whether SpeedData is present
+     *
+     * @return true if speed data is present, false if not
+     */
+    boolean hasSpeedData();
 
 }

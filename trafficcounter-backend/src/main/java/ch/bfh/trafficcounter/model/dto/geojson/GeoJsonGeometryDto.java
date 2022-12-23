@@ -12,14 +12,14 @@ import lombok.Setter;
 @Setter
 public class GeoJsonGeometryDto extends TypedGeoJsonDto {
 
-	private double[] coordinates;
+    private double[] coordinates;
 
-	public GeoJsonGeometryDto() {
-		super("Point");
-	}
+    public GeoJsonGeometryDto() {
+        super("Point");
+    }
 
-	public GeoJsonGeometryDto(double[] coordinates) {
-		this();
-		this.coordinates = coordinates;
-	}
+    public GeoJsonGeometryDto(double[] coordinates) {
+        this();
+        this.coordinates = coordinates;
+    }
 }

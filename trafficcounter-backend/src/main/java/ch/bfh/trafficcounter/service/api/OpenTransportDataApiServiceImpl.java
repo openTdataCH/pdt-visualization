@@ -29,8 +29,8 @@ public class OpenTransportDataApiServiceImpl implements OpenTransportDataApiServ
 
     @Autowired
     public OpenTransportDataApiServiceImpl(
-            final PullService pullService,
-            @Value("${trafficcounter.api-key}") final String apiKey
+        final PullService pullService,
+        @Value("${trafficcounter.api-key}") final String apiKey
     ) {
         this.pullService = pullService;
         this.apiKey = apiKey;
@@ -65,7 +65,6 @@ public class OpenTransportDataApiServiceImpl implements OpenTransportDataApiServ
         final D2LogicalModel consumerBody = createConsumerBody();
         return pullInterface.pullMeasurementSiteTable(consumerBody);
     }
-
 
 
 }

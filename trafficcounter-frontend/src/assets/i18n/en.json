@@ -8,6 +8,39 @@
       "measurement-points": "Measurement points",
       "vehicle-amount": "Amount of vehicles",
       "vehicle-speed": "Speed of vehicles"
+    },
+    "action": {
+      "clearSelectedPoint": "Clear selected point"
+    },
+    "info-card": {
+      "title": "Measured data",
+      "description": {
+        "id": "ID",
+        "speed-rating": "Speed rating",
+        "average-speed": "Average speed",
+        "estimated-speed-limit": "Estimated speed limit",
+        "number-of-vehicles": "Number of vehicles"
+      },
+      "no-data": "No data",
+      "speed-display-class": {
+        "high": "High speed",
+        "neutral": "Neutral speed",
+        "low": "Low speed"
+      }
+    },
+    "histogram": {
+      "title": {
+        "speedData": "Histogram speed data",
+        "vehicleAmount": "Histogram amount of vehicles"
+      },
+      "label": {
+        "speedData": "Speed data",
+        "vehicleAmount": "Vehicle amount"
+      },
+      "menu": {
+        "24h": "24 hours",
+        "7d": "7 days"
+      }
     }
   }
 }
