@@ -88,21 +88,20 @@ export class HistogramComponent implements OnInit {
       return 0;
     });
     const labels = measurements.map(measurement => {
+
       if (measurement.time instanceof Date) {
         measurement.time.setMinutes(0);
         measurement.time.setSeconds(0);
         measurement.time.setMilliseconds(0);
         if (duration === '7d') {
-          console.log('duration:');
-          console.log(duration);
           return measurement.time.toLocaleDateString();
         }
         return measurement.time.toLocaleTimeString();
       }
       return '';
     });
-    const speedData = measurements.map(measurement => measurement.avgVehicleSpeed).reverse();
-    const vehicleAmount = measurements.map(measurement => measurement.avgVehicleAmount).reverse();
+    const speedData = measurements.map(measurement => measurement.avgVehicleSpeed);
+    const vehicleAmount = measurements.map(measurement => measurement.avgVehicleAmount);
 
     return {
       labels: labels,

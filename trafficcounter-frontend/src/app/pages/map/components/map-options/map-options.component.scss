@@ -1,0 +1,9 @@
+.map-options {
+  display: flex;
+}
+
+@media screen and (max-width: 600px) {
+  .map-options {
+    flex-direction: column;
+  }
+}

@@ -12,6 +12,7 @@ import {InfoCardComponent} from './components/info-card/info-card.component';
 import {MapSideBarComponent} from "./components/map-side-bar/map-side-bar.component";
 import { HistogramComponent } from './components/histogram/histogram.component';
 import { HistogramMenuComponent } from './components/histogram-menu/histogram-menu.component';
+import { MapOptionsComponent } from './components/map-options/map-options.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { HistogramMenuComponent } from './components/histogram-menu/histogram-me
     MapSideBarComponent,
     InfoCardComponent,
     HistogramComponent,
-    HistogramMenuComponent
+    HistogramMenuComponent,
+    MapOptionsComponent
   ],
   imports: [
     CommonModule,

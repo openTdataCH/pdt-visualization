@@ -1,7 +1,9 @@
 <div class="map-sidebar">
 
+  <app-map-options *ngIf="isMobile$ | async"></app-map-options>
 
   <div *ngIf="selectedPointInfo$ | async as selectedPointInfo" class="selected-point-info">
+
 
     <button mat-stroked-button (click)="clearSelectedPoint()">{{ 'map.action.clearSelectedPoint' | translate }}</button>
 

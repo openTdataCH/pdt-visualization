@@ -17,6 +17,7 @@ import {VehicleDataService} from "../../../../services/vehicle-data/vehicle-data
 })
 export class MapSideBarComponent implements OnInit {
 
+  isMobile$!: Observable<boolean>
 
   selectedPointInfo$: Observable<GeoJsonPropertiesDto | null>;
 
@@ -34,6 +35,7 @@ export class MapSideBarComponent implements OnInit {
     private readonly mapConfigService: MapConfigService,
     private readonly vehicleDataService: VehicleDataService
   ) {
+    this.isMobile$ = this.mapConfigService.isMobile$;
     this.selectedPointInfo$ = this.mapConfigService.selectedPointInfo$;
     this.histogramDuration$ = this.mapConfigService.histogramDuration$;
   }
