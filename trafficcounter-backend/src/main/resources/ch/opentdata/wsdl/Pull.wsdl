@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2023 Manuel Riesen, Sandro Rüfenacht, Sven Trachsel
+  ~
+  ~ Use of this source code is governed by an MIT-style
+  ~ license that can be found in the LICENSE file or at
+  ~ https://opensource.org/licenses/MIT.
+  -->
+
 <definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapbind="http://schemas.xmlsoap.org/wsdl/soap/"
              xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
              xmlns:tns="http://datex2.eu/wsdl/TDP/Soap_Datex2/Pull/v1"
