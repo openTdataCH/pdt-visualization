@@ -24,9 +24,10 @@ export class MapOptionsComponent implements OnInit {
   ngOnInit(): void {
   }
 
-
+  /**
+   * This method changes the map mode.
+   */
   updateMode(): void {
     this.mapConfigService.mapMode$.next(this.modeControl.value ?? MapMode.MeasurementPoints);
   }
-
 }

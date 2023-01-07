@@ -8,8 +8,6 @@
 
 import {Component, OnInit} from '@angular/core';
 import {MapConfigService} from "../../services/map-config/map-config.service";
-import {FormControl} from "@angular/forms";
-import {MapMode} from "../../models/map-mode";
 import {BehaviorSubject, Observable, Subscription} from "rxjs";
 import {GeoJsonPropertiesDto} from "../../../../api/models/geo-json-properties-dto";
 import {VehicleDataService} from "../../../../services/vehicle-data/vehicle-data.service";
@@ -65,7 +63,9 @@ export class MapSideBarComponent implements OnInit {
     });
   }
 
-
+  /**
+   * Removes the selected point.
+   */
   clearSelectedPoint() {
     this.mapConfigService.showSidebar$.next(false);
     this.mapConfigService.selectedPointInfo$.next(null);

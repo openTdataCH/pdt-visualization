@@ -36,6 +36,4 @@ export class MapMenuBarComponent implements OnInit {
     this.mapConfigService.showSidebar$.next(!this.mapConfigService.showSidebar$.value);
   }
 
-
-
 }

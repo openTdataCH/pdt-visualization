@@ -9,7 +9,6 @@
 import { Component, OnInit } from '@angular/core';
 import {MapConfigService} from "../../services/map-config/map-config.service";
 import {MatButtonToggleChange} from "@angular/material/button-toggle";
-import {$} from "chart.js/dist/chunks/helpers.core";
 
 @Component({
   selector: 'app-histogram-menu',
