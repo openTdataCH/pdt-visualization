@@ -1,3 +1,11 @@
+/*
+ * Copyright 2023 Manuel Riesen, Sandro Rüfenacht, Sven Trachsel
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ */
+
 import {Component, OnInit} from '@angular/core';
 import {MapConfigService} from "../../services/map-config/map-config.service";
 import {Observable} from "rxjs";
@@ -27,7 +35,5 @@ export class MapMenuBarComponent implements OnInit {
   toggleShowSidebar() {
     this.mapConfigService.showSidebar$.next(!this.mapConfigService.showSidebar$.value);
   }
-
-
 
 }

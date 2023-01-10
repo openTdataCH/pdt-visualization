@@ -1,3 +1,11 @@
+/*
+ * Copyright 2023 Manuel Riesen, Sandro Rüfenacht, Sven Trachsel
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ */
+
 // This file is required by karma.conf.js and loads recursively all the .spec and framework files
 
 import 'zone.js/testing';

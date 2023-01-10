@@ -1,3 +1,11 @@
+/*
+ * Copyright 2023 Manuel Riesen, Sandro Rüfenacht, Sven Trachsel
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ */
+
 import {Component, Input, OnInit} from '@angular/core';
 import {LayerSpecification, Map, MapOptions} from 'maplibre-gl';
 import {BehaviorSubject, combineLatestWith, Observable} from "rxjs";
@@ -116,7 +124,7 @@ export class MapDisplayComponent implements OnInit {
 
   ngOnInit(): void {
     this.constructMap();
-    this.mapConfigService.showSidebar$.subscribe(showMenu => {
+    this.mapConfigService.showSidebar$.subscribe(() => {
       setTimeout(() => this.map.resize(), 1);
     });
     this.map.on('load', () => {
@@ -156,21 +164,39 @@ export class MapDisplayComponent implements OnInit {
 
   }
 
+  /**
+   * Loads the icon to the given id.
+   *
+   * @param id holds the icon identifier.
+   */
   private loadIcon(id: string) {
     const img = new Image(20, 20);
     img.onload = () => this.map.addImage(id, img);
     img.src = `./assets/icons/${id}.svg`;
   }
 
+  /**
+   * Creates the map object and loads all needed icons.
+   */
   private constructMap() {
     this.map = new Map(this.mapOptions);
     this.icons.forEach(icon => this.loadIcon(icon));
   }
 
+  /**
+   * This method handles the display of new measurement points.
+   *
+   * @param measurementPoints holds the features as a GeoJson representation.
+   */
   private displayMeasurementPoints(measurementPoints: GeoJsonFeatureCollectionDto): void {
     this.updateLayer(this.measurementPointLayer, measurementPoints);
   }
 
+  /**
+   * This method handles the display of new vehicle data.
+   *
+   * @param vehicleData holds the features as a GeoJson representation.
+   */
   private updateVehicleDataLayer(vehicleData: GeoJsonFeatureCollectionDto): void {
     this.updateLayer(this.vehicleDataLayer, vehicleData);
 
@@ -204,14 +230,29 @@ export class MapDisplayComponent implements OnInit {
     });
   }
 
+  /**
+   * This method is used to update the vehicle amount data shown in the map.
+   *
+   * @param vehicleAmount holds the features used for displaying the vehicle amount.
+   */
   private displayVehicleAmount(vehicleAmount: GeoJsonFeatureCollectionDto): void {
     this.updateLayer(this.vehicleAmountLayer, vehicleAmount);
   }
 
+  /**
+   * This method is used to update the vehicle speed data shown in the map.
+   *
+   * @param vehicleSpeed holds the features used for displaying the vehicle speed.
+   */
   private displayVehicleSpeed(vehicleSpeed: GeoJsonFeatureCollectionDto): void {
     this.updateLayer(this.vehicleSpeedLayer, vehicleSpeed);
   }
 
+  /**
+   * Removes a layer from the map - if the layer exists.
+   *
+   * @param layer holds the layer specification to find the layer (uses the id).
+   */
   private removeLayerIfExists(layer: LayerSpecification) {
     const layerExists = this.map.getLayer(layer.id) !== undefined;
     if (layerExists) {
@@ -224,6 +265,12 @@ export class MapDisplayComponent implements OnInit {
     }
   }
 
+  /**
+   * This will update a used layer with new data.
+   *
+   * @param layer holds the layer specification.
+   * @param data holds the data that will be displayed on the layer.
+   */
   private updateLayer(layer: LayerSpecification, data: GeoJsonFeatureCollectionDto) {
     this.removeLayerIfExists(layer);
 
@@ -235,8 +282,12 @@ export class MapDisplayComponent implements OnInit {
     this.map.addLayer(layer);
   }
 
+  /**
+   * This method is called if the user clicks on a point. It will save the selected point so other components can use it further.
+   *
+   * @param selectedPointInfo holds the data of the selected measurement point.
+   */
   private setSelectedPointInfo(selectedPointInfo: GeoJsonPropertiesDto) {
     this.mapConfigService.selectedPointInfo$.next(selectedPointInfo);
   }
-
 }

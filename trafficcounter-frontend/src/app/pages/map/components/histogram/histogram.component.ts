@@ -1,5 +1,13 @@
+/*
+ * Copyright 2023 Manuel Riesen, Sandro Rüfenacht, Sven Trachsel
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ */
+
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {Chart, UpdateMode} from "chart.js/auto";
+import {Chart} from "chart.js/auto";
 import {HistoricDataCollectionDto} from "../../../../api/models/historic-data-collection-dto";
 import {TranslateService} from "@ngx-translate/core";
 import {Observable} from "rxjs";
@@ -40,6 +48,9 @@ export class HistogramComponent implements OnInit {
   constructor(private readonly translateService: TranslateService) {
   }
 
+  /**
+   * This method will create the charts for the speed data and the vehicle amount data.
+   */
   private createCharts(): void {
     const defaultConfig = () => {
       return {
@@ -57,7 +68,8 @@ export class HistogramComponent implements OnInit {
           }
         }
       };
-    }
+    };
+
     this.speedDataChart = new Chart(this.speedDataChartElement.nativeElement, Object.assign(defaultConfig(), {
       options: {
         plugins: {
@@ -68,6 +80,7 @@ export class HistogramComponent implements OnInit {
         }
       }
     }));
+
     this.vehicleAmountChart = new Chart(this.vehicleAmountChartElement.nativeElement, Object.assign(defaultConfig(), {
       options: {
         plugins: {
@@ -80,6 +93,13 @@ export class HistogramComponent implements OnInit {
     }));
   }
 
+  /**
+   * This method will prepare the data to for the charts.
+   *
+   * @param duration holds the set time filter. Can either be "7d" or "24h".
+   * @param data holds the historic data to be filtered.
+   * @returns the new representation ready-to-use for the charts.
+   */
   private createChartData(duration: string, data: HistoricDataCollectionDto): ChartData {
     const measurements = data.measurements.sort((m1, m2) => {
       if(m1.time instanceof Date && m2.time instanceof Date) {
@@ -87,8 +107,8 @@ export class HistogramComponent implements OnInit {
       }
       return 0;
     });
-    const labels = measurements.map(measurement => {
 
+    const labels = measurements.map(measurement => {
       if (measurement.time instanceof Date) {
         measurement.time.setMinutes(0);
         measurement.time.setSeconds(0);
@@ -100,6 +120,7 @@ export class HistogramComponent implements OnInit {
       }
       return '';
     });
+
     const speedData = measurements.map(measurement => measurement.avgVehicleSpeed);
     const vehicleAmount = measurements.map(measurement => measurement.avgVehicleAmount);
 
@@ -121,7 +142,6 @@ export class HistogramComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.primaryColor = getComputedStyle(this.primaryElement.nativeElement).color;
     this.accentColor = getComputedStyle(this.accentElement.nativeElement).color;
 
@@ -141,7 +161,5 @@ export class HistogramComponent implements OnInit {
         this.vehicleAmountChart.update('show');
       });
     });
-
   }
-
 }

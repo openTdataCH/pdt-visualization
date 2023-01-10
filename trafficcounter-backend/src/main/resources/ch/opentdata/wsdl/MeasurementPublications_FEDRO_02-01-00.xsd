@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--
+  ~ Copyright 2023 Manuel Riesen, Sandro Rüfenacht, Sven Trachsel
+  ~
+  ~ Use of this source code is governed by an MIT-style
+  ~ license that can be found in the LICENSE file or at
+  ~ https://opensource.org/licenses/MIT.
+  -->
+
 <xs:schema xmlns:D2LogicalModel="http://datex2.eu/schema/2/2_0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified" attributeFormDefault="unqualified"
            version="2.3" targetNamespace="http://datex2.eu/schema/2/2_0">

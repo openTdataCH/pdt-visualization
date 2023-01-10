@@ -1,3 +1,11 @@
+/*
+ * Copyright 2023 Manuel Riesen, Sandro Rüfenacht, Sven Trachsel
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ */
+
 import {Injectable} from '@angular/core';
 import {VehicleDataControllerService} from "../../api/services/vehicle-data-controller.service";
 import {map, Observable} from "rxjs";
@@ -36,7 +44,8 @@ export class VehicleDataService {
       .pipe(map((historicalDataCollectionDto: HistoricDataCollectionDto) => {
         historicalDataCollectionDto.measurements.forEach(measurement => {
           if (typeof measurement.time === "string") {
-            measurement.time = new Date(Date.parse(measurement.time));
+            let timestampParts: number[] = measurement.time.split(/[- :]/).map(value => parseInt(value));
+            measurement.time = new Date(timestampParts[0], timestampParts[1] - 1, timestampParts[2], timestampParts[3], timestampParts[4], timestampParts[5]);
           }
         });
         return historicalDataCollectionDto;
